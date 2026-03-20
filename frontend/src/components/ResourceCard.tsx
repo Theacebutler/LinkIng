@@ -131,12 +131,14 @@ export function ResourceCard({ resource, onDelete, onCopy }: ResourceCardProps) 
         )}
         {resource.resourceUrl && !imageError && (
           <div className="mt-3">
-            <img
-              src={`${API_BASE}/api/resources/screenshots/${resource.id}`}
-              alt="Source preview"
-              className="w-full  border border-slate-600 rounded bg-white"
-              onError={() => setImageError(true)}
-            />
+            <button onClick={openResource} className="text-blue-400 text-left truncate hover:underline">
+              <img
+                src={`${API_BASE}/api/resources/screenshots/${resource.id}`}
+                alt="Source preview"
+                className="w-full  border border-slate-600 rounded bg-white"
+                onError={() => setImageError(true)}
+              />
+            </button>
           </div>
         )}
       </div>
