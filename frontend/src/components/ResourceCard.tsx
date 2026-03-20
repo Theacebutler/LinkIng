@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { Resource } from '../types/resource';
 
 interface ResourceCardProps {
@@ -6,7 +7,11 @@ interface ResourceCardProps {
   onCopy: (text: string, type: 'resource' | 'source') => void;
 }
 
+const API_BASE = 'http://localhost:3000';
+
 export function ResourceCard({ resource, onDelete, onCopy }: ResourceCardProps) {
+  const [imageError, setImageError] = useState(false);
+
   const openResource = () => {
     window.open(resource.resourceUrl, '_blank', 'noopener,noreferrer');
   };
@@ -122,6 +127,16 @@ export function ResourceCard({ resource, onDelete, onCopy }: ResourceCardProps) 
                 </svg>
               </button>
             </div>
+          </div>
+        )}
+        {resource.resourceUrl && !imageError && (
+          <div className="mt-3">
+            <img
+              src={`${API_BASE}/api/resources/screenshots/${resource.id}`}
+              alt="Source preview"
+              className="w-full  border border-slate-600 rounded bg-white"
+              onError={() => setImageError(true)}
+            />
           </div>
         )}
       </div>

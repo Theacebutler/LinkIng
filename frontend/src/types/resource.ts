@@ -3,6 +3,7 @@ export interface Resource {
   title: string;
   resourceUrl: string;
   sourceUrl: string;
+  sourceImage?: string;
   createdAt: string;
 }
 
