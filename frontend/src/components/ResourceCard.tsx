@@ -59,7 +59,7 @@ export function ResourceCard({ resource, onDelete, onCopy }: ResourceCardProps) 
 
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-2 text-sm">
-          <span className="text-slate-500 flex-shrink-0">
+          <span className="text-slate-500 shrink-0">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" />
               <path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" />
@@ -68,7 +68,7 @@ export function ResourceCard({ resource, onDelete, onCopy }: ResourceCardProps) 
           <button onClick={openResource} className="text-blue-400 text-left truncate hover:underline">
             {truncateUrl(resource.resourceUrl)}
           </button>
-          <div className="flex gap-1 flex-shrink-0">
+          <div className="flex gap-1 shrink-0">
             <button
               onClick={() => onCopy(resource.resourceUrl, 'resource')}
               className="p-1 text-slate-500 rounded hover:text-blue-400 hover:bg-blue-900/30 transition-colors"
@@ -95,16 +95,16 @@ export function ResourceCard({ resource, onDelete, onCopy }: ResourceCardProps) 
 
         {resource.sourceUrl && (
           <div className="flex items-center gap-2 text-sm">
-            <span className="text-slate-500 flex-shrink-0">
+            <span className="text-slate-500 shrink-0">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
               </svg>
             </span>
-            <span className="text-slate-500 flex-shrink-0">via</span>
+            <span className="text-slate-500 shrink-0">via</span>
             <button onClick={openSource} className="text-blue-400 text-left truncate hover:underline flex-1 min-w-0">
               {truncateUrl(resource.sourceUrl)}
             </button>
-            <div className="flex gap-1 flex-shrink-0">
+            <div className="flex gap-1 shrink-0">
               <button
                 onClick={() => onCopy(resource.sourceUrl, 'source')}
                 className="p-1 text-slate-500 rounded hover:text-blue-400 hover:bg-blue-900/30 transition-colors"
