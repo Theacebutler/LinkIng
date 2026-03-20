@@ -16,7 +16,7 @@ async function screenshot(url: string) {
   const image = await page.screenshot({
     type: 'png',
     encoding: 'base64',
-    fullPage: true
+    fullPage: false
   });
   await b.close();
   return image;
