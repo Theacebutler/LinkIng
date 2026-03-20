@@ -18,7 +18,7 @@ const resources: Resource[] = [
     "createdAt": "2026-03-20T02:00:46.574Z"
   }
 ];
-const screenshotCache: Record<string, string> = {};
+const screenshotCache: Record<string, Promise<string>> = {};
 
 const server = Bun.serve({
   port: 3000,
@@ -44,18 +44,9 @@ const server = Bun.serve({
           id: crypto.randomUUID(),
           createdAt: new Date().toISOString(),
         };
-
-        // TODO: add a new image path that the image can fetch form the frontend, and its not tied to the data,
-        // this will be a new DB table that will have a relationship to the resource table
-
-        try {
-          const id = newResource.id;
-          const image = await screenshot(newResource.resourceUrl);
-          screenshotCache[id] = image;
-          console.log("screenshot", image, "for", id);
-        } catch (err) {
-          console.error('Screenshot failed:', err);
-        }
+        const image = screenshot(newResource.resourceUrl);
+        const id = newResource.id;
+        screenshotCache[id] = image;
         resources.push(newResource);
         const res = Response.json(newResource);
         res.headers.set("Access-Control-Allow-Origin", "http://localhost:5173");
@@ -95,9 +86,9 @@ const server = Bun.serve({
       },
       GET: async (req) => {
         const id = req.params.id;
-
-        if (screenshotCache[id]) {
-          const res = new Response(Buffer.from(screenshotCache[id], 'base64'), {
+        const image = await screenshotCache[id];
+        if (image) {
+          const res = new Response(Buffer.from(image, 'base64'), {
             headers: {
               'Content-Type': 'image/png',
               'Access-Control-Allow-Origin': 'http://localhost:5173',
