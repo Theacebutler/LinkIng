@@ -1,8 +1,11 @@
+import screenshot from "./utils/screenshot";
+
 interface Resource {
   id: string;
   title: string;
   resourceUrl: string;
   sourceUrl: string;
+  sourceImage?: string;
   createdAt: string;
 }
 
@@ -34,12 +37,17 @@ const server = Bun.serve({
         return res;
       },
       POST: async (req) => {
-        const body = await req.json() as Omit<Resource, 'id' | 'createdAt'>;
+        const body = await req.json() as Omit<Resource, 'id' | 'createdAt' | 'sourceImage'>;
         const newResource: Resource = {
           ...body,
           id: crypto.randomUUID(),
           createdAt: new Date().toISOString(),
         };
+
+        // TODO: add a new image path that the image can fetch form the frontend, and its not tied to the data,
+        // this will be a new DB table that will have a relationship to the resource table
+
+        // newResource.sourceImage = await screenshot(newResource.sourceUrl);
         resources.push(newResource);
         const res = Response.json(newResource);
         res.headers.set("Access-Control-Allow-Origin", "http://localhost:5173");
