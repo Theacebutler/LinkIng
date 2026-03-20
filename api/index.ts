@@ -18,6 +18,7 @@ const resources: Resource[] = [
     "createdAt": "2026-03-20T02:00:46.574Z"
   }
 ];
+const screenshotCache: Record<string, string> = {};
 
 const server = Bun.serve({
   port: 3000,
@@ -47,7 +48,14 @@ const server = Bun.serve({
         // TODO: add a new image path that the image can fetch form the frontend, and its not tied to the data,
         // this will be a new DB table that will have a relationship to the resource table
 
-        // newResource.sourceImage = await screenshot(newResource.sourceUrl);
+        try {
+          const id = newResource.id;
+          const image = await screenshot(newResource.resourceUrl);
+          screenshotCache[id] = image;
+          console.log("screenshot", image, "for", id);
+        } catch (err) {
+          console.error('Screenshot failed:', err);
+        }
         resources.push(newResource);
         const res = Response.json(newResource);
         res.headers.set("Access-Control-Allow-Origin", "http://localhost:5173");
@@ -75,6 +83,37 @@ const server = Bun.serve({
         const res = Response.json({ deleted: true });
         res.headers.set("Access-Control-Allow-Origin", "http://localhost:5173");
         return res
+      },
+    },
+    "/api/resources/screenshots/:id": {
+      OPTIONS: () => {
+        const res = Response.json({});
+        res.headers.set("Access-Control-Allow-Origin", "http://localhost:5173");
+        res.headers.set("Access-Control-Allow-Methods", "GET, OPTIONS");
+        res.headers.set("Access-Control-Allow-Headers", "Content-Type");
+        return res;
+      },
+      GET: async (req) => {
+        const id = req.params.id;
+
+        if (screenshotCache[id]) {
+          const res = new Response(Buffer.from(screenshotCache[id], 'base64'), {
+            headers: {
+              'Content-Type': 'image/png',
+              'Access-Control-Allow-Origin': 'http://localhost:5173',
+            },
+          });
+          return res;
+        } else {
+          return new Response(JSON.stringify({ error: "Image not found" }), {
+            status: 404,
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': 'http://localhost:5173',
+            },
+          });
+        }
+
       },
     },
   },
