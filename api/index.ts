@@ -1,7 +1,7 @@
-import type { Resource } from "./shere/types";
+import type { Resource } from "./shered/types";
 import screenshot from "./utils/screenshot";
 import { db } from "./db";
-import { resourcesTable } from "./db/schema";
+import { resourcesTable, screenshotsTable } from "./db/schema";
 import { eq } from "drizzle-orm";
 
 const screenshotCache: Record<string, Promise<string | undefined>> = {};
