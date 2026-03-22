@@ -1,14 +1,16 @@
 import puppeteer from "puppeteer";
+import { db } from "../db";
+import { screenshotsTable } from "../db/schema";
 
 
-
-async function screenshot(url: string | null | undefined): Promise<string | undefined> {
-  if (!url) return
-  const b = await puppeteer.launch({
+export async function screenshot(url: string | null | undefined, resourceId: string | undefined) {
+  if (!url || !resourceId) return
+  console.log("screenshot", url, resourceId)
+  const browser = await puppeteer.launch({
     headless: true,
     args: ['--no-sandbox', '--disable-setuid-sandbox']
   });
-  const page = await b.newPage();
+  const page = await browser.newPage();
 
   await page.setViewport({ width: 1820, height: 720 });
   await page.goto(url, { waitUntil: 'networkidle2' });
@@ -19,8 +21,13 @@ async function screenshot(url: string | null | undefined): Promise<string | unde
     encoding: 'base64',
     fullPage: false
   });
-  await b.close();
-  return image;
+  await browser.close();
+
+  await db.insert(screenshotsTable).values({
+    id: crypto.randomUUID(),
+    resourceId: resourceId,
+    image: image
+  })
 };
 
 export default screenshot;

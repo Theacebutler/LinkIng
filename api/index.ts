@@ -30,10 +30,11 @@ const server = Bun.serve({
           id: crypto.randomUUID(),
           createdAt: new Date().toISOString(),
         };
-        const image = screenshot(newResource.resourceUrl);
-        const id = newResource.id;
-        screenshotCache[id] = image;
-        db.insert(resourcesTable).values(newResource);
+        // save the screenshot to the DB
+        const [id] = await db.insert(resourcesTable)
+          .values(newResource)
+          .returning({ insertId: resourcesTable.id });
+        screenshot(newResource.resourceUrl, id?.insertId);
         const res = Response.json(newResource);
         res.headers.set("Access-Control-Allow-Origin", "http://localhost:5173");
         return res;
@@ -66,8 +67,11 @@ const server = Bun.serve({
         return res;
       },
       GET: async (req) => {
-        const id = req.params.id;
-        const image = await screenshotCache[id];
+        const id = req.params.id
+        const image_recored = await db.select()
+          .from(screenshotsTable)
+          .where(eq(screenshotsTable.resourceId, id));
+        const image = image_recored[0]?.image
         if (image) {
           const res = new Response(Buffer.from(image, 'base64'), {
             headers: {
