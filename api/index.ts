@@ -1,96 +1,23 @@
-import type { Resource } from "./shered/types";
-import { handleScreenshot } from "./utils/handleScreenshot";
-import { db } from "./db";
-import { resourcesTable, screenshotsTable } from "./db/schema";
-import { eq } from "drizzle-orm";
+import { apiResourcesGet, apiResourcesOpts, apiResourcesPost } from "./handlers/api_resources";
+import { apiResourcesIdDelete, apiResourcesIdOpts } from "./handlers/api_resources_id";
+import { apiResurceScreenshotGet, apiResurceScreenshotOpts } from "./handlers/api_resouces_screenshots";
 
 
 const server = Bun.serve({
   port: 3000,
   routes: {
     "/api/resources": {
-      GET: async () => {
-        const resources = await db.select().from(resourcesTable);
-        const res = Response.json(resources);
-        res.headers.set("Access-Control-Allow-Origin", "http://localhost:5173");
-        return res;
-      },
-      OPTIONS: () => {
-        const res = Response.json({});
-        res.headers.set("Access-Control-Allow-Origin", "http://localhost:5173");
-        res.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-        res.headers.set("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Origin");
-        return res;
-      },
-      POST: async (req) => {
-        const body = await req.json() as Omit<Resource, 'id' | 'createdAt' | 'sourceImage'>;
-        const newResource: Resource = {
-          ...body,
-          id: crypto.randomUUID(),
-          createdAt: new Date().toISOString(),
-        };
-        // save the screenshot to the DB
-        const [id] = await db.insert(resourcesTable)
-          .values(newResource)
-          .returning({ insertId: resourcesTable.id });
-
-        handleScreenshot(server, newResource.resourceUrl, id?.insertId)
-        const res = Response.json(newResource);
-        res.headers.set("Access-Control-Allow-Origin", "http://localhost:5173");
-        return res;
-      },
+      GET: async () => apiResourcesGet(),
+      POST: async (req): Promise<Response> => apiResourcesPost(req, server),
+      OPTIONS: () => apiResourcesOpts(),
     },
     "/api/resources/:id": {
-      OPTIONS: () => {
-        const res = Response.json({});
-        console.log("OPTIONS /api/resources/:id");
-
-        res.headers.set("Access-Control-Allow-Origin", "http://localhost:5173");
-        res.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS, DELETE");
-        res.headers.set("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Origin");
-        return res;
-      },
-      DELETE: async (req) => {
-        const id = req.params.id;
-        await db.delete(resourcesTable).where(eq(resourcesTable.id, id));
-        const res = Response.json({ deleted: true });
-        res.headers.set("Access-Control-Allow-Origin", "http://localhost:5173");
-        return res
-      },
+      OPTIONS: () => apiResourcesIdOpts(),
+      DELETE: async (req) => apiResourcesIdDelete(req),
     },
     "/api/resources/screenshots/:id": {
-      OPTIONS: () => {
-        const res = Response.json({});
-        res.headers.set("Access-Control-Allow-Origin", "http://localhost:5173");
-        res.headers.set("Access-Control-Allow-Methods", "GET, OPTIONS");
-        res.headers.set("Access-Control-Allow-Headers", "Content-Type");
-        return res;
-      },
-      GET: async (req) => {
-        const id = req.params.id
-        const image_recored = await db.select()
-          .from(screenshotsTable)
-          .where(eq(screenshotsTable.resourceId, id));
-        const image = image_recored[0]?.image
-        if (image) {
-          const res = new Response(Buffer.from(image, 'base64'), {
-            headers: {
-              'Content-Type': 'image/png',
-              'Access-Control-Allow-Origin': 'http://localhost:5173',
-            },
-          });
-          return res;
-        } else {
-          return new Response(JSON.stringify({ error: "Image not found" }), {
-            status: 404,
-            headers: {
-              'Content-Type': 'application/json',
-              'Access-Control-Allow-Origin': 'http://localhost:5173',
-            },
-          });
-        }
-
-      },
+      OPTIONS: () => apiResurceScreenshotOpts(),
+      GET: async (req) => apiResurceScreenshotGet(req),
     },
   },
 });
