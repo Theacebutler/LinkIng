@@ -2,7 +2,8 @@ import puppeteer from "puppeteer";
 
 
 
-async function screenshot(url: string) {
+async function screenshot(url: string | null | undefined): Promise<string | undefined> {
+  if (!url) return
   const b = await puppeteer.launch({
     headless: true,
     args: ['--no-sandbox', '--disable-setuid-sandbox']

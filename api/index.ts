@@ -1,3 +1,4 @@
+import type { Resource } from "./shere/types";
 import screenshot from "./utils/screenshot";
 
 const resources: Resource[] = [
@@ -9,7 +10,7 @@ const resources: Resource[] = [
     "createdAt": "2026-03-20T02:00:46.574Z"
   }
 ];
-const screenshotCache: Record<string, Promise<string>> = {};
+const screenshotCache: Record<string, Promise<string | undefined>> = {};
 
 const server = Bun.serve({
   port: 3000,
