@@ -1,5 +1,5 @@
 import type { Resource } from "./shered/types";
-import screenshot from "./utils/screenshot";
+import { handleScreenshot } from "./utils/handleScreenshot";
 import { db } from "./db";
 import { resourcesTable, screenshotsTable } from "./db/schema";
 import { eq } from "drizzle-orm";
@@ -33,7 +33,8 @@ const server = Bun.serve({
         const [id] = await db.insert(resourcesTable)
           .values(newResource)
           .returning({ insertId: resourcesTable.id });
-        screenshot(newResource.resourceUrl, id?.insertId);
+
+        handleScreenshot(server, newResource.resourceUrl, id?.insertId)
         const res = Response.json(newResource);
         res.headers.set("Access-Control-Allow-Origin", "http://localhost:5173");
         return res;

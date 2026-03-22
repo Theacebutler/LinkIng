@@ -3,7 +3,7 @@ import { db } from "../db";
 import { screenshotsTable } from "../db/schema";
 
 
-export async function screenshot(url: string | null | undefined, resourceId: string | undefined) {
+export async function screenshot(url: string | null | undefined, resourceId: string | undefined): Promise<string | undefined> {
   if (!url || !resourceId) return
   console.log("screenshot", url, resourceId)
   const browser = await puppeteer.launch({
@@ -28,6 +28,7 @@ export async function screenshot(url: string | null | undefined, resourceId: str
     resourceId: resourceId,
     image: image
   })
+  return image
 };
 
 export default screenshot;
