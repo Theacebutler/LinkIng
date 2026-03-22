@@ -4,14 +4,13 @@ import { db } from "./db";
 import { resourcesTable, screenshotsTable } from "./db/schema";
 import { eq } from "drizzle-orm";
 
-const screenshotCache: Record<string, Promise<string | undefined>> = {};
 
 const server = Bun.serve({
   port: 3000,
   routes: {
     "/api/resources": {
-      GET: () => {
-        const resources = db.select().from(resourcesTable);
+      GET: async () => {
+        const resources = await db.select().from(resourcesTable);
         const res = Response.json(resources);
         res.headers.set("Access-Control-Allow-Origin", "http://localhost:5173");
         return res;
@@ -50,9 +49,9 @@ const server = Bun.serve({
         res.headers.set("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Origin");
         return res;
       },
-      DELETE: (req) => {
+      DELETE: async (req) => {
         const id = req.params.id;
-        db.delete(resourcesTable).where(eq(resourcesTable.id, id));
+        await db.delete(resourcesTable).where(eq(resourcesTable.id, id));
         const res = Response.json({ deleted: true });
         res.headers.set("Access-Control-Allow-Origin", "http://localhost:5173");
         return res
