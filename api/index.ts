@@ -1,14 +1,5 @@
 import screenshot from "./utils/screenshot";
 
-interface Resource {
-  id: string;
-  title: string;
-  resourceUrl: string;
-  sourceUrl: string;
-  sourceImage?: string;
-  createdAt: string;
-}
-
 const resources: Resource[] = [
   {
     "title": "foo",
