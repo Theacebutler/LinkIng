@@ -55,7 +55,7 @@ export function AddResourceForm({ onSubmit }: AddResourceFormProps) {
     if (success) {
       setFormData({ title: '', resourceUrl: '', sourceUrl: '' });
       setSuccess(true);
-      setTimeout(() => setSuccess(false), 3000);
+      setTimeout(() => setSuccess(false), 1000);
     }
   };
 
