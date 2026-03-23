@@ -1,5 +1,6 @@
-import { useState } from 'react';
 import type { Resource } from '../types/resource';
+
+import ResourceImage from "./ResourceImage"
 
 interface ResourceCardProps {
   resource: Resource;
@@ -7,10 +8,8 @@ interface ResourceCardProps {
   onCopy: (text: string, type: 'resource' | 'source') => void;
 }
 
-const API_BASE = 'http://localhost:3000';
 
 export function ResourceCard({ resource, onDelete, onCopy }: ResourceCardProps) {
-  const [imageError, setImageError] = useState(false);
 
   const openResource = () => {
     window.open(resource.resourceUrl, '_blank', 'noopener,noreferrer');
@@ -129,18 +128,9 @@ export function ResourceCard({ resource, onDelete, onCopy }: ResourceCardProps) 
             </div>
           </div>
         )}
-        {resource.resourceUrl && !imageError && (
-          <div className="mt-3">
-            <button onClick={openResource} className="text-blue-400 text-left truncate hover:underline">
-              <img
-                src={`${API_BASE}/api/resources/screenshots/${resource.id}`}
-                alt="Source preview"
-                className="w-full  border border-slate-600 rounded bg-white"
-                onError={() => setImageError(true)}
-              />
-            </button>
-          </div>
-        )}
+        <button onClick={openResource} className="text-blue-400 text-left truncate hover:underline block w-full">
+          <ResourceImage resource={resource} />
+        </button>
       </div>
 
       <div className="mt-4 pt-3 border-t border-slate-700">
