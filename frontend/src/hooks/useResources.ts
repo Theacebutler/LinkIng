@@ -11,7 +11,8 @@ export function useResources() {
   const fetchResources = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${API_BASE}/resources`);
+      const name = "avi"; // TODO: GET NAME FROM COOKIE OR LOCAL STORAGE
+      const response = await fetch(`${API_BASE}/${name}/resources`);
       if (!response.ok) throw new Error('Failed to fetch resources');
       const data = await response.json();
       setResources(data);
@@ -25,7 +26,10 @@ export function useResources() {
 
   const addResource = async (resource: Omit<Resource, 'id' | 'createdAt'>) => {
     try {
-      const response = await fetch(`${API_BASE}/resources`, {
+      resource = { ...resource, owner: 'avi' }; // TODO: GET NAME FROM COOKIE OR LOCAL STORAGE
+      console.log(resource);
+
+      const response = await fetch(`${API_BASE}/${resource.owner}/resources`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(resource),
@@ -42,7 +46,8 @@ export function useResources() {
 
   const deleteResource = async (id: string) => {
     try {
-      const response = await fetch(`${API_BASE}/resources/${id}`, {
+      const name = "avi"; // TODO: GET NAME FROM COOKIE OR LOCAL STORAGE
+      const response = await fetch(`${API_BASE}/${name}/resources/${id}`, {
         method: 'DELETE',
       });
       if (!response.ok) throw new Error('Failed to delete resource');
