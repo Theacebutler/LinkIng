@@ -6,7 +6,7 @@ import { ResourceList } from './components/ResourceList';
 function App() {
   const { resources, loading, addResource, deleteResource } = useResources();
 
-  const handleAddResource = async (data: { title: string; resourceUrl: string; sourceUrl: string }) => {
+  const handleAddResource = async (data: { title: string; resourceUrl: string; sourceUrl: string, owner: string }) => {
     return await addResource(data);
   };
 
