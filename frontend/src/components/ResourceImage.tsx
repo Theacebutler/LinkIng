@@ -27,6 +27,7 @@ export default function ResoueceImage({ resource }: { resource: Resource }) {
   };
 
   useEffect(() => {
+    if (loaded) return;
     const startPolling = () => {
       pollingRef.current = setInterval(() => {
         pollingImage();
@@ -36,7 +37,8 @@ export default function ResoueceImage({ resource }: { resource: Resource }) {
     return () => {
       clearInterval(pollingRef.current)
     }
-  }, [])
+    // TODO: ADD dependency to trigger polling
+  }, [imageUrl]);
 
 
   if (loaded) {
