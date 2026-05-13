@@ -5,15 +5,21 @@ import { apiResurceScreenshotGet, apiResurceScreenshotOpts } from "./handlers/ap
 const server = Bun.serve({
   port: 3000,
   routes: {
-    "/api/:name/resources": async (req) => {
-      const name = req.params.name;
-      return apiResourcesGet(name)
+    "/api/:name/resources": {
+      GET: async (req) => {
+        const name = req.params.name;
+        return apiResourcesGet(name);
+      },
+      POST: async (req): Promise<Response> => {
+        const name = req.params.name;
+        return apiResourcesPost(req, server, name);
+      },
+
+      OPTIONS: () => {
+        return apiResourcesOpts()
+      },
     },
-    "/api/resources": {
-      POST: async (req): Promise<Response> => apiResourcesPost(req, server),
-      OPTIONS: () => apiResourcesOpts(),
-    },
-    "/api/resources/:id": {
+    "/api/:name/resources/:id": {
       OPTIONS: () => apiResourcesIdOpts(),
       DELETE: async (req) => apiResourcesIdDelete(req),
     },
