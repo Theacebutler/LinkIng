@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { db } from "../db";
 import { resourcesTable } from "../db/schema";
 
@@ -11,9 +11,14 @@ export function apiResourcesIdOpts() {
   return res;
 }
 
-export async function apiResourcesIdDelete(req: Bun.BunRequest<"/api/resources/:id">) {
-  const id = req.params.id;
-  await db.delete(resourcesTable).where(eq(resourcesTable.id, id));
+export async function apiResourcesIdDelete(req: Bun.BunRequest) {
+  const id = req.params.id as string;
+  const name = req.params.name as string;
+  await db.delete(resourcesTable).where(
+    and(
+      eq(resourcesTable.id, id),
+      eq(resourcesTable.owner, name)
+    ));
   const res = Response.json({ deleted: true });
   res.headers.set("Access-Control-Allow-Origin", "http://localhost:5173");
   return res

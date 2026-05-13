@@ -24,12 +24,13 @@ export async function apiResourcesOpts(): Promise<Response> {
   return res;
 }
 
-export async function apiResourcesPost(req: Bun.BunRequest<"/api/resources">, server: Bun.Server<undefined>) {
+export async function apiResourcesPost(req: Bun.BunRequest, server: Bun.Server<undefined>, name: string) {
   const body = await req.json() as Omit<Resource, 'id' | 'createdAt' | 'sourceImage'>;
   const newResource: Resource = {
     ...body,
     id: crypto.randomUUID(),
     createdAt: new Date().toISOString(),
+    owner: name,
   };
   // save the screenshot to the DB
   const [id] = await db.insert(resourcesTable)
