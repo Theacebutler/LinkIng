@@ -12,6 +12,7 @@ export const usersTable = sqliteTable("users_table", {
 // resources table
 export const resourcesTable = sqliteTable("resources_table", {
   id: text().primaryKey(),
+  owner: text().notNull().references(() => usersTable.name),
   title: text().notNull(),
   resourceUrl: text(),
   sourceUrl: text(),

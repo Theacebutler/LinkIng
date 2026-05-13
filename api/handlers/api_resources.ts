@@ -1,4 +1,4 @@
-import { desc } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { db } from "../db";
 import { resourcesTable } from "../db/schema";
 import type { Resource } from "../shered/types";
@@ -6,9 +6,10 @@ import { handleScreenshot } from "../utils/handleScreenshot";
 
 const FRUNTEND_URL = process.env.FRUNTEND_URL as string;
 
-export async function apiResourcesGet(): Promise<Response> {
+export async function apiResourcesGet(name: string): Promise<Response> {
   const resources = await db.select()
     .from(resourcesTable)
+    .where((resouce) => eq(resouce.owner, name))
     .orderBy(desc(resourcesTable.createdAt));
   const res = Response.json(resources);
   res.headers.set("Access-Control-Allow-Origin", FRUNTEND_URL);
