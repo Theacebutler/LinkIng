@@ -28,7 +28,6 @@ export async function apiResourcesPost(req: Bun.BunRequest, server: Bun.Server<u
   const body = await req.json() as Omit<Resource, 'id' | 'createdAt' | 'sourceImage'>;
   const newResource: Resource = {
     ...body,
-    id: crypto.randomUUID(),
     createdAt: new Date().toISOString(),
     owner: name,
   };

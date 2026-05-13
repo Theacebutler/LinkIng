@@ -1,9 +1,9 @@
-import { sqliteTable, text } from "drizzle-orm/sqlite-core"
+import { int, sqliteTable, text } from "drizzle-orm/sqlite-core"
 
 
 // users table
 export const usersTable = sqliteTable("users_table", {
-  id: text().primaryKey(),
+  id: int().primaryKey({ autoIncrement: true }),
   name: text().notNull(),
   // HASH!!!
   password: text(),
@@ -11,9 +11,9 @@ export const usersTable = sqliteTable("users_table", {
 
 // resources table
 export const resourcesTable = sqliteTable("resources_table", {
-  id: text().primaryKey(),
+  id: int().primaryKey({ autoIncrement: true }),
   owner: text().notNull().references(() => usersTable.name),
-  title: text().notNull(),
+  title: int().notNull(),
   resourceUrl: text(),
   sourceUrl: text(),
   createdAt: text(),
@@ -21,7 +21,7 @@ export const resourcesTable = sqliteTable("resources_table", {
 
 // screenshots table
 export const screenshotsTable = sqliteTable("screenshots_table", {
-  id: text().primaryKey(),
-  resourceId: text("resource_id").notNull().references(() => resourcesTable.id),
+  id: int().primaryKey({ autoIncrement: true }),
+  resourceId: int("resource_id").notNull().references(() => resourcesTable.id),
   image: text(),
 })
