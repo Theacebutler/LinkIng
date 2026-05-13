@@ -2,12 +2,14 @@ import { apiResourcesGet, apiResourcesOpts, apiResourcesPost } from "./handlers/
 import { apiResourcesIdDelete, apiResourcesIdOpts } from "./handlers/api_resources_id";
 import { apiResurceScreenshotGet, apiResurceScreenshotOpts } from "./handlers/api_resouces_screenshots";
 
-
 const server = Bun.serve({
   port: 3000,
   routes: {
+    "/api/:name/resources": async (req) => {
+      const name = req.params.name;
+      return apiResourcesGet(name)
+    },
     "/api/resources": {
-      GET: async () => apiResourcesGet(),
       POST: async (req): Promise<Response> => apiResourcesPost(req, server),
       OPTIONS: () => apiResourcesOpts(),
     },
