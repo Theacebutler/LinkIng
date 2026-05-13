@@ -1,6 +1,6 @@
 import { screenshot } from "./screenshot"
 
-export async function handleScreenshot(server: Bun.Server<undefined>, url: string | null | undefined, resourceID: string | undefined) {
+export async function handleScreenshot(server: Bun.Server<undefined>, url: string | null | undefined, resourceID: number | undefined) {
   // TODO: take the screenshot
   const image = await screenshot(url, resourceID)
   if (!image) return
