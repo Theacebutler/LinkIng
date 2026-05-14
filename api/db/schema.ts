@@ -4,9 +4,9 @@ import { int, sqliteTable, text } from "drizzle-orm/sqlite-core"
 // users table
 export const usersTable = sqliteTable("users_table", {
   id: int().primaryKey({ autoIncrement: true }),
-  name: text().notNull(),
+  name: text().notNull().unique(),
   // HASH!!!
-  password: text(),
+  password: text().notNull().unique(),
 })
 
 // resources table
