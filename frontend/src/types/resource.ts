@@ -12,4 +12,5 @@ export interface ResourceFormData {
   title: string;
   resourceUrl: string;
   sourceUrl: string;
+  owner: string;
 }

@@ -2,6 +2,7 @@ import { useResources } from './hooks/useResources';
 import { Header } from './components/Header';
 import { AddResourceForm } from './components/AddResourceForm';
 import { ResourceList } from './components/ResourceList';
+import AddUser from './components/AddUser';
 
 function App() {
   const { resources, loading, addResource, deleteResource } = useResources();
@@ -13,6 +14,7 @@ function App() {
   return (
     <>
       <Header />
+      <AddUser />
       <main>
         <AddResourceForm onSubmit={handleAddResource} />
         <ResourceList
