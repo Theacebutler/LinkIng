@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import type { Resource } from "../types/resource";
 
-const API_BASE = 'http://localhost:3000';
+const API_BASE = import.meta.env.VITE_API_URL as string;
 
 export default function ResoueceImage({ resource }: { resource: Resource }) {
   const [imageUrl, setImageUrl] = useState('');
@@ -9,11 +9,12 @@ export default function ResoueceImage({ resource }: { resource: Resource }) {
   const pollingRef = useRef<number | undefined>(undefined);
 
   async function pollingImage() {
-    const data = await fetch(`${API_BASE}/api/resources/screenshots/${resource.id}`)
+    if (!resource.id) return
+    const data = await fetch(`${API_BASE}/resources/screenshots/${resource.id}`)
     switch (data.status) {
       case 200:
         setLoaded(true);
-        setImageUrl(`${API_BASE}/api/resources/screenshots/${resource.id}`);
+        setImageUrl(`${API_BASE}/resources/screenshots/${resource.id}`);
         break;
       case 404:
         setImageUrl('');
