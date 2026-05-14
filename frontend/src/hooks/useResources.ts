@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import Cookies from 'js-cookie';
 import type { Resource } from '../types/resource';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
@@ -11,7 +12,7 @@ export function useResources() {
   const fetchResources = async () => {
     try {
       setLoading(true);
-      const name = "avi"; // TODO: GET NAME FROM COOKIE OR LOCAL STORAGE
+      const name = Cookies.get('name') || ''
       const response = await fetch(`${API_BASE}/${name}/resources`);
       if (!response.ok) throw new Error('Failed to fetch resources');
       const data = await response.json();
@@ -26,8 +27,8 @@ export function useResources() {
 
   const addResource = async (resource: Omit<Resource, 'id' | 'createdAt'>) => {
     try {
-      resource = { ...resource, owner: 'avi' }; // TODO: GET NAME FROM COOKIE OR LOCAL STORAGE
-      console.log(resource);
+      resource = { ...resource, owner: Cookies.get('name') || '' }
+      // console.log(resource);
 
       const response = await fetch(`${API_BASE}/${resource.owner}/resources`, {
         method: 'POST',
@@ -46,7 +47,7 @@ export function useResources() {
 
   const deleteResource = async (id: string) => {
     try {
-      const name = "avi"; // TODO: GET NAME FROM COOKIE OR LOCAL STORAGE
+      const name = Cookies.get('name') || ''
       const response = await fetch(`${API_BASE}/${name}/resources/${id}`, {
         method: 'DELETE',
       });
