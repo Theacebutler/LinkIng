@@ -2,7 +2,7 @@ import { apiResourcesGet, apiResourcesOpts, apiResourcesPost } from "./handlers/
 import { apiResourcesIdDelete, apiResourcesIdOpts } from "./handlers/api_resources_id";
 import { apiResurceScreenshotGet, apiResurceScreenshotOpts } from "./handlers/api_resouces_screenshots";
 
-import { createUser } from "./handlers/create_user";
+import { createUser, createUserResponse } from "./handlers/create_user";
 import { type user } from "./shered/types";
 
 
@@ -11,12 +11,11 @@ const server = Bun.serve({
   routes: {
     "/api/user/": {
       POST: async (req) => {
-        const body = await req.json() as user
-        const name = await createUser(body)
-        const res = Response.json({ "created": true, "name": name }, { status: 201 })
-        return res
+        const body = await req.json() as user;
+        const data = await createUser(body);
+        const out = await createUserResponse(data);
+        return out;
       }
-
     },
     "/api/:name/resources": {
       GET: async (req) => {
