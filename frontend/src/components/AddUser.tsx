@@ -1,6 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import Cookies from 'js-cookie';
-import { config } from '../../config';
+import register from '../utils/register';
 
 export default function AddUser() {
   const [username, setUsername] = useState('');
@@ -32,40 +31,7 @@ export default function AddUser() {
 
     setIsSubmitting(false);
     // register user
-    const register = await fetch(`${config.VITE_API_URL}/users/register/`,
-      {
-        method: "POST",
-        body: JSON.stringify(
-          { "name": username, "password": password }
-        )
-      })
-    console.log("register", register);
-    const data = await register.json();
-    console.log("data", data);
-    switch (register.status) {
-      case 200 | 201:
-        alert("User registered successfully!");
-        setIsSubmitting(false);
-        break;
-      case 409:
-        // setErrors(data.error);
-        alert(data.error);
-        setIsSubmitting(false);
-        break;
-      case 400:
-        alert(data.error);
-        setIsSubmitting(false);
-        break;
-      default:
-        alert(data.error);
-        setIsSubmitting(false);
-        break;
-    }
-    if (data.success) {
-      Cookies.set('name', username);
-      Cookies.set('token', data.token);
-      window.location.href = '/';
-    }
+    await register(username, password)
     setIsSubmitting(false);
 
     setUsername('');

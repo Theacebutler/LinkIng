@@ -16,7 +16,7 @@ function App() {
     <>
       <Header />
       {
-        Cookies.get('name') ?
+        Cookies.get('userId') ?
           <>
             <main>
               <AddResourceForm onSubmit={handleAddResource} />
