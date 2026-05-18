@@ -47,7 +47,7 @@ export async function authMiddlewate(request: AuthenticatedRequest): Promise<Aut
 export function withAuth(
   // this takes in a function to run if the request is authenticated and returns the
   // response after authenticating it
-  handler: (req: AuthenticatedRequest) => Promise<Response>
+  handler: (req: AuthenticatedRequest, server?: Bun.Server<undefined>) => Promise<Response>
 ): (req: Request) => Promise<Response> {
   return async (request: Request): Promise<Response> => {
     // if the request is not authenticated, this with return a 
