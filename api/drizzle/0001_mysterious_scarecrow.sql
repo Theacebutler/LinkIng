@@ -1,0 +1,1 @@
+ALTER TABLE `resources_table` ADD `owner` text NOT NULL;
