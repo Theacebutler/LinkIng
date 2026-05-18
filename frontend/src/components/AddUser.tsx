@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import Cookies from 'js-cookie';
+import { config } from '../../config';
 
 export default function AddUser() {
   const [username, setUsername] = useState('');
@@ -29,8 +30,42 @@ export default function AddUser() {
 
     if (!validate()) return;
 
-    setIsSubmitting(true);
-    Cookies.set('name', username.trim(), { expires: 7 });
+    setIsSubmitting(false);
+    // register user
+    const register = await fetch(`${config.VITE_API_URL}/users/register/`,
+      {
+        method: "POST",
+        body: JSON.stringify(
+          { "name": username, "password": password }
+        )
+      })
+    console.log("register", register);
+    const data = await register.json();
+    console.log("data", data);
+    switch (register.status) {
+      case 200 | 201:
+        alert("User registered successfully!");
+        setIsSubmitting(false);
+        break;
+      case 409:
+        // setErrors(data.error);
+        alert(data.error);
+        setIsSubmitting(false);
+        break;
+      case 400:
+        alert(data.error);
+        setIsSubmitting(false);
+        break;
+      default:
+        alert(data.error);
+        setIsSubmitting(false);
+        break;
+    }
+    if (data.success) {
+      Cookies.set('name', username);
+      Cookies.set('token', data.token);
+      window.location.href = '/';
+    }
     setIsSubmitting(false);
 
     setUsername('');
@@ -52,7 +87,7 @@ export default function AddUser() {
 
   return (
     <section className="bg-slate-800 border border-slate-700 rounded-lg p-6 mb-6">
-      <h2 className="text-xl font-semibold text-slate-100 mb-4">Set User</h2>
+      <h2 className="text-xl font-semibold text-slate-100 mb-4">Register / Login</h2>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
         <div className="flex flex-col gap-1">
           <label htmlFor="username" className="text-sm font-medium text-slate-300">
@@ -72,7 +107,7 @@ export default function AddUser() {
         </div>
 
         <div className="flex flex-col gap-1">
-          <label htmlFor="password" className="text-sm font-medium text-slate-300">
+          <label htmlFor="text" className="text-sm font-medium text-slate-300">
             Password
           </label>
           <input

@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import type { Resource } from '../types/resource';
+import { config } from "../../config";
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const VITE_API_BASE = import.meta.env.VITE_API_URL as string;
+const DEV_ACCESS_TOKEN = import.meta.env.DEV_ACCESS_TOKEN as string;
 
 export function useResources() {
   const [resources, setResources] = useState<Resource[]>([]);
@@ -10,10 +12,15 @@ export function useResources() {
   const [error, setError] = useState<string | null>(null);
 
   const fetchResources = async () => {
+
     try {
       setLoading(true);
-      const name = Cookies.get('name') || ''
-      const response = await fetch(`${API_BASE}/${name}/resources`);
+      const response = await fetch(`${VITE_API_BASE}/resources`, {
+        headers: {
+          "Authorization": `Bearer ${DEV_ACCESS_TOKEN}`,
+          "Access-Control-Allow-Origin": "*",
+        }
+      });
       if (!response.ok) throw new Error('Failed to fetch resources');
       const data = await response.json();
       setResources(data);
@@ -28,11 +35,14 @@ export function useResources() {
   const addResource = async (resource: Omit<Resource, 'id' | 'createdAt'>) => {
     try {
       resource = { ...resource, owner: Cookies.get('name') || '' }
-      // console.log(resource);
 
-      const response = await fetch(`${API_BASE}/${resource.owner}/resources`, {
+      const response = await fetch(`${VITE_API_BASE}/resources`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          "Authorization": `Bearer ${config.DEV_ACCESS_TOKEN}`,
+          "Access-Control-Allow-Origin": "*",
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify(resource),
       });
       if (!response.ok) throw new Error('Failed to add resource');
@@ -48,7 +58,7 @@ export function useResources() {
   const deleteResource = async (id: string) => {
     try {
       const name = Cookies.get('name') || ''
-      const response = await fetch(`${API_BASE}/${name}/resources/${id}`, {
+      const response = await fetch(`${VITE_API_BASE}/${name}/resources/${id}`, {
         method: 'DELETE',
       });
       if (!response.ok) throw new Error('Failed to delete resource');
