@@ -51,7 +51,7 @@ export async function register(request: Request): Promise<Response> {
         .returning();
       id = out[0]?.id;
     } catch (err) {
-      return json({ error: "Registration failed, cannot get userId" }, 500);
+      return json({ error: "Registration failed" }, 500);
     }
 
     return json({
