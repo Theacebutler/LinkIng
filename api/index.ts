@@ -13,7 +13,7 @@ import { config } from "./config";
 const server = Bun.serve({
   port: 3000,
   routes: {
-    "/api/users/register/": {
+    "/api/users/register": {
       POST: async (req): Promise<Response> => {
         return await register(req)
       },
@@ -25,17 +25,17 @@ const server = Bun.serve({
         return res;
       },
     },
-    "/api/users/login/": {
+    "/api/users/login": {
       POST: async (req): Promise<Response> => {
         return await login(req)
       }
     },
-    "/api/users/refresh/": {
+    "/api/users/refresh": {
       POST: async (req): Promise<Response> => {
         return await refresh(req)
       }
     },
-    "/api/users/logout/": {
+    "/api/users/logout": {
       POST: async (req): Promise<Response> => {
         return await logout(req)
       }

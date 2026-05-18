@@ -10,7 +10,7 @@ interface LoginResponse {
 }
 
 export default async function login(username: string, password: string) {
-  const res = await fetch(`${config.VITE_API_URL}/users/login/`, {
+  const res = await fetch(`${config.VITE_API_URL}/users/login`, {
     method: "POST",
     body: JSON.stringify({
       username,
