@@ -1,4 +1,4 @@
-# GatherLink
+# LinkIng
 
 A tool to help you keep track of the best resources for your next project.
 
