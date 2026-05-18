@@ -2,6 +2,8 @@
 
 A tool to help you keep track of the best resources for your next project.
 
+[![Test](https://github.com/Theacebutler/LinkIng/actions/workflows/test.yml/badge.svg)](https://github.com/Theacebutler/LinkIng/actions/workflows/test.yml)
+
 ## Features
 
 - Add resources from any website
