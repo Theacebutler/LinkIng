@@ -7,6 +7,7 @@ import { login } from "./handlers/login";
 import { logout } from "./handlers/logout";
 import { refresh } from "./handlers/refresh";
 import { register } from "./handlers/register";
+import { config } from "./config";
 
 
 const server = Bun.serve({
@@ -15,6 +16,13 @@ const server = Bun.serve({
     "/api/users/register/": {
       POST: async (req): Promise<Response> => {
         return await register(req)
+      },
+      OPTIONS: async (): Promise<Response> => {
+        const res = Response.json({}, { status: 204 });
+        res.headers.set("Access-Control-Allow-Origin", config.FRONTEND_URL as string);
+        res.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS, DELETE");
+        res.headers.set("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Origin");
+        return res;
       },
     },
     "/api/users/login/": {
