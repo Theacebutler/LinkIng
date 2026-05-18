@@ -24,9 +24,12 @@ export default async function login(username: string, password: string) {
       Cookies.set('refreshToken', setRefreshTokenCookie(data.refreshToken))
       break
     case 400:
-      break
+      throw new Error("Username and password required at login")
     case 401:
-      break
+      throw new Error("Invalid username or password")
+    case 500:
+      throw new Error("Login failed")
     default:
+      throw new Error("Unknown error")
   }
 }
