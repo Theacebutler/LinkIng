@@ -5,7 +5,6 @@ import { screenshotsTable } from "../db/schema";
 
 export async function screenshot(url: string | null | undefined, resourceId: number | undefined): Promise<string | undefined> {
   if (!url || !resourceId) return
-  console.log("screenshot", url, resourceId)
   const browser = await puppeteer.launch({
     headless: true,
     args: ['--no-sandbox', '--disable-setuid-sandbox']
