@@ -2,7 +2,7 @@ import { apiResourcesOpts, apiResourcesPost } from "./handlers/api_resources";
 import { apiResourcesIdDelete, apiResourcesIdOpts } from "./handlers/api_resources_id";
 import { apiResurceScreenshotGet, apiResurceScreenshotOpts } from "./handlers/api_resouces_screenshots";
 
-import { getResources } from "./handlers/protected";
+import { addResource, getResources } from "./handlers/protected";
 import { login } from "./handlers/login";
 import { logout } from "./handlers/logout";
 import { refresh } from "./handlers/refresh";
@@ -47,7 +47,7 @@ const server = Bun.serve({
         return getResources(req)
       },
       POST: async (req): Promise<Response> => {
-        return apiResourcesPost(req, server);
+        return addResource(req);
       },
 
       OPTIONS: () => {

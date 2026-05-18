@@ -26,9 +26,9 @@ export async function apiResourcesOpts(): Promise<Response> {
 
 export async function apiResourcesPost(req: Request, server: Bun.Server<undefined>) {
   const body = await req.json() as Omit<Resource, 'id' | 'createdAt' | 'sourceImage'>;
-  // console.log(body)
 
-  const name = body.owner
+  // BUG: get the correct typing for the user
+  const name = req.user.sub
   const newResource: Resource = {
     ...body,
     createdAt: new Date().toISOString(),
