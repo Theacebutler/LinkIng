@@ -1,30 +1,45 @@
-import { apiResourcesGet, apiResourcesOpts, apiResourcesPost } from "./handlers/api_resources";
+import { apiResourcesOpts, apiResourcesPost } from "./handlers/api_resources";
 import { apiResourcesIdDelete, apiResourcesIdOpts } from "./handlers/api_resources_id";
 import { apiResurceScreenshotGet, apiResurceScreenshotOpts } from "./handlers/api_resouces_screenshots";
 
-import { createUser, createUserResponse } from "./handlers/create_user";
-import { type user } from "./shered/types";
+import { getResources } from "./handlers/protected";
+import { login } from "./handlers/login";
+import { logout } from "./handlers/logout";
+import { refresh } from "./handlers/refresh";
+import { register } from "./handlers/register";
 
 
 const server = Bun.serve({
   port: 3000,
   routes: {
-    "/api/user/": {
-      POST: async (req) => {
-        const body = await req.json() as user;
-        const data = await createUser(body);
-        const out = await createUserResponse(data);
-        return out;
+    "/api/users/register/": {
+      POST: async (req): Promise<Response> => {
+        return await register(req)
+      },
+    },
+    "/api/users/login/": {
+      POST: async (req): Promise<Response> => {
+        return await login(req)
       }
     },
-    "/api/:name/resources": {
+    "/api/users/refresh/": {
+      POST: async (req): Promise<Response> => {
+        return await refresh(req)
+      }
+    },
+    "/api/users/logout/": {
+      POST: async (req): Promise<Response> => {
+        return await logout(req)
+      }
+    },
+
+    "/api/resources": {
       GET: async (req) => {
-        const name = req.params.name;
-        return apiResourcesGet(name);
+        // the getResources function is assuming that the request is authenticated with a valid token
+        return getResources(req)
       },
       POST: async (req): Promise<Response> => {
-        const name = req.params.name;
-        return apiResourcesPost(req, server, name);
+        return apiResourcesPost(req, server);
       },
 
       OPTIONS: () => {
