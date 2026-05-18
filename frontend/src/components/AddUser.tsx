@@ -31,9 +31,13 @@ export default function AddUser() {
 
     if (!validate()) return;
 
-    setIsSubmitting(false);
     // register & login user
-    await register(username, password)
+    const reg = await register(username, password)
+    if (reg instanceof Error) {
+      setErrors({ username: reg.message })
+      setIsSubmitting(false);
+      return
+    }
     setIsSubmitting(false);
 
     setUsername('');
