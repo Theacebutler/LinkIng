@@ -14,8 +14,6 @@ export default async function register(username: string, password: string): Prom
       password
     })
   })
-  const res = await data.json() as { message?: string, userId?: string, error?: string }
-  console.info(res)
 
   switch (data.status) {
     // user created - store the username and userId in a cookie

@@ -1,4 +1,4 @@
-import { apiResourcesOpts, apiResourcesPost } from "./handlers/api_resources";
+import { apiResourcesOpts } from "./handlers/api_resources";
 import { apiResourcesIdDelete, apiResourcesIdOpts } from "./handlers/api_resources_id";
 import { apiResurceScreenshotGet, apiResurceScreenshotOpts } from "./handlers/api_resouces_screenshots";
 

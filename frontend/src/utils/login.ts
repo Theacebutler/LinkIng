@@ -22,7 +22,6 @@ export default async function login(username: string, password: string) {
     case 200:
       Cookies.set('accessToken', setAccessTokenCookie(data.accessToken))
       Cookies.set('refreshToken', setRefreshTokenCookie(data.refreshToken))
-      Cookies.set('username', username)
       break
     case 400:
       break
