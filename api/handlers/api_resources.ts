@@ -37,9 +37,9 @@ export async function apiResourcesPost(req: Request, server: Bun.Server<undefine
   // save the screenshot to the DB
   const [id] = await db.insert(resourcesTable)
     .values(newResource)
-    .returning({ insertId: resourcesTable.id });
-
-  handleScreenshot(server, newResource.resourceUrl, id?.insertId)
+    .returning();
+  const insertId = id?.id
+  handleScreenshot(server, newResource.resourceUrl, insertId)
   const res = Response.json(newResource);
   res.headers.set("Access-Control-Allow-Origin", FRONTEND_URL);
   return res;

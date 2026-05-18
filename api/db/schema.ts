@@ -1,9 +1,9 @@
-import { int, sqliteTable, text } from "drizzle-orm/sqlite-core"
+import { serial, pgTable, text } from "drizzle-orm/pg-core"
 
 
 // users table
-export const usersTable = sqliteTable("users_table", {
-  id: int().primaryKey({ autoIncrement: true }),
+export const usersTable = pgTable("users_table", {
+  id: serial().primaryKey(),
   username: text().notNull().unique(),
   // HASH!!!
   password: text().notNull(),
@@ -11,18 +11,18 @@ export const usersTable = sqliteTable("users_table", {
 })
 
 // resources table
-export const resourcesTable = sqliteTable("resources_table", {
-  id: int().primaryKey({ autoIncrement: true }),
+export const resourcesTable = pgTable("resources_table", {
+  id: serial().primaryKey(),
   owner: text().notNull().references(() => usersTable.username),
-  title: int().notNull(),
+  title: text().notNull(),
   resourceUrl: text(),
   sourceUrl: text(),
   createdAt: text(),
 })
 
 // screenshots table
-export const screenshotsTable = sqliteTable("screenshots_table", {
-  id: int().primaryKey({ autoIncrement: true }),
-  resourceId: int("resource_id").notNull().references(() => resourcesTable.id),
+export const screenshotsTable = pgTable("screenshots_table", {
+  id: serial().primaryKey(),
+  resourceId: serial("resource_id").notNull().references(() => resourcesTable.id),
   image: text(),
 })

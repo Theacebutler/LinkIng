@@ -11,7 +11,7 @@ export function apiResurceScreenshotOpts() {
 }
 
 export async function apiResurceScreenshotGet(req: Bun.BunRequest<"/api/resources/screenshots/:id">) {
-  const id = req.params.id
+  const id = Number(req.params.id)
   const image_recored = await db.select()
     .from(screenshotsTable)
     .where(eq(screenshotsTable.resourceId, id));
