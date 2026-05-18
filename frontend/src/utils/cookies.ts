@@ -1,9 +1,9 @@
-const COOKIE_CONFIG = {
-  httpOnly: true,
-  secure: true,
-  sameSite: "lax",
-  path: "/"
-}
+// const COOKIE_CONFIG = {
+//   httpOnly: true,
+//   secure: true,
+//   sameSite: "lax",
+//   path: "/"
+// }
 
 
 export function setAccessTokenCookie(token: string): string {
@@ -43,22 +43,22 @@ export function parseCookies(cookieHeader: string | null): Map<string, string> {
   return cookies;
 }
 
-// create the cookie based login response
-export async function loginWithCookie(
-  // request: Request,
-  accessToken: string,
-  refreshToken: string
-): Promise<Response> {
-  const response = new Response(
-    JSON.stringify({ message: "looged in successfully" }),
-    {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-        "Set-Cookie": setAccessTokenCookie(accessToken),
-      }
-    }
-  )
-  response.headers.set("Set-Cookie", setRefreshTokenCookie(refreshToken))
-  return response;
-}
+// // create the cookie based login response
+// export async function loginWithCookie(
+//   // request: Request,
+//   accessToken: string,
+//   refreshToken: string
+// ): Promise<Response> {
+//   const response = new Response(
+//     JSON.stringify({ message: "looged in successfully" }),
+//     {
+//       status: 200,
+//       headers: {
+//         "Content-Type": "application/json",
+//         "Set-Cookie": setAccessTokenCookie(accessToken),
+//       }
+//     }
+//   )
+//   response.headers.set("Set-Cookie", setRefreshTokenCookie(refreshToken))
+//   return response;
+// }
