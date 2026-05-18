@@ -7,6 +7,8 @@ export const config = {
   REFRESH_EXP: "12h", // expires is 12 hours
   HASH_ALG: 'HS256',
   JWT_ISSUER: "gatherlink",
+  JWT_AUDIENCE: "gatherlink_frontend",
+  SALT_ROUNDS: 10,
 }
 if (!config.JWT_SECRET || config.JWT_SECRET.length < 32) {
   throw new Error("JWT_SECRET must be set and at least 32 characters");
