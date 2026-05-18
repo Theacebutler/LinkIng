@@ -1,6 +1,6 @@
 // register a new user
-import Cookies from "js-cookie"
 import { config } from "../../config"
+import login from "./login"
 
 
 export default async function register(username: string, password: string): Promise<string | Error | undefined> {
@@ -23,8 +23,8 @@ export default async function register(username: string, password: string): Prom
       case 200 | 201:
         // get the userId
         if (res.message && res.userId) {
-          Cookies.set('userId', res.userId)
-          console.log("REgisterd user: ", res.userId, "username: ", username);
+          await login(username, password)
+          console.log("Registerd user: ", res.userId, "username: ", username);
 
           return res.userId, res.message
         }

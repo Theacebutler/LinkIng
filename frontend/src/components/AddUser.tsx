@@ -30,7 +30,7 @@ export default function AddUser() {
     if (!validate()) return;
 
     setIsSubmitting(false);
-    // register user
+    // register & login user
     await register(username, password)
     setIsSubmitting(false);
 
