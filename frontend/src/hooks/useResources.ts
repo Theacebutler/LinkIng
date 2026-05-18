@@ -1,10 +1,14 @@
 import { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import type { Resource } from '../types/resource';
-import { config } from "../../config";
+import { parseCookies } from '../utils/cookies';
 
 const VITE_API_BASE = import.meta.env.VITE_API_URL as string;
-const DEV_ACCESS_TOKEN = import.meta.env.DEV_ACCESS_TOKEN as string;
+const cookie = Cookies.get('accessToken')
+
+const cookiePartes = parseCookies(cookie as string)
+const ACCESS_TOKEN = cookiePartes.get('access_token')
+console.log("ACCESS_TOKEN: ", ACCESS_TOKEN);
 
 export function useResources() {
   const [resources, setResources] = useState<Resource[]>([]);
@@ -17,7 +21,7 @@ export function useResources() {
       setLoading(true);
       const response = await fetch(`${VITE_API_BASE}/resources`, {
         headers: {
-          "Authorization": `Bearer ${DEV_ACCESS_TOKEN}`,
+          "Authorization": `Bearer ${ACCESS_TOKEN}`,
           "Access-Control-Allow-Origin": "*",
         }
       });
@@ -39,7 +43,7 @@ export function useResources() {
       const response = await fetch(`${VITE_API_BASE}/resources`, {
         method: 'POST',
         headers: {
-          "Authorization": `Bearer ${config.DEV_ACCESS_TOKEN}`,
+          "Authorization": `Bearer ${ACCESS_TOKEN}`,
           "Access-Control-Allow-Origin": "*",
           'Content-Type': 'application/json'
         },
