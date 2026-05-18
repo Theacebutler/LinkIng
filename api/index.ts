@@ -3,11 +3,11 @@ import { apiResourcesIdDelete, apiResourcesIdOpts } from "./handlers/api_resourc
 import { apiResurceScreenshotGet, apiResurceScreenshotOpts } from "./handlers/api_resouces_screenshots";
 
 import { addResource, getResources } from "./handlers/protected";
+import { config } from "./config";
 import { login } from "./handlers/login";
 import { logout } from "./handlers/logout";
 import { refresh } from "./handlers/refresh";
 import { register } from "./handlers/register";
-import { config } from "./config";
 
 
 const server = Bun.serve({
@@ -21,7 +21,7 @@ const server = Bun.serve({
         const res = Response.json({}, { status: 204 });
         res.headers.set("Access-Control-Allow-Origin", config.FRONTEND_URL as string);
         res.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS, DELETE");
-        res.headers.set("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Origin");
+        res.headers.set("Access-Control-Allow-Headers", "*");
         return res;
       },
     },
