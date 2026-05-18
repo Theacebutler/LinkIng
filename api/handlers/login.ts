@@ -1,6 +1,6 @@
 import type { User } from "../shered/types";
 import { json } from "../utils/jsonResponeUtil";
-import { validateCredentils } from "../utils/users";
+import { validateCredentils } from "../utils/validateCred";
 import { createAccessToken, createRefreshToken } from "../utils/jwt";
 import { storeRefreshToken } from "../utils/tokenStore";
 
