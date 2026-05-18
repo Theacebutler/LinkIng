@@ -1,37 +1,34 @@
-import { type user as user } from "../shered/types";
+import bcrypt from "bcrypt";
 import { usersTable } from "../db/schema";
-
+import { type User } from "../shered/types";
 import { db } from "../db";
+import { eq } from "drizzle-orm";
 
-type Data = { created: boolean, user?: string, err?: string | unknown }
+export async function createUserInDB(
+  username: string, password: string
+): Promise<{ created: boolean, userId?: number, error?: string | unknown }> {
+  // Check for existing user
+  const existingUser = await db.select()
+    .from(usersTable)
+    .where((user) => eq(user.username, username))
+    .execute()
 
-export async function createUser(body: user): Promise<Data> {
-  const newUser: user = {
-    name: body.name,
-    password: body.password,
+  if (existingUser) {
+    throw new Error("User already exists");
   }
+  const newUser: User = {
+    username,
+    password,
+    createdAt: new Date().toISOString(),
+  };
   try {
     const res = await db.insert(usersTable).values(newUser).returning();
-    const out = res[0]?.name
-    return { created: true, user: out }
+    const id = res[0]?.id
+    return { created: true, userId: id }
   } catch (err) {
-    return { created: false, err: err }
+    return { created: false, error: err }
   }
+
 }
 
 
-export async function createUserResponse(data: Data): Promise<Response> {
-  if (data.created) {
-    return new Response(JSON.stringify(data.user), {
-      headers: {
-        "Content-Type": "application/json",
-      }, status: 201,
-    });
-  } else {
-    return new Response(JSON.stringify(data.err), {
-      headers: {
-        "Content-Type": "application/json",
-      }, status: 409
-    });
-  }
-}
