@@ -18,7 +18,9 @@ export default function AddUser() {
     if (!password.trim()) {
       newErrors.password = 'Password is required';
     }
-
+    if (password.length < 8) {
+      newErrors.password = 'Password must be at least 8 characters long';
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
