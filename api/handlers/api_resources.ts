@@ -20,12 +20,15 @@ export async function apiResourcesOpts(): Promise<Response> {
   const res = Response.json({});
   res.headers.set("Access-Control-Allow-Origin", FRONTEND_URL);
   res.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  res.headers.set("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Origin");
+  res.headers.set("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Origin, Authorization");
   return res;
 }
 
-export async function apiResourcesPost(req: Bun.BunRequest, server: Bun.Server<undefined>, name: string) {
+export async function apiResourcesPost(req: Request, server: Bun.Server<undefined>) {
   const body = await req.json() as Omit<Resource, 'id' | 'createdAt' | 'sourceImage'>;
+  // console.log(body)
+
+  const name = body.owner
   const newResource: Resource = {
     ...body,
     createdAt: new Date().toISOString(),
