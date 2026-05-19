@@ -26,7 +26,7 @@ export function useResources() {
         }
       });
       if (!response.ok) throw new Error('Failed to fetch resources');
-      const data = await response.json();
+      const data = await response.json() as Resource[];
       setResources(data);
       setError(null);
     } catch (err) {

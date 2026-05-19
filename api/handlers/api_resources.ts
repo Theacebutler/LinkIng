@@ -40,7 +40,8 @@ export async function apiResourcesPost(req: Request) {
     .returning();
   const insertId = id?.id
   await screenshot(newResource.resourceUrl, insertId)
-  const res = Response.json(newResource);
+  const res = Response.json({ ...newResource, id: insertId });
+
   res.headers.set("Access-Control-Allow-Origin", config.FRONTEND_URL as string);
   return res;
 }
