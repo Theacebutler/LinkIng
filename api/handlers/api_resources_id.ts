@@ -12,7 +12,7 @@ export function apiResourcesIdOpts() {
 }
 
 export async function apiResourcesIdDelete(req: Bun.BunRequest) {
-  const id = req.params.id as string;
+  const id = Number(req.params.id)
   const name = req.params.name as string;
   await db.delete(resourcesTable).where(
     and(

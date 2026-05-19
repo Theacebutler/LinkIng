@@ -2,13 +2,13 @@ import { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import type { Resource } from '../types/resource';
 import { parseCookies } from '../utils/cookies';
+import { config } from '../../config';
 
-const VITE_API_BASE = import.meta.env.VITE_API_URL as string;
+const VITE_API_BASE = config.VITE_API_URL
 const cookie = Cookies.get('accessToken')
 
 const cookiePartes = parseCookies(cookie as string)
 const ACCESS_TOKEN = cookiePartes.get('access_token')
-console.log("ACCESS_TOKEN: ", ACCESS_TOKEN);
 
 export function useResources() {
   const [resources, setResources] = useState<Resource[]>([]);
@@ -26,7 +26,7 @@ export function useResources() {
         }
       });
       if (!response.ok) throw new Error('Failed to fetch resources');
-      const data = await response.json();
+      const data = await response.json() as Resource[];
       setResources(data);
       setError(null);
     } catch (err) {
@@ -50,7 +50,7 @@ export function useResources() {
         body: JSON.stringify(resource),
       });
       if (!response.ok) throw new Error('Failed to add resource');
-      const newResource = await response.json();
+      const newResource = await response.json() as Resource;
       setResources((prev) => [newResource, ...prev]);
       return true;
     } catch (err) {
