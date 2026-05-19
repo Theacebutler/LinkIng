@@ -10,6 +10,7 @@ export default function ResoueceImage({ resource }: { resource: Resource }) {
 
   async function pollingImage() {
     if (!resource.id) return
+    if (loaded) return;
     const data = await fetch(`${VITE_API_URL}/resources/screenshots/${resource.id}`)
     switch (data.status) {
       case 200:
@@ -28,18 +29,17 @@ export default function ResoueceImage({ resource }: { resource: Resource }) {
   };
 
   useEffect(() => {
-    if (loaded) return;
     const startPolling = () => {
-      pollingRef.current = setInterval(() => {
-        pollingImage();
-      }, 1000);
+      // TODO: FIND A BETTER WAY TO DO THIS
+      const interval = setInterval(pollingImage, 1000) as unknown as number;
+      pollingRef.current = interval;
     };
     startPolling();
     return () => {
       clearInterval(pollingRef.current)
     }
     // TODO: ADD dependency to trigger polling
-  }, [imageUrl]);
+  }, [resource]);
 
 
   if (loaded) {
