@@ -2,7 +2,7 @@ import { desc, eq } from "drizzle-orm";
 import { db } from "../db";
 import { resourcesTable } from "../db/schema";
 import type { Resource } from "../shered/types";
-import { handleScreenshot } from "../utils/handleScreenshot";
+import screenshot from "../utils/screenshot";
 
 const FRONTEND_URL = process.env.FRONTEND_URL as string;
 
@@ -24,7 +24,7 @@ export async function apiResourcesOpts(): Promise<Response> {
   return res;
 }
 
-export async function apiResourcesPost(req: Request, server: Bun.Server<undefined>) {
+export async function apiResourcesPost(req: Request) {
   const body = await req.json() as Omit<Resource, 'id' | 'createdAt' | 'sourceImage'>;
 
   // BUG: get the correct typing for the user
@@ -39,7 +39,7 @@ export async function apiResourcesPost(req: Request, server: Bun.Server<undefine
     .values(newResource)
     .returning();
   const insertId = id?.id
-  handleScreenshot(server, newResource.resourceUrl, insertId)
+  await screenshot(newResource.resourceUrl, insertId)
   const res = Response.json(newResource);
   res.headers.set("Access-Control-Allow-Origin", FRONTEND_URL);
   return res;

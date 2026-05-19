@@ -19,8 +19,7 @@ export const getResources = withAuth(
 
 
 export const addResource = withAuth(
-  async (request: AuthenticatedRequest, server?: Bun.Server<undefined>): Promise<Response> => {
-
-    return apiResourcesPost(request, server!)
+  async (request: AuthenticatedRequest): Promise<Response> => {
+    return apiResourcesPost(request)
   }
 )
