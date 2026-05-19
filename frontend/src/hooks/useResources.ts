@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import type { Resource } from '../types/resource';
 import { parseCookies } from '../utils/cookies';
+import { config } from '../../config';
 
-const VITE_API_BASE = import.meta.env.VITE_API_URL as string;
+const VITE_API_BASE = config.VITE_API_URL
 const cookie = Cookies.get('accessToken')
 
 const cookiePartes = parseCookies(cookie as string)

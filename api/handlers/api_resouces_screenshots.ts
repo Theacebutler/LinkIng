@@ -1,6 +1,7 @@
 import { eq } from "drizzle-orm";
 import { db } from "../db";
 import { screenshotsTable } from "../db/schema";
+import { config } from "../config";
 
 export function apiResurceScreenshotOpts() {
   const res = Response.json({});
@@ -20,7 +21,7 @@ export async function apiResurceScreenshotGet(req: Bun.BunRequest<"/api/resource
     const res = new Response(Buffer.from(image, 'base64'), {
       headers: {
         'Content-Type': 'image/png',
-        'Access-Control-Allow-Origin': 'http://localhost:5173',
+        'Access-Control-Allow-Origin': config.FRONTEND_URL,
       },
     });
     return res;
@@ -29,7 +30,7 @@ export async function apiResurceScreenshotGet(req: Bun.BunRequest<"/api/resource
       status: 404,
       headers: {
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': 'http://localhost:5173',
+        'Access-Control-Allow-Origin': config.FRONTEND_URL,
       },
     });
   }
