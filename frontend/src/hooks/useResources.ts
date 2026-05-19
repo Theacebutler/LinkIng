@@ -8,7 +8,6 @@ const cookie = Cookies.get('accessToken')
 
 const cookiePartes = parseCookies(cookie as string)
 const ACCESS_TOKEN = cookiePartes.get('access_token')
-console.log("ACCESS_TOKEN: ", ACCESS_TOKEN);
 
 export function useResources() {
   const [resources, setResources] = useState<Resource[]>([]);
