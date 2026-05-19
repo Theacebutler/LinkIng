@@ -50,7 +50,7 @@ export function useResources() {
         body: JSON.stringify(resource),
       });
       if (!response.ok) throw new Error('Failed to add resource');
-      const newResource = await response.json();
+      const newResource = await response.json() as Resource;
       setResources((prev) => [newResource, ...prev]);
       return true;
     } catch (err) {
