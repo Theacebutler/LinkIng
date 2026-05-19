@@ -61,8 +61,10 @@ export function useResources() {
 
   const deleteResource = async (id: string) => {
     try {
-      const name = Cookies.get('name') || ''
-      const response = await fetch(`${VITE_API_BASE}/${name}/resources/${id}`, {
+      const response = await fetch(`${VITE_API_BASE}/resources/${id}`, {
+        headers: {
+          "Authorization": `Bearer ${ACCESS_TOKEN}`,
+        },
         method: 'DELETE',
       });
       if (!response.ok) throw new Error('Failed to delete resource');
