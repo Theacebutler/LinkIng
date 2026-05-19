@@ -40,7 +40,7 @@ const pool = genericPool.createPool(factory, {
 
 })
 
-export async function screenshot(url: string | null | undefined, resourceId: number | undefined): Promise<void> {
+export default async function screenshot(url: string | null | undefined, resourceId: number | undefined): Promise<void> {
   if (!url || !resourceId) return
   const browser = await pool.acquire();
   try {
@@ -53,38 +53,29 @@ export async function screenshot(url: string | null | undefined, resourceId: num
   } finally {
     await pool.release(browser);
   }
-  const page = await browser.newPage();
 
-  await page.setViewport({ width: 1820, height: 720 });
+  const page = await browser.newPage()
+    .then((page) => {
+      page.setViewport({ width: 1820, height: 720 });
+      return page;
+    });
+  let image: string | null = null
   try {
     const res = await page.goto(url, { waitUntil: 'networkidle2' });
-    console.log("url", url, "status", res?.status());
-    if (res?.status() !== 200) {
-      await db.insert(screenshotsTable).values({
-        resourceId: resourceId,
-        image: null
-      })
-      await pool.destroy(browser)
-      return;
+    if (res?.ok()) {
+      image = await page.screenshot({
+        type: 'png',
+        encoding: 'base64',
+        fullPage: false
+      });
+    } else {
+      image = null
     };
   } catch (e) {
-    // TODO: ADD LOGGING
-    await pool.destroy(browser)
+    console.log(e)
   }
-
-  const image = await page.screenshot({
-    type: 'png',
-    encoding: 'base64',
-    fullPage: false
-  });
-  await pool.destroy(browser)
-
   await db.insert(screenshotsTable).values({
     resourceId: resourceId,
     image: image
   })
 };
-
-export default screenshot;
-
-
