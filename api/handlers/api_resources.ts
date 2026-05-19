@@ -1,4 +1,4 @@
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, and } from "drizzle-orm";
 import { db } from "../db";
 import { resourcesTable } from "../db/schema";
 import type { Resource } from "../shered/types";
@@ -44,4 +44,16 @@ export async function apiResourcesPost(req: Request) {
   const res = Response.json(out);
   res.headers.set("Access-Control-Allow-Origin", config.FRONTEND_URL as string);
   return res;
+}
+
+
+export async function apiResourcesIdDelete(name: string, id: number): Promise<Response> {
+  await db.delete(resourcesTable).where(
+    and(
+      eq(resourcesTable.id, id),
+      eq(resourcesTable.owner, name)
+    ));
+  const res = Response.json({ deleted: true });
+  res.headers.set("Access-Control-Allow-Origin", "http://localhost:5173");
+  return res
 }

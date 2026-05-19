@@ -2,7 +2,7 @@ import { apiResourcesOpts } from "./handlers/api_resources";
 import { apiResourcesIdDelete, apiResourcesIdOpts } from "./handlers/api_resources_id";
 import { apiResurceScreenshotGet, apiResurceScreenshotOpts } from "./handlers/api_resouces_screenshots";
 
-import { addResource, getResources } from "./handlers/protected";
+import { addResource, deleteResource, getResources } from "./handlers/protected";
 import { config } from "./config";
 import { login } from "./handlers/login";
 import { logout } from "./handlers/logout";
@@ -49,14 +49,26 @@ const server = Bun.serve({
       POST: async (req): Promise<Response> => {
         return addResource(req);
       },
-
+      DELETE: () => {
+        console.log("DELETE")
+        return new Response("DELETE")
+      },
       OPTIONS: () => {
         return apiResourcesOpts()
       },
     },
-    "/api/:name/resources/:id": {
-      OPTIONS: () => apiResourcesIdOpts(),
-      DELETE: async (req) => apiResourcesIdDelete(req),
+    "/api/resources/:id": {
+      OPTIONS: () => {
+        const res = Response.json({});
+        res.headers.set("Access-Control-Allow-Origin", config.FRONTEND_URL as string);
+        res.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS, DELETE");
+        res.headers.set("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Origin, Authorization");
+        return res;
+      },
+
+      DELETE: async (req) => {
+        return deleteResource(req)
+      },
     },
     "/api/resources/screenshots/:id": {
       OPTIONS: () => apiResurceScreenshotOpts(),
