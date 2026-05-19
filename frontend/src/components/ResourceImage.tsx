@@ -17,28 +17,20 @@ export default function ResoueceImage({ resource }: { resource: Resource }) {
         setLoaded(true);
         setImageUrl(`${VITE_API_URL}/resources/screenshots/${resource.id}`);
         break;
-      case 404:
-        setImageUrl('');
-        setLoaded(false);
-        break;
       default:
         setImageUrl('');
         setLoaded(false);
+        setTimeout(() => {
+          pollingImage()
+        }, 300)
         break;
     };
   };
 
   useEffect(() => {
-    const startPolling = () => {
-      // TODO: FIND A BETTER WAY TO DO THIS
-      const interval = setInterval(pollingImage, 1000) as unknown as number;
-      pollingRef.current = interval;
-    };
-    startPolling();
-    return () => {
-      clearInterval(pollingRef.current)
-    }
-    // TODO: ADD dependency to trigger polling
+    setTimeout(() => {
+      pollingImage()
+    }, 300)
   }, [resource]);
 
 
