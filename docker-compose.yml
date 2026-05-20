@@ -1,27 +1,9 @@
 services:
   api:
-    build: ./api
-    environment:
-      DB_CONN: /data/db.sqlite
-      JWT_SECRET: ${JWT_SECRET}
-      REFRESH_SECRET: ${REFRESH_SECRET}
-      FRONTEND_URL: ${FRONTEND_URL:-http://localhost}
+    image: linking_api:latest
     ports:
-      - "3000:3000"
-    volumes:
-      - sqldata:/data
-    restart: unless-stopped
-
+      - 3000:3000
   frontend:
-    build:
-      context: ./frontend
-      args:
-        VITE_API_URL: /api
+    image: linking_frontend:latest
     ports:
-      - "80:80"
-    depends_on:
-      - api
-    restart: unless-stopped
-
-volumes:
-  sqldata:
+      - 5173:5173
