@@ -6,5 +6,10 @@ WORKDIR /app
 COPY package.json bun.lock ./
 RUN bun install
 COPY . .
+RUN ["bun", "run", "build"]
 
-CMD ["bun", "run", "start"]
+FROM caddy:latest AS reverse-proxy
+COPY --from=build /app/dist/ /srv/
+COPY ./Caddyfile /etc/caddy/Caddyfile
+
+CMD ["caddy", "run"]
