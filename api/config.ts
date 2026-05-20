@@ -2,7 +2,7 @@ export const config = {
   PORT: Bun.env.PORT || '3000',
   JWT_SECRET: Bun.env.JWT_SECRET,
   REFRESH_SECRET: Bun.env.REFRESH_SECRET,
-  FRONTEND_URL: Bun.env.FRONTEND_URL,
+  FRONTEND_URL: "*",
   DB_CONN: Bun.env.DB_CONN,
   TOKEN_EXP: "3h", // expires is 3 hours
   REFRESH_EXP: "12h", // expires is 12 hours
