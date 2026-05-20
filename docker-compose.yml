@@ -1,9 +1,26 @@
 services:
   api:
-    image: linking_api:latest
+    build: ./api
+    # this is for JWT_SECRET & REFRESH_SECRET, add this in prod
+    env_file: ./api/.env
+    volumes:
+      - sqlite_db:/data
+    environment:
+      - PORT=3000
+      - FRONTEND_URL="http://172.17.0.2:5173"
+      - DB_CONN=/data/db.sqlite
     ports:
       - 3000:3000
   frontend:
-    image: linking_frontend:latest
+    build: ./frontend
+    # BUG: for some reason, he console is warning the PORT is not set
+    environment:
+      - PORT=5173
+      - VITE_API_URL=http://localhost:3000/api
     ports:
       - 5173:5173
+    depends_on:
+      - api
+
+volumes:
+  sqlite_db:
