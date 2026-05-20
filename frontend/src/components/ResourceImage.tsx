@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import type { Resource } from "../types/resource";
+import { config } from "../../config";
 
-const VITE_API_URL = import.meta.env.VITE_API_URL;
+const VITE_API_URL = config.VITE_API_URL
 
 export default function ResoueceImage({ resource }: { resource: Resource }) {
   const [imageUrl, setImageUrl] = useState('');
