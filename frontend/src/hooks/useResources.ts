@@ -22,7 +22,7 @@ export function useResources() {
       const response = await fetch(`${VITE_API_BASE}/resources`, {
         headers: {
           "Authorization": `Bearer ${ACCESS_TOKEN}`,
-          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Origin": config.ALLOWED_ORIGINS,
         }
       });
       if (!response.ok) throw new Error('Failed to fetch resources');
@@ -44,7 +44,7 @@ export function useResources() {
         method: 'POST',
         headers: {
           "Authorization": `Bearer ${ACCESS_TOKEN}`,
-          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Origin": config.ALLOWED_ORIGINS,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(resource),
