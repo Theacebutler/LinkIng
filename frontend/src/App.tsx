@@ -2,25 +2,26 @@ import { useResources } from './hooks/useResources';
 import { Header } from './components/Header';
 import { AddResourceForm } from './components/AddResourceForm';
 import { ResourceList } from './components/ResourceList';
-import Cookies from 'js-cookie';
 import AddUser from './components/AddUser';
 import { TopBar } from './components/TopBar';
+import { useAuths } from './hooks/useAuths';
 
 function App() {
   const { resources, loading, addResource, deleteResource } = useResources();
-
+  const { isLogin, setIsLogin } = useAuths();
   const handleAddResource = async (data: { title: string; resourceUrl: string; sourceUrl: string, owner: string }) => {
     return await addResource(data);
   };
 
+
   return (
     <>
       <Header />
+      {/* TODO: add login/logout functionality */}
+      <TopBar isLogin={isLogin} setIsLogin={setIsLogin} />
       {
-        Cookies.get('accessToken') ?
+        isLogin ?
           <>
-            {/* TODO: add login/logout functionality */}
-            <TopBar />
             <main>
               <AddResourceForm onSubmit={handleAddResource} />
               <ResourceList
@@ -36,7 +37,7 @@ function App() {
             </footer>
           </>
           :
-          <AddUser />
+          <AddUser setIsLogin={setIsLogin} />
       }
     </>
   );
