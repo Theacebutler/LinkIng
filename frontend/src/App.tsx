@@ -4,6 +4,7 @@ import { AddResourceForm } from './components/AddResourceForm';
 import { ResourceList } from './components/ResourceList';
 import Cookies from 'js-cookie';
 import AddUser from './components/AddUser';
+import { TopBar } from './components/TopBar';
 
 function App() {
   const { resources, loading, addResource, deleteResource } = useResources();
@@ -18,6 +19,8 @@ function App() {
       {
         Cookies.get('accessToken') ?
           <>
+            {/* TODO: add login/logout functionality */}
+            <TopBar />
             <main>
               <AddResourceForm onSubmit={handleAddResource} />
               <ResourceList
