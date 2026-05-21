@@ -1,5 +1,5 @@
-:5173 {
-  root * ./dist
-  try_files {path} /index.html
-  file_server
+:8000 {
+	root * /srv
+	try_files {path} /index.html
+	file_server
 }

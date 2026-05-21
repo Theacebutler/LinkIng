@@ -1,5 +1,5 @@
 export const config = {
-  PORT: Bun.env.PORT || '3000',
+  PORT: Bun.env.PORT,
   JWT_SECRET: Bun.env.JWT_SECRET,
   REFRESH_SECRET: Bun.env.REFRESH_SECRET,
   FRONTEND_URL: "*",

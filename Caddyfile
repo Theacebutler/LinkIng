@@ -1,0 +1,8 @@
+:80 {
+	handle /api/* {
+		reverse_proxy api:{$API_PORT}
+	}
+	handle {
+		reverse_proxy frontend:{$FRONTEND_PORT}
+	}
+}

@@ -10,6 +10,7 @@ RUN ["bun", "run", "build"]
 
 FROM caddy:latest AS reverse-proxy
 COPY --from=build /app/dist/ /srv/
+RUN apk add wget
 COPY ./Caddyfile /etc/caddy/Caddyfile
+COPY ./Caddyfile /config/caddy/Caddyfile
 
-CMD ["caddy", "run"]
