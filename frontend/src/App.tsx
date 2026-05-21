@@ -16,8 +16,12 @@ function App() {
 
   return (
     <>
+      {
+        isLogin ?
+          <TopBar /> :
+          null
+      }
       <Header />
-      <TopBar />
       {
         isLogin ?
           <>
