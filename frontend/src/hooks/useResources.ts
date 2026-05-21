@@ -4,7 +4,7 @@ import type { Resource } from '../types/resource';
 import { parseCookies } from '../utils/cookies';
 import { config } from '../../config';
 
-const VITE_API_BASE = config.VITE_API_URL
+const VITE_API_URL = config.VITE_API_URL
 const cookie = Cookies.get('accessToken')
 
 const cookiePartes = parseCookies(cookie as string)
@@ -19,10 +19,10 @@ export function useResources() {
 
     try {
       setLoading(true);
-      const response = await fetch(`${VITE_API_BASE}/resources`, {
+      const response = await fetch(`${VITE_API_URL}/resources`, {
         headers: {
           "Authorization": `Bearer ${ACCESS_TOKEN}`,
-          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Origin": config.ALLOWED_ORIGINS,
         }
       });
       if (!response.ok) throw new Error('Failed to fetch resources');
@@ -40,11 +40,11 @@ export function useResources() {
     try {
       resource = { ...resource, owner: Cookies.get('name') || '' }
 
-      const response = await fetch(`${VITE_API_BASE}/resources`, {
+      const response = await fetch(`${VITE_API_URL}/resources`, {
         method: 'POST',
         headers: {
           "Authorization": `Bearer ${ACCESS_TOKEN}`,
-          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Origin": config.ALLOWED_ORIGINS,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(resource),
@@ -61,7 +61,7 @@ export function useResources() {
 
   const deleteResource = async (id: string) => {
     try {
-      const response = await fetch(`${VITE_API_BASE}/resources/${id}`, {
+      const response = await fetch(`${VITE_API_URL}/resources/${id}`, {
         headers: {
           "Authorization": `Bearer ${ACCESS_TOKEN}`,
         },

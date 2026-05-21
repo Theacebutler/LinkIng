@@ -1,5 +1,4 @@
 import { apiResourcesOpts } from "./handlers/api_resources";
-import { apiResourcesIdDelete, apiResourcesIdOpts } from "./handlers/api_resources_id";
 import { apiResurceScreenshotGet, apiResurceScreenshotOpts } from "./handlers/api_resouces_screenshots";
 
 import { addResource, deleteResource, getResources } from "./handlers/protected";
@@ -9,9 +8,9 @@ import { logout } from "./handlers/logout";
 import { refresh } from "./handlers/refresh";
 import { register } from "./handlers/register";
 
-
+const PORT = config.PORT
 const server = Bun.serve({
-  port: 3000,
+  port: PORT,
   routes: {
     "/api/users/register": {
       POST: async (req): Promise<Response> => {
@@ -77,4 +76,4 @@ const server = Bun.serve({
   },
 });
 
-console.log(`API running at http://localhost:${server.port}`);
+console.log(`API running at ${server.protocol}://${server.hostname}:${server.port}`);

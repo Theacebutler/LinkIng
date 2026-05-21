@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "bun run --hot index.ts",
+    "start": "bun run index.ts",
     "mig": "bunx drizzle-kit migrate",
     "gen": "bunx drizzle-kit generate"
   },

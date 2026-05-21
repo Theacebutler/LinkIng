@@ -1,0 +1,48 @@
+services:
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    environment:
+      - API_PORT=3000
+      - FRONTEND_PORT=8000
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      api:
+        condition: service_started
+      frontend:
+        condition: service_healthy
+  api:
+    build: ./api
+    # this is for JWT_SECRET & REFRESH_SECRET, add this in prod
+    env_file: ./api/.env
+    volumes:
+      - sqlite_db:/data
+    environment:
+      - PORT=3000
+      - DB_CONN=/data/db.sqlite
+    expose:
+      - "3000"
+
+  frontend:
+    build: ./frontend
+    healthcheck:
+      test: ["CMD", "true"]
+      interval: 5s
+      retries: 5
+    environment:
+      - PORT=8000
+    expose:
+      - "8000"
+      # depends_on:
+      # - api
+
+volumes:
+  sqlite_db:
+  caddy_data:
+  caddy_config:

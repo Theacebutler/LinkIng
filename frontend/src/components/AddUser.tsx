@@ -1,9 +1,9 @@
 import { useState, type FormEvent } from 'react';
-import register from '../utils/register';
+import { register } from '../utils/userRequests';
+import { useAuths } from '../hooks/useAuths';
 
 export default function AddUser() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const { username, password, setUsername, setPassword, setIsLogin } = useAuths()
   const [errors, setErrors] = useState<{ username?: string; password?: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -43,6 +43,7 @@ export default function AddUser() {
     setUsername('');
     setPassword('');
     setSuccess(true);
+    setIsLogin(true);
     setTimeout(() => setSuccess(false), 2000);
   };
 
