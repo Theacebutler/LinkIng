@@ -1,6 +1,6 @@
 export const config = {
   PORT: import.meta.env.PORT as string || "5173",
-  VITE_API_URL: import.meta.env.VITE_API_URL as string || "",
+  VITE_API_URL: import.meta.env.VITE_API_URL as string || "api",
   ALLOWED_ORIGINS: "*",
 };
 
