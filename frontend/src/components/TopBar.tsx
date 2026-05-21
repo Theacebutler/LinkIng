@@ -13,12 +13,8 @@ export function TopBar() {
       window.location.reload()
       logout(username, password)
       setIsLogin(false)
-      return
-    } else {
-      console.log("NOTHING");
-
-      return
     }
+    return
   }
   return (
     <div className="flex justify-between items-center py-4 px-8 bg-slate-900 text-white">
@@ -28,7 +24,7 @@ export function TopBar() {
           className="bg-slate-800 hover:bg-slate-700 text-white font-bold py-2 px-4 rounded"
           onClick={handleClick}
         >
-          {isLogin ? "Log Out" : "Register"}
+          {isLogin ? "Log Out" : "Login / Register"}
         </button>
       </div>
     </div>

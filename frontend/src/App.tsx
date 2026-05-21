@@ -8,7 +8,7 @@ import { useAuths } from './hooks/useAuths';
 
 function App() {
   const { resources, loading, addResource, deleteResource } = useResources();
-  const { isLogin, setIsLogin } = useAuths();
+  const { isLogin } = useAuths();
   const handleAddResource = async (data: { title: string; resourceUrl: string; sourceUrl: string, owner: string }) => {
     return await addResource(data);
   };
@@ -17,8 +17,7 @@ function App() {
   return (
     <>
       <Header />
-      {/* TODO: add login/logout functionality */}
-      <TopBar isLogin={isLogin} setIsLogin={setIsLogin} />
+      <TopBar />
       {
         isLogin ?
           <>
@@ -37,7 +36,7 @@ function App() {
             </footer>
           </>
           :
-          <AddUser setIsLogin={setIsLogin} />
+          <AddUser />
       }
     </>
   );
