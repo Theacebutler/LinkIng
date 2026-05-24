@@ -1,7 +1,9 @@
 export const config = {
   PORT: import.meta.env.PORT as string || "5173",
-  VITE_API_URL: import.meta.env.VITE_API_URL as string || "http://localhost:3000/api",
+  VITE_API_URL: import.meta.env.VITE_API_URL as string || "api",
   ALLOWED_ORIGINS: "*",
+  ACCESS_TOKEN_KEY_NAME: "accessToken",
+  REFRESH_TOKEN_KEY_NAME: "refreshToken",
 };
 
 if (!import.meta.env.PORT) {
