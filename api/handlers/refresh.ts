@@ -48,7 +48,7 @@ export async function refresh(request: Request): Promise<Response> {
     );
     const { token: newRefreshToken, tokenID: newTokenId } =
       await createRefreshToken(
-        payload.usernam as string
+        payload.username as string
       );
 
     // Store new refresh token in same family
