@@ -31,11 +31,11 @@ jobs:
           # lower case owner name
       - name: lowercase repo  owner name
         env:
-          OWNER: ${{ github.repository_owner }}
+          GITHUB_REPOSITORY_OWNER: ${{ env.OWNER_LOWER }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           REFRESH_SECRET: ${{ secrets.REFRESH_SECRET }}
         run: |
-          echo "GITHUB_REPOSITORY_OWNER=${OWNER,,}" >> $GITHUB_ENV
+          echo "OWNER_LOWER=${OWNER,,}" >> $GITHUB_ENV
 
       - name: Build and push all images
         uses: docker/bake-action@v6
@@ -44,6 +44,7 @@ jobs:
           push: true
           set: |
             *.platform=linux/amd64
+            *.args.GITHUB_REPOSITORY_OWNER=${{ github.repository_owner }}
 
   deploy:
     runs-on: ubuntu-latest
