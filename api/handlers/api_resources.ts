@@ -4,6 +4,7 @@ import { resourcesTable } from "../db/schema";
 import type { Resource } from "../shered/types";
 import screenshot from "../utils/screenshot";
 import { config } from "../config";
+import type { AuthenticatedRequest } from "../utils/token_gen";
 
 
 export async function apiResourcesGet(name: string): Promise<Response> {
@@ -24,10 +25,9 @@ export async function apiResourcesOpts(): Promise<Response> {
   return res;
 }
 
-export async function apiResourcesPost(req: Request) {
+export async function apiResourcesPost(req: AuthenticatedRequest) {
   const body = await req.json() as Omit<Resource, 'id' | 'createdAt' | 'sourceImage'>;
 
-  // BUG: get the correct typing for the user
   const name = req.user.sub
   const newResource: Resource = {
     ...body,

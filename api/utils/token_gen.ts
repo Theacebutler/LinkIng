@@ -4,7 +4,7 @@ import { verifyAccessToken, type TokenPayload } from "./jwt"
 
 
 export interface AuthenticatedRequest extends Request {
-  user?: TokenPayload
+  user: TokenPayload
 }
 
 
