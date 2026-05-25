@@ -58,7 +58,7 @@ describe("TEST: register new user", async () => {
 describe("TEST login", async () => {
   test("TEST login with valid credentials", async () => {
     const mockRequest: Request = new Request(
-      "http://localhost:3000/api/users/register/", {
+      "http://localhost:3000/api/users/login/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
