@@ -14,13 +14,13 @@ export async function authMiddleware(request: AuthenticatedRequest): Promise<Aut
   if (!authHeader) {
     return Response.json(
       { error: "Authorization header missing" },
-      { status: 401, headers: { "Content-Type": "application / json" } }
+      { status: 401, headers: { "Content-Type": "application/json" } }
     )
   }
   if (!authHeader.startsWith("Bearer ")) {
     return Response.json(
       { error: "Authorization header must start with Bearer" },
-      { status: 401, headers: { "Content-Type": "application / json" } }
+      { status: 401, headers: { "Content-Type": "application/json" } }
     )
   }
 
@@ -29,7 +29,7 @@ export async function authMiddleware(request: AuthenticatedRequest): Promise<Aut
   if (!token) {
     return Response.json(
       { error: "token missing" },
-      { status: 401, headers: { "Content-Type": "application / json" } }
+      { status: 401, headers: { "Content-Type": "application/json" } }
     )
   }
   try {
