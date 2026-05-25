@@ -1,6 +1,6 @@
-import type { User } from "../shered/types";
-import { json } from "../utils/jsonResponeUtil";
-import { validateCredentils } from "../utils/validateCred";
+import type { User } from "../shared/types";
+import { json } from "../utils/jsonResponseUtil";
+import { validateCredentials } from "../utils/validateCred";
 import { createAccessToken, createRefreshToken } from "../utils/jwt";
 import { storeRefreshToken } from "../utils/tokenStore";
 
@@ -15,7 +15,7 @@ export async function login(request: Request): Promise<Response> {
     }
 
     // Validate credentials
-    const user = await validateCredentils(username, password);
+    const user = await validateCredentials(username, password);
 
     if (!user) {
       // Use generic error message to prevent user enumeration

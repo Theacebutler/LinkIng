@@ -8,7 +8,7 @@ export interface AuthenticatedRequest extends Request {
 }
 
 
-export async function authMiddlewate(request: AuthenticatedRequest): Promise<AuthenticatedRequest | Response> {
+export async function authMiddleware(request: AuthenticatedRequest): Promise<AuthenticatedRequest | Response> {
   // take in a request with the token 
   const authHeader = request.headers.get("Authorization")
   if (!authHeader) {
@@ -51,7 +51,7 @@ export function withAuth(
 ): (req: Request) => Promise<Response> {
   return async (request: Request): Promise<Response> => {
     // if the request is not authenticated, this with return a 
-    const res = await authMiddlewate(request as AuthenticatedRequest);
+    const res = await authMiddleware(request as AuthenticatedRequest);
     if (res instanceof Response) {
       return res
     }

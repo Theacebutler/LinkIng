@@ -4,7 +4,7 @@ import { config } from "../../config";
 
 const VITE_API_URL = config.VITE_API_URL
 
-export default function ResoueceImage({ resource }: { resource: Resource }) {
+export default function ResourceImage({ resource }: { resource: Resource }) {
   const [imageUrl, setImageUrl] = useState('');
   const [loaded, setLoaded] = useState(false);
 

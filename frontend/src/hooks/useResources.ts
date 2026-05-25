@@ -7,8 +7,8 @@ import { config } from '../../config';
 const VITE_API_URL = config.VITE_API_URL
 const cookie = Cookies.get('accessToken')
 
-const cookiePartes = parseCookies(cookie as string)
-const ACCESS_TOKEN = cookiePartes.get('access_token')
+const cookieParts = parseCookies(cookie as string)
+const ACCESS_TOKEN = cookieParts.get('access_token')
 
 export function useResources() {
   const [resources, setResources] = useState<Resource[]>([]);

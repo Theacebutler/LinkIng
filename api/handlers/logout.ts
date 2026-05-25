@@ -1,4 +1,4 @@
-import { json } from "../utils/jsonResponeUtil";
+import { json } from "../utils/jsonResponseUtil";
 import { verifyRefreshToken } from "../utils/jwt";
 import { withAuth, type AuthenticatedRequest } from "../utils/token_gen";
 import { revokeToken } from "../utils/tokenStore";

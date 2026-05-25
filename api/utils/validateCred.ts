@@ -2,10 +2,10 @@ import bcrypt from "bcrypt";
 import { db } from "../db";
 import { usersTable } from "../db/schema";
 import { eq } from "drizzle-orm";
-import type { User } from "../shered/types";
+import type { User } from "../shared/types";
 import { config } from "../config";
 
-export async function validateCredentils(
+export async function validateCredentials(
   username: string,
   password: string
 ): Promise<User | null> {

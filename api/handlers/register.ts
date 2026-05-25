@@ -3,8 +3,8 @@ import { eq } from "drizzle-orm";
 
 import { config } from "../config";
 import { db } from "../db";
-import { json } from "../utils/jsonResponeUtil";
-import type { User } from "../shered/types";
+import { json } from "../utils/jsonResponseUtil";
+import type { User } from "../shared/types";
 import { usersTable } from "../db/schema";
 
 // this function should take in the register request and return a response with the userId

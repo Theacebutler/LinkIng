@@ -1,7 +1,7 @@
 import { desc, eq, and } from "drizzle-orm";
 import { db } from "../db";
 import { resourcesTable } from "../db/schema";
-import type { Resource } from "../shered/types";
+import type { Resource } from "../shared/types";
 import screenshot from "../utils/screenshot";
 import { config } from "../config";
 import type { AuthenticatedRequest } from "../utils/token_gen";
@@ -10,7 +10,7 @@ import type { AuthenticatedRequest } from "../utils/token_gen";
 export async function apiResourcesGet(name: string): Promise<Response> {
   const resources = await db.select()
     .from(resourcesTable)
-    .where((resouce) => eq(resouce.owner, name))
+    .where((resource) => eq(resource.owner, name))
     .orderBy(desc(resourcesTable.createdAt));
   const res = Response.json(resources);
   res.headers.set("Access-Control-Allow-Origin", config.FRONTEND_URL as string);
