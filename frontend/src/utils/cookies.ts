@@ -1,9 +1,9 @@
-// const COOKIE_CONFIG = {
-//   httpOnly: true,
-//   secure: true,
-//   sameSite: "lax",
-//   path: "/"
-// }
+export const COOKIE_CONFIG = {
+  httpOnly: true,
+  secure: true,
+  sameSite: "lax",
+  path: "/"
+}
 
 
 export function setAccessTokenCookie(token: string): string {

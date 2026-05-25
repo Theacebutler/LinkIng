@@ -1,5 +1,5 @@
 import { config } from "../../config"
-import { setAccessTokenCookie, setRefreshTokenCookie } from "./cookies"
+import { setAccessTokenCookie, setRefreshTokenCookie, COOKIE_CONFIG } from "./cookies"
 import Cookies from "js-cookie"
 
 export async function register(username: string, password: string): Promise<string | Error | undefined> {
@@ -48,8 +48,16 @@ export async function login(username: string, password: string) {
   }
   switch (res.status) {
     case 200:
-      Cookies.set('accessToken', setAccessTokenCookie(data.accessToken))
-      Cookies.set('refreshToken', setRefreshTokenCookie(data.refreshToken))
+      Cookies.set('accessToken', setAccessTokenCookie(data.accessToken), {
+        sameSite: "lax",
+        path: COOKIE_CONFIG.path,
+        secure: COOKIE_CONFIG.secure
+      })
+      Cookies.set('refreshToken', setRefreshTokenCookie(data.refreshToken), {
+        sameSite: "lax",
+        path: COOKIE_CONFIG.path,
+        secure: COOKIE_CONFIG.secure
+      })
       break
     case 400:
       throw new Error("Username and password required at login")
