@@ -21,12 +21,14 @@ services:
     build: ./api
     image: ghcr.io/${GITHUB_REPOSITORY_OWNER}/api:latest
     # this is for JWT_SECRET & REFRESH_SECRET, add this in prod
-    env_file: ./api/.env
+    # env_file: ./api/.env
     volumes:
       - sqlite_db:/data
     environment:
       - PORT=3000
       - DB_CONN=/data/db.sqlite
+      - JWT_SECRET=${{ secrets.JWT_SECRET }}
+      - REFRESH_SECRET=${{ secrets.REFRESH_SECRET }}
     expose:
       - "3000"
     restart: on-failure
