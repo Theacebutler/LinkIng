@@ -9,9 +9,9 @@ export function TopBar() {
   async function handleClick() {
     Cookies.remove(config.ACCESS_TOKEN_KEY_NAME)
     Cookies.remove(config.REFRESH_TOKEN_KEY_NAME)
-    window.location.reload()
     logout(username, password)
     setIsLogin(false)
+    window.location.reload()
     return
   }
   return (
