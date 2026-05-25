@@ -35,6 +35,8 @@ jobs:
 
         env:
           OWNER: ${{ github.repository_owner }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          REFRESH_SECRET: ${{ secrets.REFRESH_SECRET }}
 
       - name: Build and push all images
         uses: docker/bake-action@v6
