@@ -4,6 +4,10 @@ on:
     branches:
       - main
       - add-users
+    paths:
+      - api
+      - frontend
+
 jobs:
   build:
     name: build-app
