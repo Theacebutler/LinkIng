@@ -36,6 +36,7 @@ jobs:
           REFRESH_SECRET: ${{ secrets.REFRESH_SECRET }}
         run: |
           echo "GITHUB_REPOSITORY_OWNER=${OWNER,,}" >> $GITHUB_ENV
+          echo "${GITHUB_REPOSITORY_OWNER}"
 
       - name: Build and push all images
         uses: docker/bake-action@v6
