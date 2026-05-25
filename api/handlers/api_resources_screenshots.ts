@@ -3,7 +3,7 @@ import { db } from "../db";
 import { screenshotsTable } from "../db/schema";
 import { config } from "../config";
 
-export function apiResurceScreenshotOpts() {
+export function apiResourceScreenshotOpts() {
   const res = Response.json({});
   res.headers.set("Access-Control-Allow-Origin", "http://localhost:5173");
   res.headers.set("Access-Control-Allow-Methods", "GET, OPTIONS");
@@ -11,12 +11,12 @@ export function apiResurceScreenshotOpts() {
   return res;
 }
 
-export async function apiResurceScreenshotGet(req: Bun.BunRequest<"/api/resources/screenshots/:id">) {
+export async function apiResourceScreenshotGet(req: Bun.BunRequest<"/api/resources/screenshots/:id">) {
   const id = Number(req.params.id)
-  const image_recored = await db.select()
+  const image_record = await db.select()
     .from(screenshotsTable)
     .where(eq(screenshotsTable.resourceId, id));
-  const image = image_recored[0]?.image
+  const image = image_record[0]?.image
   if (image) {
     const res = new Response(Buffer.from(image, 'base64'), {
       headers: {

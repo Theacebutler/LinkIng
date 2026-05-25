@@ -15,12 +15,12 @@ export const access_secret = new TextEncoder().encode(config.JWT_SECRET)
 export const refresh_secret = new TextEncoder().encode(config.REFRESH_SECRET)
 
 
-function ranbdomTokenID(): string {
+function ranbomTokenID(): string {
   return crypto.randomUUID()
 }
 
 export async function createAccessToken(username: string): Promise<string> {
-  const tokenID = ranbdomTokenID();
+  const tokenID = ranbomTokenID();
   const token = await new SignJWT({
     sub: username,
     type: "access",
@@ -36,7 +36,7 @@ export async function createAccessToken(username: string): Promise<string> {
   return token
 }
 export async function createRefreshToken(username: string): Promise<{ token: string, tokenID: string }> {
-  const tokenID = ranbdomTokenID();
+  const tokenID = ranbomTokenID();
   const token = await new SignJWT({
     sub: username,
     type: "refresh",

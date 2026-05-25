@@ -1,4 +1,4 @@
-import { json } from "../utils/jsonResponeUtil";
+import { json } from "../utils/jsonResponseUtil";
 import {
   createAccessToken,
   createRefreshToken,
