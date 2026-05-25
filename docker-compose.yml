@@ -19,7 +19,7 @@ services:
         condition: service_healthy
   api:
     build: ./api
-    image: ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/api:latest
+    image: ghcr.io/${GITHUB_REPOSITORY_OWNER}/api:latest
     # this is for JWT_SECRET & REFRESH_SECRET, add this in prod
     # env_file: ./api/.env
     volumes:
@@ -35,7 +35,7 @@ services:
 
   frontend:
     build: ./frontend
-    image: ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/frontend:latest
+    image: ghcr.io/${GITHUB_REPOSITORY_OWNER}/frontend:latest
     healthcheck:
       test: ["CMD", "wget", "--spider", "http://localhost:8000"]
       interval: 5s
