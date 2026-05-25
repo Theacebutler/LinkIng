@@ -28,19 +28,19 @@ services:
       - DB_CONN=/data/db.sqlite
     expose:
       - "3000"
+    restart: on-failure
 
   frontend:
     build: ./frontend
     healthcheck:
-      test: ["CMD", "true"]
+      test: ["CMD", "wget", "--spider", "http://localhost:8000"]
       interval: 5s
       retries: 5
     environment:
       - PORT=8000
     expose:
       - "8000"
-      # depends_on:
-      # - api
+    restart: on-failure
 
 volumes:
   sqlite_db:
