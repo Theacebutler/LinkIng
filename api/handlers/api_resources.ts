@@ -54,6 +54,6 @@ export async function apiResourcesIdDelete(name: string, id: number): Promise<Re
       eq(resourcesTable.owner, name)
     ));
   const res = Response.json({ deleted: true });
-  res.headers.set("Access-Control-Allow-Origin", "http://localhost:5173");
+  res.headers.set("Access-Control-Allow-Origin", config.FRONTEND_URL);
   return res
 }
