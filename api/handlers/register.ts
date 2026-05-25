@@ -63,6 +63,6 @@ export async function register(request: Request): Promise<Response> {
     if (error instanceof Error && error.message === "User already exists") {
       return json({ error: "Username already registered" }, 409);
     }
-    return json({ error: "Registration failed," }, 500);
+    return json({ error: "Registration failed" }, 500);
   }
 }
