@@ -4,7 +4,7 @@ import { useAuths } from '../hooks/useAuths';
 
 export default function LoginOrReg() {
   const { username, password, setUsername, setPassword, setIsLogin } = useAuths()
-  const [errors, setErrors] = useState<{ username?: string; password?: string }>({});
+  const [errors, setErrors] = useState<{ username?: string; password?: string, global?: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
 
@@ -72,7 +72,7 @@ export default function LoginOrReg() {
             value={username}
             onChange={(e) => handleChange('username', e.target.value)}
             placeholder="e.g., jdoe"
-            className={`px-3 py-2 border rounded text-base bg-slate-900 text-slate-100 placeholder-slate-500 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/10 ${errors.username ? 'border-red-400 focus:border-red-400' : 'border-slate-600 focus:border-blue-400'}`}
+            className={`px-3 py-2 border rounded text-base bg-slate-900 text-slate-100 placeholder-slate-500 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/10 ${errors.username || errors.global ? 'border-red-400 focus:border-red-400' : 'border-slate-600 focus:border-blue-400'}`}
           />
           {errors.username && (
             <span className="text-sm text-red-400">{errors.username}</span>
@@ -89,13 +89,18 @@ export default function LoginOrReg() {
             value={password}
             onChange={(e) => handleChange('password', e.target.value)}
             placeholder="Enter a password"
-            className={`px-3 py-2 border rounded text-base bg-slate-900 text-slate-100 placeholder-slate-500 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/10 ${errors.password ? 'border-red-400 focus:border-red-400' : 'border-slate-600 focus:border-blue-400'}`}
+            className={`px-3 py-2 border rounded text-base bg-slate-900 text-slate-100 placeholder-slate-500 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/10 ${errors.password || errors.global ? 'border-red-400 focus:border-red-400' : 'border-slate-600 focus:border-blue-400'}`}
           />
           {errors.password && (
             <span className="text-sm text-red-400">{errors.password}</span>
           )}
         </div>
 
+        <div>
+          {errors.global && (
+            <span className="text-sm text-red-400">{errors.global}</span>
+          )}
+        </div>
         <button
           type="submit"
           disabled={isSubmitting}
