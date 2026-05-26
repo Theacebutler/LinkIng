@@ -59,6 +59,7 @@ jobs:
           host: "${{ secrets.HOST }}"
           debug: true
           username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
           password: ${{ secrets.PASSWORD }}
           source: "docker-compose.yml"
           target: "~/linking/"
