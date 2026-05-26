@@ -2,7 +2,7 @@ import { config } from "../../config"
 import { setAccessTokenCookie, setRefreshTokenCookie, COOKIE_CONFIG } from "./cookies"
 import Cookies from "js-cookie"
 
-export async function register(username: string, password: string): Promise<string | Error | undefined> {
+export async function register(username: string, password: string): Promise<void> {
   const data = await fetch(`${config.VITE_API_URL}/users/register`, {
     method: "POST",
     headers: {
