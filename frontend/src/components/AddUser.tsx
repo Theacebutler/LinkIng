@@ -101,7 +101,7 @@ export default function AddUser() {
           disabled={isSubmitting}
           className="px-4 py-2 bg-blue-600 text-white rounded font-medium transition-colors hover:bg-blue-500 disabled:opacity-60 disabled:cursor-not-allowed w-full"
         >
-          {isSubmitting ? 'Saving...' : 'Save User'}
+          {isSubmitting ? 'Processing...' : 'Login / Register'}
         </button>
 
         {success && (
