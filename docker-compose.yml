@@ -27,6 +27,7 @@ services:
     environment:
       JWT_SECRET: $${secrets.JWT_SECRET}
       REFRESH_SECRET: $${secrets.REFRESH_SECRET}
+      LOCAL_OWNER: $${ secrets.LOWERCASE_GITHUB_REPOSITORY_OWNER }
       PORT: 3000
       DB_CONN: /data/db.sqlite
     expose:
@@ -35,13 +36,14 @@ services:
 
   frontend:
     build: ./frontend
-    image: ghcr.io/${GITHUB_REPOSITORY_OWNER}/frontend:latest
+    image: ghcr.io/${LOCAL_OWNER}/frontend:latest
     healthcheck:
       test: ["CMD", "wget", "--spider", "http://localhost:8000"]
       interval: 5s
       retries: 5
     environment:
-      - PORT=8000
+      PORT: 8000
+      LOCAL_OWNER: $${ secrets.LOWERCASE_GITHUB_REPOSITORY_OWNER }
     expose:
       - "8000"
     restart: on-failure

@@ -28,19 +28,10 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-          # lower case owner name
-      - name: lowercase repo  owner name
-        env:
-          GITHUB_REPOSITORY_OWNER: ${{ env.OWNER_LOWER }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          REFRESH_SECRET: ${{ secrets.REFRESH_SECRET }}
-        run: |
-          echo "OWNER_LOWER=${OWNER,,}" >> $GITHUB_ENV
 
       - name: Build and push all images
         uses: docker/bake-action@v6
         env:
-          GITHUB_REPOSITORY_OWNER: ${{ env.GITHUB_REPOSITORY_OWNER }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           REFRESH_SECRET: ${{ secrets.REFRESH_SECRET }}
         with:
