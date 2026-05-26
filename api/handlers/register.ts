@@ -6,6 +6,7 @@ import { db } from "../db";
 import { json } from "../utils/jsonResponseUtil";
 import type { User } from "../shared/types";
 import { usersTable } from "../db/schema";
+import { login } from "./login";
 
 // this function should take in the register request and return a response with the userId
 export async function register(request: Request): Promise<Response> {
@@ -34,7 +35,7 @@ export async function register(request: Request): Promise<Response> {
       .execute();
 
     if (existingUser) {
-      throw new Error("User already exists");
+      login(request)
     }
     // Create user with hashed password in DB
     const hashedPassword = await bcrypt.hash(password, config.SALT_ROUNDS);
