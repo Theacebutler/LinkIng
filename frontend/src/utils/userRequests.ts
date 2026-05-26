@@ -21,6 +21,8 @@ export async function register(username: string, password: string): Promise<stri
       await login(username, password)
       window.location.reload()
       return
+    case 401:
+      throw new Error("Invalid username or password")
     case 409:
       throw new Error("User already exists")
     case 400:
