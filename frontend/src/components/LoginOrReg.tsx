@@ -2,7 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { register } from '../utils/userRequests';
 import { useAuths } from '../hooks/useAuths';
 
-export default function AddUser() {
+export default function LoginOrReg() {
   const { username, password, setUsername, setPassword, setIsLogin } = useAuths()
   const [errors, setErrors] = useState<{ username?: string; password?: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
