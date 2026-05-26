@@ -45,6 +45,7 @@ export default function LoginOrReg() {
     setSuccess(true);
     setIsLogin(true);
     setTimeout(() => setSuccess(false), 2000);
+    window.location.reload()
   };
 
   const handleChange = (
