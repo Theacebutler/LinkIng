@@ -19,8 +19,8 @@ services:
         condition: service_healthy
   api:
     environment:
-      JWT_SECRET: $${secrets.JWT_SECRET}
-      REFRESH_SECRET: $${secrets.REFRESH_SECRET}
+      JWT_SECRET: ${JWT_SECRET}
+      REFRESH_SECRET: ${REFRESH_SECRET}
       PORT: 3000
       DB_CONN: /data/db.sqlite
     image: ghcr.io/${LOWERCASE_GITHUB_REPOSITORY_OWNER}/api:latest
