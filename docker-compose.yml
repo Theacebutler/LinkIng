@@ -19,9 +19,10 @@ services:
         condition: service_healthy
   api:
     build: ./api
+    # the .env is creted in the Dockerfile, with the JWT_SECRET and REFRESH_SECRET being echoed in to it
+    env_file:
+      - ./api/.env
     environment:
-      JWT_SECRET: $${secrets.JWT_SECRET}
-      REFRESH_SECRET: $${secrets.REFRESH_SECRET}
       PORT: 3000
       DB_CONN: /data/db.sqlite
     image: ghcr.io/${LOWERCASE_GITHUB_REPOSITORY_OWNER}/api:latest
