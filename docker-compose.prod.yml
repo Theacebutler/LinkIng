@@ -28,7 +28,7 @@ services:
       - sqlite_db:/data
     expose:
       - "3000"
-    restart: on-failure
+    restart: always
 
   frontend:
     environment:
@@ -40,7 +40,7 @@ services:
       retries: 5
     expose:
       - "8000"
-    restart: on-failure
+    restart: always
 
 volumes:
   sqlite_db:
