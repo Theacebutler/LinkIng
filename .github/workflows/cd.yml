@@ -53,16 +53,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Copy docker-compose.yml to server
-        uses: appleboy/scp-action@master
+      - name: rsync deployments
+        uses: burnett01/rsync-deployments@v8
         with:
-          host: "${{ secrets.HOST }}"
-          debug: true
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
-          password: ${{ secrets.PASSWORD }}
-          source: "docker-compose.yml"
-          target: "~/linking/"
+          switches: -avzr --delete
+          path: "docker-compose.yml"
+          remote_path: "~/linking/"
+          remote_host: ${{ secrets.HOST }}
+          remote_user: ${{ secrets.USERNAME }}
+          remote_key: ${{ secrets.SSH_KEY }}
 
       - name: Deploy stack via ssh
         uses: appleboy/ssh-action@v1
