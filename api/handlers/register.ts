@@ -38,9 +38,9 @@ export async function register(request: Request): Promise<Response> {
     if (existingUser) {
       const user = await validateCredentials(username, password);
       if (!user) {
-        throw new Error("Invalid username or password");
+        return json({ error: "Invalid username or password" }, 401);
       }
-      return login(request);
+      return login(username, password, request.headers);
     }
     // Create user with hashed password in DB
     const hashedPassword = await bcrypt.hash(password, config.SALT_ROUNDS);
