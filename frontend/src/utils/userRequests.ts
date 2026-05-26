@@ -16,11 +16,11 @@ export async function register(username: string, password: string): Promise<stri
 
   switch (data.status) {
     // user created - store the username and userId in a cookie
-    case 200 | 201:
+    case 200:
+    case 201:
       await login(username, password)
       window.location.reload()
       return
-    // username already exists
     case 409:
       throw new Error("User already exists")
     case 400:
