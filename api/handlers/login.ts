@@ -6,9 +6,14 @@ import { storeRefreshToken } from "../utils/tokenStore";
 
 export async function login(request: Request): Promise<Response> {
   try {
-    const body = await request.json() as User;
-    const { username, password } = body;
-
+    // Get username and password from request body, it may or may not
+    const data = Promise.resolve(request)
+      .then((req) => {
+        return req.json()
+      }).catch((err) => {
+        return err
+      })
+    const { username, password } = await data as User;
     // Validate input
     if (!username || !password) {
       return json({ error: "username and password required" }, 400);
