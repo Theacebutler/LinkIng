@@ -19,29 +19,31 @@ services:
         condition: service_healthy
   api:
     build: ./api
-    image: ghcr.io/${GITHUB_REPOSITORY_OWNER}/api:latest
+    image: ghcr.io/${GITHUB_REPOSITORY_OWNER_LOCAL}/api:latest
     # this is for JWT_SECRET & REFRESH_SECRET, add this in prod
     # env_file: ./api/.env
     volumes:
       - sqlite_db:/data
     environment:
-      JWT_SECRET: $${secrets.JWT_SECRET}
-      REFRESH_SECRET: $${secrets.REFRESH_SECRET}
-      PORT: 3000
-      DB_CONN: /data/db.sqlite
+      - DB_CONN=/data/db.sqlite
+      - GITHUB_REPOSITORY_OWNER_LOCAL=${{ $GITHUB_REPOSITORY_OWNER }}
+      - JWT_SECRET=$${secrets.JWT_SECRET}
+      - REFRESH_SECRET=$${secrets.REFRESH_SECRET}
+      - PORT=3000
     expose:
       - "3000"
     restart: on-failure
 
   frontend:
     build: ./frontend
-    image: ghcr.io/${GITHUB_REPOSITORY_OWNER}/frontend:latest
+    image: ghcr.io/${GITHUB_REPOSITORY_OWNER_LOCAL}/frontend:latest
     healthcheck:
       test: ["CMD", "wget", "--spider", "http://localhost:8000"]
       interval: 5s
       retries: 5
     environment:
       - PORT=8000
+      - GITHUB_REPOSITORY_OWNER_LOCAL=${{ $GITHUB_REPOSITORY_OWNER }}
     expose:
       - "8000"
     restart: on-failure
