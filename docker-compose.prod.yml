@@ -18,6 +18,11 @@ services:
       frontend:
         condition: service_healthy
   api:
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 256MB
     environment:
       JWT_SECRET: ${JWT_SECRET}
       REFRESH_SECRET: ${REFRESH_SECRET}
