@@ -60,7 +60,7 @@ jobs:
           debug: true
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          source: "docker-compose.yml"
+          source: "docker-compose.prod.yml"
           target: "~/linking/"
 
       - name: Lowercase repository owner

@@ -1,0 +1,48 @@
+services:
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    environment:
+      API_PORT: 3000
+      APP_PORT: 8080
+      FRONTEND_PORT: 8000
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      api:
+        condition: service_started
+      frontend:
+        condition: service_healthy
+  api:
+    environment:
+      JWT_SECRET: $${secrets.JWT_SECRET}
+      REFRESH_SECRET: $${secrets.REFRESH_SECRET}
+      PORT: 3000
+      DB_CONN: /data/db.sqlite
+    image: ghcr.io/${LOWERCASE_GITHUB_REPOSITORY_OWNER}/api:latest
+    volumes:
+      - sqlite_db:/data
+    expose:
+      - "3000"
+    restart: on-failure
+
+  frontend:
+    environment:
+      PORT: 8000
+    image: ghcr.io/${LOWERCASE_GITHUB_REPOSITORY_OWNER}/frontend:latest
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:8000"]
+      interval: 5s
+      retries: 5
+    expose:
+      - "8000"
+    restart: on-failure
+
+volumes:
+  sqlite_db:
+  caddy_data:
+  caddy_config:
