@@ -116,7 +116,7 @@ export default function LoginOrReg() {
 
         {success && (
           <p className="text-sm text-emerald-400 text-center py-2 bg-emerald-900/30 rounded">
-            User saved successfully!
+            User logged in successfully!
           </p>
         )}
       </form>
