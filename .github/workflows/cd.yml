@@ -81,7 +81,8 @@ jobs:
         uses: appleboy/ssh-action@v1
         env:
           LOWERCASE_GITHUB_REPOSITORY_OWNER: ${{ env.LOWERCASE_GITHUB_REPOSITORY_OWNER }}
-
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          REFRESH_SECRET: ${{ secrets.REFRESH_SECRET }}
         with:
           host: "${{ secrets.HOST }}"
           username: ${{ secrets.USERNAME }}
