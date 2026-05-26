@@ -7,6 +7,7 @@ import { login } from "./handlers/login";
 import { logout } from "./handlers/logout";
 import { refresh } from "./handlers/refresh";
 import { register } from "./handlers/register";
+import type { User } from "./shared/types";
 
 const PORT = config.PORT
 const server = Bun.serve({
@@ -26,7 +27,8 @@ const server = Bun.serve({
     },
     "/api/users/login": {
       POST: async (req): Promise<Response> => {
-        return await login(req)
+        const { username, password } = await req.json() as User;;
+        return await login(username, password, req.headers)
       }
     },
     "/api/users/refresh": {

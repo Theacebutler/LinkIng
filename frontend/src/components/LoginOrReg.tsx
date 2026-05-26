@@ -2,9 +2,9 @@ import { useState, type FormEvent } from 'react';
 import { register } from '../utils/userRequests';
 import { useAuths } from '../hooks/useAuths';
 
-export default function AddUser() {
+export default function LoginOrReg() {
   const { username, password, setUsername, setPassword, setIsLogin } = useAuths()
-  const [errors, setErrors] = useState<{ username?: string; password?: string }>({});
+  const [errors, setErrors] = useState<{ username?: string; password?: string, global?: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
 
@@ -32,10 +32,14 @@ export default function AddUser() {
     if (!validate()) return;
 
     // register & login user
-    const reg = await register(username, password)
-    if (reg instanceof Error) {
-      setErrors({ username: reg.message })
+    try {
+      await register(username, password)
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setErrors({ global: error.message })
+      }
       setIsSubmitting(false);
+      setIsLogin(false);
       return
     }
     setIsSubmitting(false);
@@ -45,6 +49,7 @@ export default function AddUser() {
     setSuccess(true);
     setIsLogin(true);
     setTimeout(() => setSuccess(false), 2000);
+    window.location.reload()
   };
 
   const handleChange = (
@@ -72,7 +77,7 @@ export default function AddUser() {
             value={username}
             onChange={(e) => handleChange('username', e.target.value)}
             placeholder="e.g., jdoe"
-            className={`px-3 py-2 border rounded text-base bg-slate-900 text-slate-100 placeholder-slate-500 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/10 ${errors.username ? 'border-red-400 focus:border-red-400' : 'border-slate-600 focus:border-blue-400'}`}
+            className={`px-3 py-2 border rounded text-base bg-slate-900 text-slate-100 placeholder-slate-500 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/10 ${errors.username || errors.global ? 'border-red-400 focus:border-red-400' : 'border-slate-600 focus:border-blue-400'}`}
           />
           {errors.username && (
             <span className="text-sm text-red-400">{errors.username}</span>
@@ -89,24 +94,29 @@ export default function AddUser() {
             value={password}
             onChange={(e) => handleChange('password', e.target.value)}
             placeholder="Enter a password"
-            className={`px-3 py-2 border rounded text-base bg-slate-900 text-slate-100 placeholder-slate-500 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/10 ${errors.password ? 'border-red-400 focus:border-red-400' : 'border-slate-600 focus:border-blue-400'}`}
+            className={`px-3 py-2 border rounded text-base bg-slate-900 text-slate-100 placeholder-slate-500 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/10 ${errors.password || errors.global ? 'border-red-400 focus:border-red-400' : 'border-slate-600 focus:border-blue-400'}`}
           />
           {errors.password && (
             <span className="text-sm text-red-400">{errors.password}</span>
           )}
         </div>
 
+        <div>
+          {errors.global && (
+            <span className="text-sm text-red-400">{errors.global}</span>
+          )}
+        </div>
         <button
           type="submit"
           disabled={isSubmitting}
           className="px-4 py-2 bg-blue-600 text-white rounded font-medium transition-colors hover:bg-blue-500 disabled:opacity-60 disabled:cursor-not-allowed w-full"
         >
-          {isSubmitting ? 'Saving...' : 'Save User'}
+          {isSubmitting ? 'Processing...' : 'Login / Register'}
         </button>
 
         {success && (
           <p className="text-sm text-emerald-400 text-center py-2 bg-emerald-900/30 rounded">
-            User saved successfully!
+            User logged in successfully!
           </p>
         )}
       </form>

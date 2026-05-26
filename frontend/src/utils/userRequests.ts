@@ -2,7 +2,7 @@ import { config } from "../../config"
 import { setAccessTokenCookie, setRefreshTokenCookie, COOKIE_CONFIG } from "./cookies"
 import Cookies from "js-cookie"
 
-export async function register(username: string, password: string): Promise<string | Error | undefined> {
+export async function register(username: string, password: string): Promise<void> {
   const data = await fetch(`${config.VITE_API_URL}/users/register`, {
     method: "POST",
     headers: {
@@ -16,11 +16,12 @@ export async function register(username: string, password: string): Promise<stri
 
   switch (data.status) {
     // user created - store the username and userId in a cookie
-    case 200 | 201:
+    case 200:
+    case 201:
       await login(username, password)
-      window.location.reload()
       return
-    // username already exists
+    case 401:
+      throw new Error("Invalid username or password")
     case 409:
       throw new Error("User already exists")
     case 400:

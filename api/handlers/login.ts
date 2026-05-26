@@ -1,14 +1,10 @@
-import type { User } from "../shared/types";
 import { json } from "../utils/jsonResponseUtil";
 import { validateCredentials } from "../utils/validateCred";
 import { createAccessToken, createRefreshToken } from "../utils/jwt";
 import { storeRefreshToken } from "../utils/tokenStore";
 
-export async function login(request: Request): Promise<Response> {
+export async function login(username: string, password: string, headers: Headers): Promise<Response> {
   try {
-    const body = await request.json() as User;
-    const { username, password } = body;
-
     // Validate input
     if (!username || !password) {
       return json({ error: "username and password required" }, 400);
@@ -32,7 +28,7 @@ export async function login(request: Request): Promise<Response> {
     const familyId = crypto.randomUUID();
 
     // Store refresh token metadata
-    const deviceInfo = request.headers.get("User-Agent") || "Unknown";
+    const deviceInfo = headers.get("User-Agent") || "Unknown";
     storeRefreshToken(tokenID, user.id?.toString() as string, familyId, deviceInfo);
 
     return json({
