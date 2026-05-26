@@ -3,9 +3,9 @@ services:
     image: caddy:2-alpine
     restart: unless-stopped
     environment:
-      - API_PORT=3000
-      - FRONTEND_PORT=8000
-      - APP_PORT=8080
+      API_PORT: 3000
+      APP_PORT: 8080
+      FRONTEND_PORT: 8000
     ports:
       - "${APP_PORT}:8080"
     volumes:
@@ -19,31 +19,27 @@ services:
         condition: service_healthy
   api:
     build: ./api
-    image: ghcr.io/${GITHUB_REPOSITORY_OWNER}/api:latest
-    # this is for JWT_SECRET & REFRESH_SECRET, add this in prod
-    # env_file: ./api/.env
-    volumes:
-      - sqlite_db:/data
     environment:
       JWT_SECRET: $${secrets.JWT_SECRET}
       REFRESH_SECRET: $${secrets.REFRESH_SECRET}
-      LOCAL_OWNER: $${ secrets.LOWERCASE_GITHUB_REPOSITORY_OWNER }
       PORT: 3000
       DB_CONN: /data/db.sqlite
+    image: ghcr.io/${LOWERCASE_GITHUB_REPOSITORY_OWNER}/api:latest
+    volumes:
+      - sqlite_db:/data
     expose:
       - "3000"
     restart: on-failure
 
   frontend:
     build: ./frontend
-    image: ghcr.io/${LOCAL_OWNER}/frontend:latest
+    environment:
+      PORT: 8000
+    image: ghcr.io/${LOWERCASE_GITHUB_REPOSITORY_OWNER}/frontend:latest
     healthcheck:
       test: ["CMD", "wget", "--spider", "http://localhost:8000"]
       interval: 5s
       retries: 5
-    environment:
-      PORT: 8000
-      LOCAL_OWNER: $${ secrets.LOWERCASE_GITHUB_REPOSITORY_OWNER }
     expose:
       - "8000"
     restart: on-failure
