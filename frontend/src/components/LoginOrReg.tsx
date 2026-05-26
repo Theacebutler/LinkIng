@@ -32,10 +32,14 @@ export default function LoginOrReg() {
     if (!validate()) return;
 
     // register & login user
-    const reg = await register(username, password)
-    if (reg instanceof Error) {
-      setErrors({ username: reg.message })
+    try {
+      await register(username, password)
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setErrors({ global: error.message })
+      }
       setIsSubmitting(false);
+      setIsLogin(false);
       return
     }
     setIsSubmitting(false);
