@@ -2,7 +2,7 @@ import { useResources } from './hooks/useResources';
 import { Header } from './components/Header';
 import { AddResourceForm } from './components/AddResourceForm';
 import { ResourceList } from './components/ResourceList';
-import AddUser from './components/AddUser';
+import LoginOrReg from './components/LoginOrReg';
 import { TopBar } from './components/TopBar';
 import InDevAlert from './components/inDevAlert';
 import { useAuths } from './hooks/useAuths';
@@ -42,7 +42,7 @@ function App() {
             </footer>
           </>
           :
-          <AddUser />
+          <LoginOrReg />
       }
     </>
   );
