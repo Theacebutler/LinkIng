@@ -63,8 +63,15 @@ jobs:
           source: "docker-compose.yml"
           target: "~/linking/"
 
+      - name: Lowercase repository owner
+        run: |
+          echo "LOWERCASE_GITHUB_REPOSITORY_OWNER=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_ENV
+
       - name: Deploy stack via ssh
         uses: appleboy/ssh-action@v1
+        env:
+          LOWERCASE_GITHUB_REPOSITORY_OWNER: ${{ env.LOWERCASE_GITHUB_REPOSITORY_OWNER }}
+
         with:
           host: "${{ secrets.HOST }}"
           username: ${{ secrets.USERNAME }}
@@ -73,7 +80,6 @@ jobs:
           script: |
             cd ~/linking
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            export GITHUB_REPOSITORY_OWNER=${{ github.repository_owner }}
-            export GITHUB_REPOSITORY_OWNER=${GITHUB_REPOSITORY_OWNER,,}
+            export LOWERCASE_GITHUB_REPOSITORY_OWNER=${{ env.LOWERCASE_GITHUB_REPOSITORY_OWNER }}
             docker compose pull
             docker compose up -d --remove-orphans
