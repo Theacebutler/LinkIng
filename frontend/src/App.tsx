@@ -4,6 +4,7 @@ import { AddResourceForm } from './components/AddResourceForm';
 import { ResourceList } from './components/ResourceList';
 import AddUser from './components/AddUser';
 import { TopBar } from './components/TopBar';
+import InDevAlert from './components/inDevAlert';
 import { useAuths } from './hooks/useAuths';
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
 
   return (
     <>
+      <InDevAlert />
       {
         isLogin ?
           <TopBar /> :
