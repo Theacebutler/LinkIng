@@ -22,6 +22,9 @@ RUN bun install --ignore-scripts
 
 COPY . .
 
+# add the access and refresh token to the environment variables
+RUN echo "export JWT_SECRET=$(openssl rand -hex 32)" >> .env
+RUN echo "export REFRESH_SECRET=$(openssl rand -hex 32)" >> .env
 
 # Tell Puppeteer to skip downloading its bundled Chromium; we will use the system one
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
