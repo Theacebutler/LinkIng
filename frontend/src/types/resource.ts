@@ -4,7 +4,7 @@ export interface Resource {
   owner: string;
   resourceUrl: string;
   sourceUrl: string;
-  imageUrl?: string;
+  sourceImage?: string;
   createdAt: string;
 }
 

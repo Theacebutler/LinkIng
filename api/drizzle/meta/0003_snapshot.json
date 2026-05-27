@@ -1,18 +1,18 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "b55c88c5-3c13-4919-b0ad-9c8c8aa1bf64",
-  "prevId": "8f6a560d-72fa-4bef-afdc-a5f18d6701d0",
+  "id": "72fa84fb-f6a8-4875-a2eb-e216ae75abd6",
+  "prevId": "b55c88c5-3c13-4919-b0ad-9c8c8aa1bf64",
   "tables": {
     "resources_table": {
       "name": "resources_table",
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "integer",
           "primaryKey": true,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": true
         },
         "owner": {
           "name": "owner",
@@ -23,7 +23,7 @@
         },
         "title": {
           "name": "title",
-          "type": "text",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -75,10 +75,10 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "integer",
           "primaryKey": true,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": true
         },
         "resource_id": {
           "name": "resource_id",
@@ -120,10 +120,10 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "integer",
           "primaryKey": true,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": true
         },
         "name": {
           "name": "name",

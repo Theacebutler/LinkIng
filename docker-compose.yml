@@ -21,8 +21,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "1"
-          memory: 512MB
+          cpus: "0.5"
+          memory: 256MB
     build: ./api
     environment:
       PORT: 3000

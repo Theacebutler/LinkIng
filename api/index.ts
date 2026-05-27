@@ -1,5 +1,5 @@
 import { apiResourcesOpts } from "./handlers/api_resources";
-import { apiResourceScreenshotGet } from "./handlers/api_resources_screenshots";
+import { apiResourceScreenshotGet, apiResourceScreenshotOpts } from "./handlers/api_resources_screenshots";
 
 import { addResource, deleteResource, getResources } from "./handlers/protected";
 import { config } from "./config";
@@ -72,10 +72,7 @@ const server = Bun.serve({
     },
     "/api/resources/screenshots/:id": {
       OPTIONS: () => apiResourcesOpts(),
-      GET: async (req) => {
-        const { id } = req.params;
-        return apiResourceScreenshotGet(Number(id))
-      }
+      GET: async (req) => apiResourceScreenshotGet(req),
     },
   },
 });
