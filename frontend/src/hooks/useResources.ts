@@ -5,10 +5,14 @@ import { parseCookies } from '../utils/cookies';
 import { config } from '../../config';
 
 const VITE_API_URL = config.VITE_API_URL
-const cookie = Cookies.get('accessToken')
 
-const cookieParts = parseCookies(cookie as string)
-const ACCESS_TOKEN = cookieParts.get('access_token')
+const access_token_cookie = Cookies.get('accessToken')
+const accessTokenCookieParts = parseCookies(access_token_cookie as string)
+const ACCESS_TOKEN = accessTokenCookieParts.get('access_token')
+
+const refresh_token_cookie = Cookies.get('refreshToken')
+const refreshTokenCookieParts = parseCookies(refresh_token_cookie as string)
+const REFRESH_TOKEN = refreshTokenCookieParts.get('refresh_token')
 
 export function useResources() {
   const [resources, setResources] = useState<Resource[]>([]);
