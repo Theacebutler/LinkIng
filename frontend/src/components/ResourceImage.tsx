@@ -7,7 +7,7 @@ export default function ResourceImage({ imageUrl, imageLoading, imageLoadingErro
   return (
     <div className="mt-3">
       {
-        imageLoading ? <img
+        !imageLoading ? <img
           src={imageUrl}
           alt="Source preview"
           className="w-full border border-slate-600 rounded bg-white"

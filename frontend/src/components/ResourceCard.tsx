@@ -24,6 +24,7 @@ export function ResourceCard({ resource, onDelete, onCopy }: ResourceCardProps) 
 
     async function poll(attempt: number) {
       if (cancelled) return
+      setImageLoading(true)
       const url = `${config.VITE_API_URL}/resources/screenshots/${resource.id}`
       const data = await fetchWithAuth(url)
       if (data.ok) {
