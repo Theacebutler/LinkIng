@@ -1,6 +1,9 @@
+import { useEffect, useState } from 'react';
 import type { Resource } from '../types/resource';
 
 import ResourceImage from "./ResourceImage"
+import { config } from '../../config';
+import { fetchWithAuth } from '../utils/authClient';
 
 interface ResourceCardProps {
   resource: Resource;
@@ -11,6 +14,35 @@ interface ResourceCardProps {
 
 export function ResourceCard({ resource, onDelete, onCopy }: ResourceCardProps) {
 
+  const [imageUrl, setImageUrl] = useState('');
+  const [imageLoading, setImageLoading] = useState(false);
+  const [imageLoadingError, setImageLoadingError] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    let timeOutID: ReturnType<typeof setTimeout>
+
+    async function poll(attempt: number) {
+      if (cancelled) return
+      const url = `${config.VITE_API_URL}/resources/screenshots/${resource.id}`
+      const data = await fetchWithAuth(url)
+      if (data.ok) {
+        setImageUrl(url)
+        setImageLoading(false)
+        setImageLoadingError(false)
+      } else if (attempt >= config.MAX_IMAGE_POLLING_ATTEMPTS) {
+        setImageLoadingError(false)
+        return
+      } else {
+        timeOutID = setTimeout(() => poll(attempt + 1), 4000 + (attempt * 1000))
+      }
+    }
+    poll(1)
+    return () => {
+      cancelled = true
+      clearTimeout(timeOutID)
+    }
+  }, [resource.id])
   const openResource = () => {
     window.open(resource.resourceUrl, '_blank', 'noopener,noreferrer');
   };
@@ -129,7 +161,7 @@ export function ResourceCard({ resource, onDelete, onCopy }: ResourceCardProps) 
           </div>
         )}
         <button onClick={openResource} className="text-blue-400 text-left truncate hover:underline block w-full">
-          <ResourceImage resource={resource} />
+          <ResourceImage imageUrl={imageUrl} imageLoading={imageLoading} imageLoadingError={imageLoadingError} />
         </button>
       </div>
 
