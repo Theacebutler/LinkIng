@@ -22,7 +22,7 @@ services:
       resources:
         limits:
           cpus: "1"
-          memory: 400MB
+          memory: 512MB
     environment:
       JWT_SECRET: ${JWT_SECRET}
       REFRESH_SECRET: ${REFRESH_SECRET}
