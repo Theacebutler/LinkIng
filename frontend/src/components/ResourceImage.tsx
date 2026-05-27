@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Resource } from "../types/resource";
 import { config } from "../../config";
+import { fetchWithAuth } from "../utils/authClient";
 
 const VITE_API_URL = config.VITE_API_URL
 
@@ -12,7 +13,6 @@ export default function ResourceImage({ resource }: { resource: Resource }) {
   async function pollingImage() {
     if (!resource.id) return
     if (loaded) return;
-    const data = await fetch(`${VITE_API_URL}/resources/screenshots/${resource.id}`)
     switch (data.status) {
       case 200:
         setLoaded(true);
@@ -33,6 +33,8 @@ export default function ResourceImage({ resource }: { resource: Resource }) {
       pollingImage()
     }, 300)
   },);
+      const url = `${VITE_API_URL}/resources/screenshots/${resource.id}`
+      const data = await fetchWithAuth(url)
 
 
   return (
