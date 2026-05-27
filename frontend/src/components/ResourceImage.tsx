@@ -10,31 +10,31 @@ export default function ResourceImage({ resource }: { resource: Resource }) {
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);
 
-  async function pollingImage() {
-    if (!resource.id) return
-    if (loaded) return;
-    switch (data.status) {
-      case 200:
-        setLoaded(true);
-        setImageUrl(`${VITE_API_URL}/resources/screenshots/${resource.id}`);
-        break;
-      default:
-        setImageUrl('');
-        setLoaded(false);
-        setTimeout(() => {
-          pollingImage()
-        }, 4000)
-        break;
-    };
-  };
-
   useEffect(() => {
-    setTimeout(() => {
-      pollingImage()
-    }, 300)
-  },);
+    let cancelled = false;
+    let timeOutID: ReturnType<typeof setTimeout>
+
+    async function poll(attempt: number) {
+      if (cancelled) return
       const url = `${VITE_API_URL}/resources/screenshots/${resource.id}`
       const data = await fetchWithAuth(url)
+      if (data.ok) {
+        setImageUrl(url)
+        setLoaded(true)
+        setError(false)
+      } else if (attempt >= config.MAX_IMAGE_POLLING_ATTEMPTS) {
+        setError(true)
+        return
+      } else {
+        timeOutID = setTimeout(() => poll(attempt + 1), 4000 + (attempt * 1000))
+      }
+    }
+    poll(1)
+    return () => {
+      cancelled = true
+      clearTimeout(timeOutID)
+    }
+  }, [resource.id])
 
 
   return (
