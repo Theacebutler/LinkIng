@@ -1,18 +1,18 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "b55c88c5-3c13-4919-b0ad-9c8c8aa1bf64",
-  "prevId": "8f6a560d-72fa-4bef-afdc-a5f18d6701d0",
+  "id": "ac0b7c99-4dca-4dfd-9b33-042fde9f4fd9",
+  "prevId": "d049eacb-8ff4-477b-b275-4db29aba0c56",
   "tables": {
     "resources_table": {
       "name": "resources_table",
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "integer",
           "primaryKey": true,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": true
         },
         "owner": {
           "name": "owner",
@@ -42,6 +42,13 @@
           "notNull": false,
           "autoincrement": false
         },
+        "imageUrl": {
+          "name": "imageUrl",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "createdAt": {
           "name": "createdAt",
           "type": "text",
@@ -52,15 +59,15 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "resources_table_owner_users_table_name_fk": {
-          "name": "resources_table_owner_users_table_name_fk",
+        "resources_table_owner_users_table_username_fk": {
+          "name": "resources_table_owner_users_table_username_fk",
           "tableFrom": "resources_table",
           "tableTo": "users_table",
           "columnsFrom": [
             "owner"
           ],
           "columnsTo": [
-            "name"
+            "username"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -75,14 +82,14 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "integer",
           "primaryKey": true,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": true
         },
         "resource_id": {
           "name": "resource_id",
-          "type": "text",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -120,13 +127,13 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "integer",
           "primaryKey": true,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": true
         },
-        "name": {
-          "name": "name",
+        "username": {
+          "name": "username",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
@@ -136,11 +143,26 @@
           "name": "password",
           "type": "text",
           "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "text",
+          "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "users_table_username_unique": {
+          "name": "users_table_username_unique",
+          "columns": [
+            "username"
+          ],
+          "isUnique": true
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
