@@ -7,6 +7,7 @@
       "dependencies": {
         "@types/bcrypt": "^6.0.0",
         "bcrypt": "^6.0.0",
+        "dotenv": "^17.4.2",
         "dotnet": "^1.1.4",
         "drizzle-orm": "^0.45.1",
         "generic-pool": "^3.9.0",
@@ -173,6 +174,8 @@
     "detect-libc": ["detect-libc@2.1.2", "", {}, "sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ=="],
 
     "devtools-protocol": ["devtools-protocol@0.0.1581282", "", {}, "sha512-nv7iKtNZQshSW2hKzYNr46nM/Cfh5SEvE2oV0/SEGgc9XupIY5ggf84Cz8eJIkBce7S3bmTAauFD6aysMpnqsQ=="],
+
+    "dotenv": ["dotenv@17.4.2", "", {}, "sha512-nI4U3TottKAcAD9LLud4Cb7b2QztQMUEfHbvhTH09bqXTxnSie8WnjPALV/WMCrJZ6UV/qHJ6L03OqO3LcdYZw=="],
 
     "dotnet": ["dotnet@1.1.4", "", { "dependencies": { "commander": "*", "minimist": "*", "promise": "*" } }, "sha512-JxRiwvNLTpIkjpphFNovyCARQbrQCMZY4OP7Q61JPGCDpvE3aJnm6Fo6x0LmroGE3L7yo7unKNRZ6aViDLR/0g=="],
 

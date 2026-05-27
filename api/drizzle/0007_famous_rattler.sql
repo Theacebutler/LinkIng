@@ -1,1 +1,0 @@
-ALTER TABLE `users_table` RENAME COLUMN "passwordHash" TO "password";
