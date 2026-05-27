@@ -5,8 +5,7 @@ on:
       - main
       - add-users
     paths:
-      - api
-      - frontend
+      - api/*
 
 jobs:
   build:
