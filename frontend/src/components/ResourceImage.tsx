@@ -7,6 +7,7 @@ const VITE_API_URL = config.VITE_API_URL
 export default function ResourceImage({ resource }: { resource: Resource }) {
   const [imageUrl, setImageUrl] = useState('');
   const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState(false);
 
   async function pollingImage() {
     if (!resource.id) return
@@ -41,7 +42,9 @@ export default function ResourceImage({ resource }: { resource: Resource }) {
           src={imageUrl}
           alt="Source preview"
           className="w-full border border-slate-600 rounded bg-white"
-        /> : <div className="w-full h-full align-middle rounded animate-pulse">Loading preview...</div>
+        /> : error ?
+          <div className="w-full h-full align-middle rounded">Error loading preview</div>
+          : <div className="w-full h-full align-middle rounded animate-pulse">Loading preview...</div>
       }
     </div>
   );
