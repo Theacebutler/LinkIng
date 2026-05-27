@@ -4,6 +4,7 @@ export const config = {
   ALLOWED_ORIGINS: "*",
   ACCESS_TOKEN_KEY_NAME: "accessToken",
   REFRESH_TOKEN_KEY_NAME: "refreshToken",
+  MAX_IMAGE_POLLING_ATTEMPTS: 5,
 };
 
 if (!import.meta.env.PORT) {
