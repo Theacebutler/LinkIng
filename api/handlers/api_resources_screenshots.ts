@@ -2,6 +2,7 @@ import { eq } from "drizzle-orm";
 import { db } from "../db";
 import { resourcesTable, screenshotsTable } from "../db/schema";
 import { config } from "../config";
+import { json } from "../utils/jsonResponseUtil";
 
 export function apiResourceScreenshotOpts() {
   const res = Response.json({});
@@ -11,8 +12,8 @@ export function apiResourceScreenshotOpts() {
   return res;
 }
 
-export async function apiResourceScreenshotGet(req: Bun.BunRequest<"/api/resources/screenshots/:id">) {
-  const id = Number(req.params.id)
+export async function apiResourceScreenshotGet(id: number) {
+  if (!id) return json({ error: "id is required" }, 400);
   try {
     const image_record = await db.select()
       .from(screenshotsTable)
@@ -31,22 +32,13 @@ export async function apiResourceScreenshotGet(req: Bun.BunRequest<"/api/resourc
       });
       return res;
     } else {
-      return new Response(JSON.stringify({ error: "Image not found" }), {
-        status: 404,
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': config.FRONTEND_URL,
-        },
-      });
+      return json({ error: "image not found" }, 404);
     }
   } catch (e) {
-    return new Response(JSON.stringify({ error: "Image not found" }), {
-      status: 404,
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': config.FRONTEND_URL,
-      },
-    });
+    if (e instanceof Error) {
+      return json({ error: e.message }, 500);
+    }
+    return json({ error: "unknown error" }, 500);
   }
 
 }
