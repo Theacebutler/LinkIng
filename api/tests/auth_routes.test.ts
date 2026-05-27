@@ -66,7 +66,7 @@ describe("TEST login", async () => {
         password: "test-password"
       })
     })
-    const res = await login(mockRequest)
+    const res = await login(TEST_USER, "test-password", mockRequest.headers)
     const data = await res.json() as { accessToken: string, refreshToken: string, tokenType: string, expiresIn: number };
     expect(res.ok).toBe(true);
     expect(res.status).toBe(200);
@@ -85,7 +85,7 @@ describe("TEST login", async () => {
         password: "not-a-valid-password"
       })
     })
-    const res = await login(mockRequest)
+    const res = await login(TEST_USER, "not-a-valid-password", mockRequest.headers)
     expect(res.ok).toBe(false);
     expect(res.status).toBe(401);
   })
