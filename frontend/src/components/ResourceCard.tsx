@@ -31,7 +31,7 @@ export function ResourceCard({ resource, onDelete, onCopy }: ResourceCardProps) 
         setImageLoading(false)
         setImageLoadingError(false)
       } else if (attempt >= config.MAX_IMAGE_POLLING_ATTEMPTS) {
-        setImageLoadingError(false)
+        setImageLoadingError(true)
         return
       } else {
         timeOutID = setTimeout(() => poll(attempt + 1), 4000 + (attempt * 1000))
