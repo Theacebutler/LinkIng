@@ -1,18 +1,11 @@
 import { useState, useEffect } from 'react';
-import Cookies from 'js-cookie';
 import type { Resource } from '../types/resource';
-import { parseCookies } from '../utils/cookies';
 import { config } from '../../config';
+import { fetchWithAuth } from '../utils/authClient';
 
 const VITE_API_URL = config.VITE_API_URL
 
-const access_token_cookie = Cookies.get('accessToken')
-const accessTokenCookieParts = parseCookies(access_token_cookie as string)
-const ACCESS_TOKEN = accessTokenCookieParts.get('access_token')
 
-const refresh_token_cookie = Cookies.get('refreshToken')
-const refreshTokenCookieParts = parseCookies(refresh_token_cookie as string)
-const REFRESH_TOKEN = refreshTokenCookieParts.get('refresh_token')
 
 export function useResources() {
   const [resources, setResources] = useState<Resource[]>([]);
@@ -23,12 +16,7 @@ export function useResources() {
 
     try {
       setLoading(true);
-      const response = await fetch(`${VITE_API_URL}/resources`, {
-        headers: {
-          "Authorization": `Bearer ${ACCESS_TOKEN}`,
-          "Access-Control-Allow-Origin": config.ALLOWED_ORIGINS,
-        }
-      });
+      const response = await fetchWithAuth(`${VITE_API_URL}/resources`)
       if (!response.ok) throw new Error('Failed to fetch resources');
       const data = await response.json() as Resource[];
       setResources(data);
@@ -42,17 +30,7 @@ export function useResources() {
 
   const addResource = async (resource: Omit<Resource, 'id' | 'createdAt'>) => {
     try {
-      resource = { ...resource, owner: Cookies.get('name') || '' }
-
-      const response = await fetch(`${VITE_API_URL}/resources`, {
-        method: 'POST',
-        headers: {
-          "Authorization": `Bearer ${ACCESS_TOKEN}`,
-          "Access-Control-Allow-Origin": config.ALLOWED_ORIGINS,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(resource),
-      });
+      const response = await fetchWithAuth(`${VITE_API_URL}/resources`, 'POST', JSON.stringify(resource))
       if (!response.ok) throw new Error('Failed to add resource');
       const newResource = await response.json() as Resource;
       setResources((prev) => [newResource, ...prev]);
@@ -65,12 +43,7 @@ export function useResources() {
 
   const deleteResource = async (id: string) => {
     try {
-      const response = await fetch(`${VITE_API_URL}/resources/${id}`, {
-        headers: {
-          "Authorization": `Bearer ${ACCESS_TOKEN}`,
-        },
-        method: 'DELETE',
-      });
+      const response = await fetchWithAuth(`${VITE_API_URL}/resources/${id}`, 'DELETE')
       if (!response.ok) throw new Error('Failed to delete resource');
       setResources((prev) => prev.filter((r) => r.id !== id));
       return true;
