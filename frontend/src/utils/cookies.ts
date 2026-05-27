@@ -6,6 +6,18 @@ export const COOKIE_CONFIG = {
 }
 
 
+export function setAccessTokenCookie(token: string): string {
+  const maxAge = 60 * 15 // 15 min
+  return `access_token=${token}; Max-Age=${maxAge}; HttpOnly; Secure; SameSite=Lax; Path=/`;
+}
+
+
+export function setRefreshTokenCookie(token: string): string {
+  const maxAge = 7 * 24 * 60 * 60 // 7 days
+  return `refresh_token=${token}; Max-Age=${maxAge}; HttpOnly; Secure; SameSite=Lax; Path=/`;
+}
+
+
 // Clear auth cookies for logout
 export function clearAuthCookies(): string[] {
   return [
