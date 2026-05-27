@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { db } from "../db";
-import { screenshotsTable } from "../db/schema";
+import { resourcesTable, screenshotsTable } from "../db/schema";
 import { config } from "../config";
 
 export function apiResourceScreenshotOpts() {
@@ -18,6 +18,10 @@ export async function apiResourceScreenshotGet(req: Bun.BunRequest<"/api/resourc
     .where(eq(screenshotsTable.resourceId, id));
   const image = image_record[0]?.image
   if (image) {
+    // add the image url to the image in the DB
+    await db.update(resourcesTable)
+      .set({ imageUrl: `/api/resources/screenshots/${id}` })
+      .where(eq(resourcesTable.id, id));
     const res = new Response(Buffer.from(image, 'base64'), {
       headers: {
         'Content-Type': 'image/png',

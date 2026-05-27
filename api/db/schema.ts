@@ -17,6 +17,7 @@ export const resourcesTable = pgTable("resources_table", {
   title: text().notNull(),
   resourceUrl: text(),
   sourceUrl: text(),
+  imageUrl: text(),
   createdAt: text(),
 })
 
