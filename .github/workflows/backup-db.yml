@@ -6,8 +6,8 @@ on:
   pull_request:
     branches:
       - main
-  #  paths:
-  #   - './api/db/*'
+    paths:
+      - './api/db/**'
 jobs:
   backup-db:
     runs-on: ubuntu-latest
