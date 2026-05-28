@@ -73,6 +73,8 @@ export default async function screenshot(url: string | null | undefined, resourc
     };
   } catch (e) {
     console.log(e)
+  } finally {
+    await browser.close()
   }
   await db.insert(screenshotsTable).values({
     resourceId: resourceId,
