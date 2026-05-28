@@ -61,7 +61,7 @@ export default async function screenshot(url: string | null | undefined, resourc
     });
   let image: string | null = null
   try {
-    const res = await page.goto(url, { waitUntil: 'networkidle2' });
+    const res = await page.goto(url, { waitUntil: 'domcontentloaded' });
     if (res?.ok()) {
       image = await page.screenshot({
         type: 'png',
