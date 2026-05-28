@@ -161,9 +161,13 @@ export function ResourceCard({ resource, onDelete, onCopy }: ResourceCardProps) 
             </div>
           </div>
         )}
-        <button onClick={openResource} className="text-blue-400 text-left truncate hover:underline block w-full">
-          <ResourceImage imageUrl={imageUrl} imageLoading={imageLoading} imageLoadingError={imageLoadingError} />
-        </button>
+        {
+          imageLoadingError ?
+            <div className="w-full h-full align-middle rounded">Cannot load preview at this time</div>
+            : <button onClick={openResource} className="text-blue-400 text-left truncate hover:underline block w-full">
+              <ResourceImage imageUrl={imageUrl} imageLoading={imageLoading} />
+            </button>
+        }
       </div>
 
       <div className="mt-4 pt-3 border-t border-slate-700">
