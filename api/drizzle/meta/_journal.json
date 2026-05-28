@@ -57,6 +57,13 @@
       "when": 1779074704117,
       "tag": "0007_famous_rattler",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1779934020998,
+      "tag": "0008_material_black_crow",
+      "breakpoints": true
     }
   ]
 }
