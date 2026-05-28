@@ -1,0 +1,27 @@
+name: Backup DB
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - './api/db/*'
+jobs:
+  backup-db:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Copy and backup the .sqlite file
+        uses: appleboy/ssh-action@v1
+        with:
+          host: "${{ secrets.HOST }}"
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          debug: true
+          script: |
+            db_path=$(docker volume inspect linking_sqlite_db --format json | jq --raw-output '.[].Mountpoint')
+            backup_name="db_backup_$(date +%Y%m_%d_%H_%M_%S).sqlite"
+            [[ -d ~/linking/ ]] || mkdir -p ~/linking
+            backup_path="~/linking/$backup_name"
+            cp $db_path/db.sqlite ~/linking/"$backup_name"
