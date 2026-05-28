@@ -1,4 +1,4 @@
-import { serial, pgTable, text, boolean } from "drizzle-orm/pg-core";
+import { serial, pgTable, text } from "drizzle-orm/pg-core"
 
 
 // users table
@@ -17,7 +17,6 @@ export const resourcesTable = pgTable("resources_table", {
   title: text().notNull(),
   resourceUrl: text(),
   sourceUrl: text(),
-  hasImage: boolean().notNull().default(false),
   createdAt: text(),
 })
 
