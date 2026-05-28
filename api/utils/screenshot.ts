@@ -1,7 +1,8 @@
 import * as genericPool from "generic-pool"
 import puppeteer, { type Browser } from "puppeteer";
 import { db } from "../db";
-import { screenshotsTable } from "../db/schema";
+import { resourcesTable, screenshotsTable } from "../db/schema";
+import { eq } from "drizzle-orm";
 
 
 let screenshot_count = 0
@@ -78,4 +79,7 @@ export default async function screenshot(url: string | null | undefined, resourc
     resourceId: resourceId,
     image: image
   })
+  await db.update(resourcesTable)
+    .set({ hasImage: true })
+    .where(eq(resourcesTable.id, resourceId))
 };
