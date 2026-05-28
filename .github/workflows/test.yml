@@ -4,7 +4,8 @@ on:
     branches:
       - main
     paths:
-      - api/*
+      - ./api/**
+      - ./frontend/**
 
 jobs:
   build:
