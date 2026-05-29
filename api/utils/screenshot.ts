@@ -1,6 +1,7 @@
 import puppeteer from "puppeteer";
 import { db } from "../db";
 import { screenshotsTable } from "../db/schema";
+import formatMemoryUsage from "./formatMemoryUsage";
 
 export default async function screenshot(url: string | null | undefined, resourceId: number | undefined): Promise<void> {
   if (!url || !resourceId) return
@@ -34,7 +35,7 @@ export default async function screenshot(url: string | null | undefined, resourc
     } catch (e) {
       console.error({
         Error: e,
-        Memory: process.memoryUsage(),
+        Memory: formatMemoryUsage(),
         resourceId: resourceId,
       })
     }
