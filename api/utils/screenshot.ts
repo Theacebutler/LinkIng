@@ -40,6 +40,10 @@ const pool = genericPool.createPool(factory, {
 export default async function screenshot(url: string | null | undefined, resourceId: number | undefined): Promise<void> {
   if (!url || !resourceId) return
   const browser = await pool.acquire()
+      '--max-old-space-size=512', // Limits V8 memory in MB
+      '--memory-pressure-off', // Prevents browser from aggressively trying to swap
+      "--single-process",    // reduces total processes
+      "--no-zygote",         // prevents extra process fork
   try {
     const page = await browser.newPage()
     await page.setViewport({ width: 1820, height: 720 })
