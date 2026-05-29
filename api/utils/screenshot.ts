@@ -4,9 +4,6 @@ import { db } from "../db";
 import { screenshotsTable } from "../db/schema";
 
 
-let screenshot_count = 0
-const MAX_SCREENSHOT_COUNT = 100
-
 const factory = {
   create: async () => {
     return await puppeteer.launch({
@@ -24,7 +21,7 @@ const factory = {
   },
   validate: async (browser: Browser) => {
     try {
-      browser.pages()
+      await browser.pages()
       return true
     } catch {
       return false
@@ -44,40 +41,27 @@ export default async function screenshot(url: string | null | undefined, resourc
   if (!url || !resourceId) return
   const browser = await pool.acquire()
   try {
-    screenshot_count++
-    if (screenshot_count >= MAX_SCREENSHOT_COUNT) {
-      await pool.destroy(browser);
-      screenshot_count = 0
-      return await screenshot(url, resourceId)
+    const page = await browser.newPage()
+    await page.setViewport({ width: 1820, height: 720 })
+    let image: string | null = null
+    try {
+      const res = await page.goto(url, { waitUntil: 'domcontentloaded' })
+      if (res?.ok()) {
+        image = await page.screenshot({
+          type: 'png',
+          encoding: 'base64',
+          fullPage: false
+        })
+      }
+    } catch (e) {
+      console.log(e)
     }
+    await page.close()
+    await db.insert(screenshotsTable).values({
+      resourceId,
+      image
+    })
   } finally {
-    await pool.release(browser);
+    await pool.release(browser)
   }
-
-  const page = await browser.newPage()
-    .then((page) => {
-      page.setViewport({ width: 1820, height: 720 });
-      return page;
-    });
-  let image: string | null = null
-  try {
-    const res = await page.goto(url, { waitUntil: 'domcontentloaded' });
-    if (res?.ok()) {
-      image = await page.screenshot({
-        type: 'png',
-        encoding: 'base64',
-        fullPage: false
-      });
-    } else {
-      image = null
-    };
-  } catch (e) {
-    console.log(e)
-  } finally {
-    await browser.close()
-  }
-  await db.insert(screenshotsTable).values({
-    resourceId: resourceId,
-    image: image
-  })
-};
+}
