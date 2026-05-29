@@ -1,49 +1,23 @@
-import * as genericPool from "generic-pool"
-import puppeteer, { type Browser } from "puppeteer";
+import puppeteer from "puppeteer";
 import { db } from "../db";
 import { screenshotsTable } from "../db/schema";
 
-
-const factory = {
-  create: async () => {
-    return await puppeteer.launch({
-      headless: true,
-      args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-dev-shm-usage",
-        "--disable-gpu"
-      ]
-    });
-  },
-  destroy: async (browser: Browser) => {
-    await browser.close()
-  },
-  validate: async (browser: Browser) => {
-    try {
-      await browser.pages()
-      return true
-    } catch {
-      return false
-    }
-  }
-}
-
-const pool = genericPool.createPool(factory, {
-  min: 2,
-  max: 5,
-  testOnBorrow: false,
-  evictionRunIntervalMillis: 60000
-
-})
-
 export default async function screenshot(url: string | null | undefined, resourceId: number | undefined): Promise<void> {
   if (!url || !resourceId) return
-  const browser = await pool.acquire()
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: [
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      "--disable-dev-shm-usage",
+      "--disable-gpu",
       '--max-old-space-size=512', // Limits V8 memory in MB
       '--memory-pressure-off', // Prevents browser from aggressively trying to swap
       "--single-process",    // reduces total processes
       "--no-zygote",         // prevents extra process fork
+    ]
+  });
+
   try {
     const page = await browser.newPage()
     await page.setViewport({ width: 1820, height: 720 })
@@ -58,14 +32,17 @@ export default async function screenshot(url: string | null | undefined, resourc
         })
       }
     } catch (e) {
-      console.log(e)
+      console.error({
+        Error: e,
+        Memory: process.memoryUsage(),
+        resourceId: resourceId,
+      })
     }
-    await page.close()
     await db.insert(screenshotsTable).values({
       resourceId,
       image
     })
   } finally {
-    await pool.release(browser)
+    await browser.close()
   }
 }
