@@ -22,14 +22,17 @@ export default async function screenshot(url: string | null | undefined, resourc
   try {
     const page = await browser.newPage()
     await page.setViewport({ width: 1820, height: 720 })
-    let image: string | null = null
     try {
       const res = await page.goto(url, { waitUntil: 'domcontentloaded' })
       if (res?.ok()) {
-        image = await page.screenshot({
+        const image = await page.screenshot({
           type: 'png',
           encoding: 'base64',
           fullPage: false
+        })
+        await db.insert(screenshotsTable).values({
+          resourceId,
+          image
         })
       }
     } catch (e) {
@@ -39,10 +42,6 @@ export default async function screenshot(url: string | null | undefined, resourc
         resourceId: resourceId,
       })
     }
-    await db.insert(screenshotsTable).values({
-      resourceId,
-      image
-    })
   } finally {
     await browser.close()
   }
