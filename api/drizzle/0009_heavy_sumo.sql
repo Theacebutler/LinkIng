@@ -1,0 +1,1 @@
+ALTER TABLE `screenshots_table` ADD `hasImage` integer DEFAULT 0;

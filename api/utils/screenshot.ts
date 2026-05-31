@@ -79,20 +79,22 @@ async function screenshot(url: string, resourceId: number): Promise<void> {
   const browser = await getBrowser()
   const page = await browser.newPage()
   await page.setViewport({ width: 1820, height: 720 })
+  let image: string | null = null
   try {
     const res = await page.goto(url, { waitUntil: 'domcontentloaded' })
     if (res?.ok()) {
-      const image = await page.screenshot({
+      image = await page.screenshot({
         type: 'png',
         encoding: 'base64',
         fullPage: false
-      })
-      await db.insert(screenshotsTable).values({
-        resourceId,
-        image
       })
     }
   } finally {
     await page.close()
   }
+  await db.insert(screenshotsTable).values({
+    resourceId,
+    image,
+    hasImage: image ? 1 : 0,
+  })
 } 
