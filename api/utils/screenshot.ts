@@ -89,6 +89,8 @@ async function screenshot(url: string, resourceId: number): Promise<void> {
         fullPage: false
       })
     }
+  } catch (e) {
+    throw e
   } finally {
     await page.close()
   }
