@@ -29,7 +29,6 @@ services:
     environment:
       PORT: 3000
       DB_CONN: /data/db.sqlite
-    image: ghcr.io/${LOWERCASE_GITHUB_REPOSITORY_OWNER}/api:latest
     volumes:
       - sqlite_db:/data
     expose:
@@ -40,7 +39,6 @@ services:
     build: ./frontend
     environment:
       PORT: 8000
-    image: ghcr.io/${LOWERCASE_GITHUB_REPOSITORY_OWNER}/frontend:latest
     healthcheck:
       test: ["CMD", "wget", "--spider", "http://localhost:8000"]
       interval: 5s
