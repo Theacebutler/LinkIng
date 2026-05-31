@@ -1,7 +1,7 @@
 import { apiResourcesOpts } from "./handlers/api_resources";
 import { apiResourceScreenshotGet, apiResourceScreenshotOpts } from "./handlers/api_resources_screenshots";
 
-import { addResource, deleteResource, getResources } from "./handlers/protected";
+import { addResource, deleteResource, getResources, updateResource } from "./handlers/protected";
 import { config } from "./config";
 import { login } from "./handlers/login";
 import { logout } from "./handlers/logout";
@@ -58,6 +58,9 @@ const server = Bun.serve({
       },
     },
     "/api/resources/:id": {
+      POST: async (req): Promise<Response> => {
+        return updateResource(req)
+      },
       OPTIONS: () => {
         const res = Response.json({});
         res.headers.set("Access-Control-Allow-Origin", config.FRONTEND_URL as string);

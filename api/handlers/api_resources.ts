@@ -46,6 +46,25 @@ export async function apiResourcesPost(req: AuthenticatedRequest) {
   return res;
 }
 
+export async function apiResourcesIdUpdate(request: AuthenticatedRequest): Promise<Response> {
+  const body = await request.json() as Omit<Resource, 'createdAt' | 'sourceImage'>;
+  if (!body.id || !body.owner) {
+    return Response.json({ error: "id and owner are required" }, 400);
+  }
+  await db.update(resourcesTable)
+    .set({
+      ...body,
+      updatedAt: new Date().toISOString(),
+    })
+    .where(
+      and(
+        eq(resourcesTable.id, body.id),
+        eq(resourcesTable.owner, body.owner)
+      ));
+  const res = Response.json({ deleted: true });
+  res.headers.set("Access-Control-Allow-Origin", config.FRONTEND_URL);
+  return res
+}
 
 export async function apiResourcesIdDelete(request: AuthenticatedRequest): Promise<Response> {
   const body = await request.json() as Omit<Resource, 'createdAt' | 'sourceImage'>;

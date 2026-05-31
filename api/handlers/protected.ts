@@ -1,5 +1,5 @@
 import { withAuth, type AuthenticatedRequest } from "../utils/token_gen";
-import { apiResourcesGet, apiResourcesPost, apiResourcesIdDelete } from "./api_resources";
+import { apiResourcesGet, apiResourcesPost, apiResourcesIdDelete, apiResourcesIdUpdate } from "./api_resources";
 
 
 export const getResources = withAuth(
@@ -8,6 +8,11 @@ export const getResources = withAuth(
   }
 )
 
+export const updateResource = withAuth(
+  async (request: AuthenticatedRequest): Promise<Response> => {
+    return apiResourcesIdUpdate(request)
+  }
+)
 
 export const addResource = withAuth(
   async (request: AuthenticatedRequest): Promise<Response> => {
