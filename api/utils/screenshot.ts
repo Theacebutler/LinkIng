@@ -95,9 +95,10 @@ async function screenshot(url: string, resourceId: number): Promise<void> {
   } finally {
     await page.close()
   }
-  await db.insert(screenshotsTable).values({
-    resourceId,
-    image,
-    hasImage: image ? 1 : 0,
-  })
-} 
+  await db.insert(screenshotsTable)
+    .values({
+      resourceId,
+      image,
+      hasImage: image ? 1 : 0,
+    })
+}
