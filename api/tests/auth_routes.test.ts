@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { login, register } from "../handlers/auth";
 
-const TEST_USER = "test-user012"
+const TEST_USER = `test-user-${Math.random().toString(36).substring(7)}`
 
 describe("TEST: register new user", async () => {
   const mockRequest: Request = new Request(
