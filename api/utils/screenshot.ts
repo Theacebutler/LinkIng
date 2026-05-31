@@ -43,6 +43,8 @@ async function handleNextScreenshot() {
     try {
       await screenshot(curr.url, curr.resourceId)
     } catch (e) {
+      // re-add to stack if it fails
+      addToScreenshotStack(curr.url, curr.resourceId, curr.timesTried + 1)
       console.error({
         Error: e,
         Memory: formatMemoryUsage(),
