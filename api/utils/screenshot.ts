@@ -4,11 +4,11 @@ import { screenshotsTable } from "../db/schema";
 import formatMemoryUsage from "./formatMemoryUsage";
 
 type ScreenshotJob = { timeAdded?: number, url: string, resourceId: number, isDone: boolean }
-const screenshotStack: ScreenshotJob[] = []
+const screenshotQ: ScreenshotJob[] = []
 let PROCESSING: boolean = false
 let PROCESSING = false
 
-export default function addToScreenshotStack(url: string | null | undefined, resourceId: number | undefined) {
+export default function addToScreenshotQ(url: string | null | undefined, resourceId: number | undefined) {
   if (!url || !resourceId) return
   const newJob: ScreenshotJob = {
     url,
@@ -16,7 +16,7 @@ export default function addToScreenshotStack(url: string | null | undefined, res
     isDone: false,
     timeAdded: Date.now()
   }
-  screenshotStack.push(newJob)
+  screenshotQ.push(newJob)
   if (!PROCESSING) handleNextScreenshot()
 }
 
