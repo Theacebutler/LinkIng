@@ -1,4 +1,4 @@
-import puppeteer from "puppeteer";
+import puppeteer, { Browser } from "puppeteer";
 import { db } from "../db";
 import { screenshotsTable } from "../db/schema";
 import formatMemoryUsage from "./formatMemoryUsage";
@@ -6,7 +6,7 @@ import formatMemoryUsage from "./formatMemoryUsage";
 type ScreenshotJob = { timeAdded?: number, url: string, resourceId: number, isDone: boolean }
 const screenshotQ: ScreenshotJob[] = []
 let PROCESSING: boolean = false
-let PROCESSING = false
+let BROWSER: Browser | null = null
 
 export default function addToScreenshotQ(url: string | null | undefined, resourceId: number | undefined) {
   if (!url || !resourceId) return
@@ -30,22 +30,56 @@ async function handleNextScreenshot() {
     const curr = screenshotQ.shift()
     if (!curr) return
     try {
-      const res = await page.goto(url, { waitUntil: 'domcontentloaded' })
-      if (res?.ok()) {
-        const image = await page.screenshot({
-          type: 'png',
-          encoding: 'base64',
-          fullPage: false
-        })
-        await db.insert(screenshotsTable).values({
-          resourceId,
-          image
-        })
-      }
-    } finally {
-      await page.close()
+      await screenshot(curr.url, curr.resourceId)
+    } catch (e) {
+      console.error({
+        Error: e,
+        Memory: formatMemoryUsage(),
+        resourceId: curr.resourceId,
+        url: curr.url,
+        age: curr.timeAdded
+      })
     }
-  } finally {
-    await browser.close()
   }
 }
+async function getBrowser() {
+  if (!BROWSER || !BROWSER.connected) {
+    BROWSER = await puppeteer.launch({
+      headless: true,
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
+        "--disable-gpu",
+        '--max-old-space-size=512', // Limits V8 memory in MB
+        '--memory-pressure-off', // Prevents browser from aggressively trying to swap
+        "--single-process",    // reduces total processes
+        "--no-zygote",         // prevents extra process fork
+      ]
+    });
+  }
+  return BROWSER
+}
+
+
+async function screenshot(url: string, resourceId: number): Promise<void> {
+  const browser = await getBrowser()
+  const page = await browser.newPage()
+  await page.setViewport({ width: 1820, height: 720 })
+  try {
+    const res = await page.goto(url, { waitUntil: 'domcontentloaded' })
+    if (res?.ok()) {
+      const image = await page.screenshot({
+        type: 'png',
+        encoding: 'base64',
+        fullPage: false
+      })
+      await db.insert(screenshotsTable).values({
+        resourceId,
+        image
+      })
+    }
+  } finally {
+    await page.close()
+  }
+} 
