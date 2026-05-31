@@ -64,13 +64,6 @@
       "when": 1779934020998,
       "tag": "0008_material_black_crow",
       "breakpoints": true
-    },
-    {
-      "idx": 9,
-      "version": "6",
-      "when": 1780203103515,
-      "tag": "0009_heavy_sumo",
-      "breakpoints": true
     }
   ]
 }
