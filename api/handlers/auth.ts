@@ -16,7 +16,9 @@ import type { User } from "../shared/types";
 // this function should take in the register request and return a response with the userId
 export async function register(request: Request): Promise<Response> {
   try {
-    const body = await request.json() as { username: string; password: string; };
+    // TODO: implement a better interface for registration and Login to avoid this `clone` hack
+    // since it's not a good practice to modify the request object and its not very memory efficient
+    const body = await request.clone().json() as { username: string; password: string; };
     const { username, password } = body;
 
     // Validate input
@@ -44,7 +46,7 @@ export async function register(request: Request): Promise<Response> {
       if (!user) {
         return json({ error: "Invalid username or password" }, 401);
       }
-      return login(username, password, request.headers);
+      return login(request);
     }
     // Create user with hashed password in DB
     const hashedPassword = await bcrypt.hash(password, config.SALT_ROUNDS);
@@ -159,7 +161,8 @@ export const logout = withAuth(
 );
 
 
-export async function login(username: string, password: string, headers: Headers): Promise<Response> {
+export async function login(request: Request): Promise<Response> {
+  const { username, password } = await request.json() as { username: string; password: string; };
   try {
     // Validate input
     if (!username || !password) {
@@ -184,7 +187,7 @@ export async function login(username: string, password: string, headers: Headers
     const familyId = crypto.randomUUID();
 
     // Store refresh token metadata
-    const deviceInfo = headers.get("User-Agent") || "Unknown";
+    const deviceInfo = request.headers.get("User-Agent") || "Unknown";
     storeRefreshToken(tokenID, user.id?.toString() as string, familyId, deviceInfo);
 
     return json({

@@ -21,7 +21,7 @@ beforeAll(async () => {
     })
   })
   await register(mockRequest)
-  await login(TEST_USER, TEST_PASSWORD, mockRequest.headers)
+  await login(mockRequest)
     .then(async (res) => {
       const data = await res.json() as { accessToken: string };
       token = data.accessToken

@@ -52,7 +52,6 @@ describe("TEST: register new user", async () => {
     const res = await register(mockRequest)
     expect(res.status).toBe(400);
   })
-
 })
 
 describe("TEST login", async () => {
@@ -66,7 +65,7 @@ describe("TEST login", async () => {
         password: "test-password"
       })
     })
-    const res = await login(TEST_USER, "test-password", mockRequest.headers)
+    const res = await login(mockRequest)
     const data = await res.json() as { accessToken: string, refreshToken: string, tokenType: string, expiresIn: number };
     expect(res.ok).toBe(true);
     expect(res.status).toBe(200);
@@ -85,7 +84,7 @@ describe("TEST login", async () => {
         password: "not-a-valid-password"
       })
     })
-    const res = await login(TEST_USER, "not-a-valid-password", mockRequest.headers)
+    const res = await login(mockRequest)
     expect(res.ok).toBe(false);
     expect(res.status).toBe(401);
   })
