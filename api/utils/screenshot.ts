@@ -30,16 +30,17 @@ async function handleNextScreenshot() {
       return
     }
     const curr = screenshotStack.shift()
+    if (!curr) return
     if (curr.timesTried > config.MAX_SCREENSHOT_TRIES) {
       console.error({
         message: "screenshot failed too many times",
         limit: config.MAX_SCREENSHOT_TRIES,
         resourceId: curr.resourceId,
         url: curr.url,
-        age: curr.timeAdded
+        age: curr.timeAdded - Date.now()
       })
+      return
     }
-    if (!curr) return
     try {
       await screenshot(curr.url, curr.resourceId)
     } catch (e) {
