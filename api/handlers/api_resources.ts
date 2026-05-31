@@ -61,7 +61,7 @@ export async function apiResourcesIdUpdate(request: AuthenticatedRequest): Promi
         eq(resourcesTable.id, body.id),
         eq(resourcesTable.owner, body.owner)
       ));
-  const res = Response.json({ deleted: true });
+  const res = Response.json({ updated: true });
   res.headers.set("Access-Control-Allow-Origin", config.FRONTEND_URL);
   return res
 }
