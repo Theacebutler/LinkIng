@@ -10,6 +10,7 @@ export const config = {
   JWT_ISSUER: "gatherlink",
   JWT_AUDIENCE: "gatherlink_frontend",
   SALT_ROUNDS: 10,
+  MAX_SCREENSHOT_TRIES: 3,
 }
 if (!config.JWT_SECRET || config.JWT_SECRET.length < 32) {
   throw new Error("JWT_SECRET must be set and at least 32 characters");

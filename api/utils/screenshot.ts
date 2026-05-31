@@ -1,20 +1,22 @@
 import puppeteer, { Browser } from "puppeteer";
 import { db } from "../db";
+import { config } from "../config";
 import { screenshotsTable } from "../db/schema";
 import formatMemoryUsage from "./formatMemoryUsage";
 
-type ScreenshotJob = { timeAdded?: number, url: string, resourceId: number, isDone: boolean }
+type ScreenshotJob = { timeAdded?: number, url: string, resourceId: number, isDone: boolean, timesTried: number }
 const screenshotStack: ScreenshotJob[] = []
 let PROCESSING: boolean = false
 let BROWSER: Browser | null = null
 
-export default function addToScreenshotStack(url: string | null | undefined, resourceId: number | undefined) {
+export default function addToScreenshotStack(url: string | null | undefined, resourceId: number | undefined, timesTried: number = 0) {
   if (!url || !resourceId) return
   const newJob: ScreenshotJob = {
     url,
     resourceId,
     isDone: false,
-    timeAdded: Date.now()
+    timeAdded: Date.now(),
+    timesTried: timesTried
   }
   screenshotStack.push(newJob)
   if (!PROCESSING) handleNextScreenshot()
@@ -28,6 +30,15 @@ async function handleNextScreenshot() {
       return
     }
     const curr = screenshotStack.shift()
+    if (curr?.timeAdded !== undefined && curr.timesTried > config.MAX_SCREENSHOT_TRIES) {
+      console.error({
+        message: "screenshot failed too many times",
+        limit: config.MAX_SCREENSHOT_TRIES,
+        resourceId: curr.resourceId,
+        url: curr.url,
+        age: curr.timeAdded
+      })
+    }
     if (!curr) return
     try {
       await screenshot(curr.url, curr.resourceId)
