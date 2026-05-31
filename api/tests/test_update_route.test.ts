@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, test } from "bun:test";
 
-import { addResource, getResources, updateResource } from "../handlers/protected";
+import { addResource, deleteResource, getResources, updateResource } from "../handlers/protected";
 import { register } from "../handlers/register";
 import { login } from "../handlers/login";
 import type { Resource } from "../shared/types";
@@ -90,14 +90,28 @@ describe("TEST: resource CRUD", async () => {
     const res = await getResources(mockRequest)
     const data = await res.json() as Resource[];
     expect(res.ok).toBe(true);
-    console.log(data);
 
-    // const updatedResource = data.resources.find(resource => resource.id === TEST_RESOURCE_ID)
-    // expect(updatedResource).toBeDefined()
-    // expect(updatedResource?.title).toBe("new title")
-
+    const updatedResource = data.find(resource => resource.id === TEST_RESOURCE_ID)
+    expect(updatedResource).toBeDefined()
+    expect(updatedResource?.title).toBe("new title")
   })
 
-
+  test("TEST delete resource", async () => {
+    const mockRequest: Request = new Request(
+      `http://localhost:3000/api/resources/${TEST_RESOURCE_ID}/`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+    })
+    const res = await deleteResource(mockRequest)
+    const data = await res.json() as { message: string; id?: number, error?: string | unknown };
+    console.log("data", data, TEST_RESOURCE_ID)
+    expect(res.ok).toBe(true);
+    expect(res.status).toBe(200);
+    // test the data.message output
+    expect(data.error).toBeUndefined();
+  })
 
 })
