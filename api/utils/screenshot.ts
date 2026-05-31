@@ -4,7 +4,8 @@ import { screenshotsTable } from "../db/schema";
 import formatMemoryUsage from "./formatMemoryUsage";
 
 type ScreenshotJob = { timeAdded?: number, url: string, resourceId: number, isDone: boolean }
-const screenshotStack = new Array<ScreenshotJob>
+const screenshotStack: ScreenshotJob[] = []
+let PROCESSING: boolean = false
 let PROCESSING = false
 
 export default function addToScreenshotStack(url: string | null | undefined, resourceId: number | undefined) {
@@ -20,7 +21,10 @@ export default function addToScreenshotStack(url: string | null | undefined, res
 }
 
 async function handleNextScreenshot() {
-  if (screenshotStack.length <= 0) return
+  if (screenshotStack.length <= 0) {
+    PROCESSING = false
+    return
+  }
   PROCESSING = true
   const curr = screenshotStack.pop()
   if (!curr) return
@@ -35,7 +39,6 @@ async function handleNextScreenshot() {
       age: curr.timeAdded
     })
   }
-  PROCESSING = false
   handleNextScreenshot()
 }
 async function screenshot(url: string, resourceId: number): Promise<void> {
