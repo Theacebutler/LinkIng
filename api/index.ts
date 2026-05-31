@@ -1,5 +1,5 @@
 import { apiResourcesOpts } from "./handlers/api_resources";
-import { apiResourceScreenshotGet, apiResourceScreenshotOpts } from "./handlers/api_resources_screenshots";
+import { apiResourceScreenshotGet } from "./handlers/api_resources_screenshots";
 
 import { addResource, deleteResource, getResources, updateResource } from "./handlers/protected";
 import { config } from "./config";
