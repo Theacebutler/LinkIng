@@ -4,7 +4,7 @@ import { apiResourcesGet, apiResourcesPost, apiResourcesIdDelete, apiResourcesId
 
 export const getResources = withAuth(
   async (request: AuthenticatedRequest): Promise<Response> => {
-    return apiResourcesGet(request.user?.sub as string);
+    return apiResourcesGet(request);
   }
 )
 
@@ -21,7 +21,6 @@ export const updateResource = withAuth(
 )
 export const deleteResource = withAuth(
   async (request: AuthenticatedRequest): Promise<Response> => {
-    // @ts-ignore
     return apiResourcesIdDelete(request)
   }
 )

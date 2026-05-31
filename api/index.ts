@@ -50,24 +50,23 @@ const server = Bun.serve({
       POST: async (req): Promise<Response> => {
         return addResource(req);
       },
+      PATCH: async (req): Promise<Response> => {
+        return updateResource(req)
+      },
+      DELETE: async (req) => {
+        return deleteResource(req)
+      },
       OPTIONS: () => {
         return apiResourcesOpts()
       },
     },
     "/api/resources/:id": {
-      POST: async (req): Promise<Response> => {
-        return updateResource(req)
-      },
       OPTIONS: () => {
         const res = Response.json({});
         res.headers.set("Access-Control-Allow-Origin", config.FRONTEND_URL as string);
         res.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS, DELETE");
         res.headers.set("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Origin, Authorization");
         return res;
-      },
-
-      DELETE: async (req) => {
-        return deleteResource(req)
       },
     },
     "/api/resources/screenshots/:id": {
