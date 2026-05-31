@@ -37,7 +37,7 @@ async function handleNextScreenshot() {
         limit: config.MAX_SCREENSHOT_TRIES,
         resourceId: curr.resourceId,
         url: curr.url,
-        age: curr.timeAdded - Date.now()
+        age: Math.floor((Date.now() - curr.timeAdded) / 60_000)
       })
       return
     }
@@ -51,7 +51,7 @@ async function handleNextScreenshot() {
         Memory: formatMemoryUsage(),
         resourceId: curr.resourceId,
         url: curr.url,
-        age: curr.timeAdded
+        age: Math.floor((Date.now() - curr.timeAdded) / 60_000)
       })
     }
   }
