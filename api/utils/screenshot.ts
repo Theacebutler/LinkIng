@@ -4,7 +4,7 @@ import { config } from "../config";
 import { screenshotsTable } from "../db/schema";
 import formatMemoryUsage from "./formatMemoryUsage";
 
-type ScreenshotJob = { timeAdded?: number, url: string, resourceId: number, isDone: boolean, timesTried: number }
+type ScreenshotJob = { timeAdded: number, url: string, resourceId: number, isDone: boolean, timesTried: number }
 const screenshotStack: ScreenshotJob[] = []
 let PROCESSING: boolean = false
 let BROWSER: Browser | null = null
@@ -30,7 +30,8 @@ async function handleNextScreenshot() {
       return
     }
     const curr = screenshotStack.shift()
-    if (curr?.timeAdded !== undefined && curr.timesTried > config.MAX_SCREENSHOT_TRIES) {
+    if (!curr) return
+    if (curr.timesTried > config.MAX_SCREENSHOT_TRIES) {
       console.error({
         message: "screenshot failed too many times",
         limit: config.MAX_SCREENSHOT_TRIES,
@@ -38,8 +39,8 @@ async function handleNextScreenshot() {
         url: curr.url,
         age: curr.timeAdded
       })
+      return
     }
-    if (!curr) return
     try {
       await screenshot(curr.url, curr.resourceId)
     } catch (e) {
@@ -63,10 +64,10 @@ async function getBrowser() {
         "--no-sandbox",
         "--disable-setuid-sandbox",
         "--disable-dev-shm-usage",
-        "--disable-gpu",
+        // "--disable-gpu",
         '--max-old-space-size=512', // Limits V8 memory in MB
         '--memory-pressure-off', // Prevents browser from aggressively trying to swap
-        "--single-process",    // reduces total processes
+        // "--single-process",    // reduces total processes
         "--no-zygote",         // prevents extra process fork
       ]
     });
