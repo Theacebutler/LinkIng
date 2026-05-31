@@ -21,44 +21,14 @@ export default function addToScreenshotQ(url: string | null | undefined, resourc
 }
 
 async function handleNextScreenshot() {
-  if (screenshotStack.length <= 0) {
-    PROCESSING = false
-    return
-  }
   PROCESSING = true
-  const curr = screenshotStack.pop()
-  if (!curr) return
-  try {
-    await screenshot(curr.url, curr.resourceId)
-  } catch (e) {
-    console.error({
-      Error: e,
-      Memory: formatMemoryUsage(),
-      resourceId: curr.resourceId,
-      url: curr.url,
-      age: curr.timeAdded
-    })
-  }
-  handleNextScreenshot()
-}
-async function screenshot(url: string, resourceId: number): Promise<void> {
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: [
-      "--no-sandbox",
-      "--disable-setuid-sandbox",
-      "--disable-dev-shm-usage",
-      "--disable-gpu",
-      '--max-old-space-size=512', // Limits V8 memory in MB
-      '--memory-pressure-off', // Prevents browser from aggressively trying to swap
-      "--single-process",    // reduces total processes
-      "--no-zygote",         // prevents extra process fork
-    ]
-  });
-
-  try {
-    const page = await browser.newPage()
-    await page.setViewport({ width: 1820, height: 720 })
+  while (PROCESSING) {
+    if (screenshotQ.length <= 0) {
+      PROCESSING = false
+      return
+    }
+    const curr = screenshotQ.shift()
+    if (!curr) return
     try {
       const res = await page.goto(url, { waitUntil: 'domcontentloaded' })
       if (res?.ok()) {
