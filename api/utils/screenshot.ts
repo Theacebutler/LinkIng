@@ -63,10 +63,10 @@ async function getBrowser() {
         "--no-sandbox",
         "--disable-setuid-sandbox",
         "--disable-dev-shm-usage",
-        "--disable-gpu",
+        // "--disable-gpu",
         '--max-old-space-size=512', // Limits V8 memory in MB
         '--memory-pressure-off', // Prevents browser from aggressively trying to swap
-        "--single-process",    // reduces total processes
+        // "--single-process",    // reduces total processes
         "--no-zygote",         // prevents extra process fork
       ]
     });
