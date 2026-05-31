@@ -2,7 +2,7 @@ import { desc, eq, and } from "drizzle-orm";
 import { db } from "../db";
 import { resourcesTable } from "../db/schema";
 import type { Resource } from "../shared/types";
-import screenshot from "../utils/screenshot";
+import addToScreenshotQ from "../utils/screenshot";
 import { config } from "../config";
 import type { AuthenticatedRequest } from "../utils/token_gen";
 
@@ -39,7 +39,7 @@ export async function apiResourcesPost(req: AuthenticatedRequest) {
     .values(newResource)
     .returning();
   const insertId = id?.id
-  screenshot(newResource.resourceUrl, insertId)
+  addToScreenshotQ(newResource.resourceUrl, insertId)
   const out = { ...newResource, id: insertId };
   const res = Response.json(out);
   res.headers.set("Access-Control-Allow-Origin", config.FRONTEND_URL as string);

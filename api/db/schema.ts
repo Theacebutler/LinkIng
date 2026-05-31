@@ -25,4 +25,5 @@ export const screenshotsTable = sqliteTable("screenshots_table", {
   id: integer().primaryKey({ autoIncrement: true }),
   resourceId: integer("resource_id").notNull().references(() => resourcesTable.id),
   image: text(),
+  hasImage: integer().default(0),
 })
