@@ -67,14 +67,17 @@ export async function apiResourcesIdUpdate(request: AuthenticatedRequest): Promi
 }
 
 export async function apiResourcesIdDelete(request: AuthenticatedRequest): Promise<Response> {
-  const body = await request.json() as Omit<Resource, 'createdAt' | 'sourceImage'>;
-  if (!body.id || !body.owner) {
+  // @ts-ignore
+  const id = request.params.id
+  const owner = request.user?.sub
+  console.log("TEST", "id", id, "owner", owner)
+  if (!id || !owner) {
     return Response.json({ error: "id and owner are required" }, 400);
   }
   await db.delete(resourcesTable).where(
     and(
-      eq(resourcesTable.id, body.id),
-      eq(resourcesTable.owner, body.owner)
+      eq(resourcesTable.id, id),
+      eq(resourcesTable.owner, owner)
     ));
   const res = Response.json({ deleted: true });
   res.headers.set("Access-Control-Allow-Origin", config.FRONTEND_URL);
