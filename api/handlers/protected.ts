@@ -8,19 +8,17 @@ export const getResources = withAuth(
   }
 )
 
-export const updateResource = withAuth(
-  async (request: AuthenticatedRequest): Promise<Response> => {
-    return apiResourcesIdUpdate(request)
-  }
-)
-
 export const addResource = withAuth(
   async (request: AuthenticatedRequest): Promise<Response> => {
     return apiResourcesPost(request)
   }
 )
 
-
+export const updateResource = withAuth(
+  async (request: AuthenticatedRequest): Promise<Response> => {
+    return apiResourcesIdUpdate(request)
+  }
+)
 export const deleteResource = withAuth(
   async (request: AuthenticatedRequest): Promise<Response> => {
     // @ts-ignore
