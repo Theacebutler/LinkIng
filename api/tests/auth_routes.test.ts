@@ -1,6 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { register } from "../handlers/register";
-import { login } from "../handlers/login";
+import { login, register } from "../handlers/auth";
 
 const TEST_USER = "test-user012"
 

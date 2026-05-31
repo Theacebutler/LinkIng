@@ -1,8 +1,7 @@
 import { beforeAll, describe, expect, test } from "bun:test";
 
 import { addResource, deleteResource, getResources, updateResource } from "../handlers/protected";
-import { register } from "../handlers/register";
-import { login } from "../handlers/login";
+import { register, login } from "../handlers/auth";
 import type { Resource } from "../shared/types";
 
 type Response = { message: string; id?: number, error?: string | unknown }

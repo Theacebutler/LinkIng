@@ -1,0 +1,200 @@
+import bcrypt from "bcrypt";
+import { config } from "../config";
+import { createAccessToken, createRefreshToken } from "../utils/jwt";
+import { db } from "../db";
+import { eq } from "drizzle-orm";
+import { getStoredToken } from "../utils/tokenStore";
+import { json } from "../utils/jsonResponseUtil";
+import { revokeToken, revokeTokenFamily } from "../utils/tokenStore";
+import { storeRefreshToken } from "../utils/tokenStore";
+import { usersTable } from "../db/schema";
+import { validateCredentials } from "../utils/validateCred";
+import { verifyRefreshToken } from "../utils/jwt";
+import { withAuth, type AuthenticatedRequest } from "../utils/token_gen";
+import type { User } from "../shared/types";
+
+// this function should take in the register request and return a response with the userId
+export async function register(request: Request): Promise<Response> {
+  try {
+    const body = await request.json() as { username: string; password: string; };
+    const { username, password } = body;
+
+    // Validate input
+    if (!username || !password) {
+      return json({ error: "Username and password required" }, 400);
+    }
+    // Validate password strength
+    if (password.length < 8) {
+      return json(
+        { error: "Password must be at least 8 characters" },
+        400
+      );
+    }
+
+    // Create user with hashed password in DB
+    // Check for existing user. If so, try log the user in
+    const [existingUser] = await db.select()
+      .from(usersTable)
+      .where((user) => eq(user.username, username))
+      .limit(1)
+      .execute();
+
+    if (existingUser) {
+      const user = await validateCredentials(username, password);
+      if (!user) {
+        return json({ error: "Invalid username or password" }, 401);
+      }
+      return login(username, password, request.headers);
+    }
+    // Create user with hashed password in DB
+    const hashedPassword = await bcrypt.hash(password, config.SALT_ROUNDS);
+    const newUser: User = {
+      username,
+      password: hashedPassword,
+      createdAt: new Date().toISOString(),
+    };
+    // Try / catch to handle DB errors
+    let id: number | undefined;
+    try {
+      const out = await db.insert(usersTable)
+        .values(newUser)
+        .returning();
+      id = out[0]?.id;
+    } catch (err) {
+      return json({ error: "Registration failed" }, 500);
+    }
+
+    return json({
+      message: "User created successfully",
+      userId: id
+    }, 201);
+
+  } catch (error) {
+    if (error instanceof Error && error.message === "User already exists") {
+      return json({ error: "Username already registered" }, 409);
+    }
+    return json({ error: "Registration failed" }, 500);
+  }
+}
+// POST /auth/refresh - Exchange refresh token for new token pair
+export async function refresh(request: Request): Promise<Response> {
+  try {
+    const body = await request.json() as any;
+    const { refreshToken } = body;
+
+    if (!refreshToken) {
+      return json({ error: "Refresh token required" }, 400);
+    }
+
+    // Verify the refresh token signature and claims
+    const payload = await verifyRefreshToken(refreshToken);
+
+    // Get stored token metadata
+    const storedToken = getStoredToken(payload.jti as string);
+
+    if (!storedToken) {
+      return json({ error: "Refresh token not found" }, 401);
+    }
+
+    // Check if token was revoked (already used or explicitly revoked)
+    if (storedToken.revoked) {
+      // SECURITY: Token reuse detected - possible theft!
+      // Revoke entire token family to force re-authentication
+      revokeTokenFamily(storedToken.familyId);
+      return json(
+        { error: "Token reuse detected. All sessions revoked." },
+        401
+      );
+    }
+
+    // Mark old token as used (revoked)
+    revokeToken(payload.jti as string);
+
+    // Generate new token pair
+    const newAccessToken = await createAccessToken(
+      payload.username as string
+    );
+    const { token: newRefreshToken, tokenID: newTokenId } =
+      await createRefreshToken(
+        payload.username as string
+      );
+
+    // Store new refresh token in same family
+    storeRefreshToken(
+      newTokenId,
+      payload.sub as string,
+      storedToken.familyId,
+      storedToken.deviceInfo
+    );
+
+    return json({
+      accessToken: newAccessToken,
+      refreshToken: newRefreshToken,
+      tokenType: "Bearer",
+      expiresIn: 900,
+    });
+  } catch (error) {
+    return json({ error: "Invalid refresh token" }, 401);
+  }
+}
+
+// POST /auth/logout - Revoke current refresh token
+export const logout = withAuth(
+  async (request: AuthenticatedRequest): Promise<Response> => {
+    try {
+      const body = await request.json() as any;
+      const { refreshToken } = body;
+
+      if (refreshToken) {
+        // Verify and revoke the provided refresh token
+        const payload = await verifyRefreshToken(refreshToken);
+        revokeToken(payload.jti as string);
+      }
+      return json({ message: "Logged out successfully" });
+    } catch (error) {
+      // Even if token validation fails, consider logout successful
+      return json({ message: "Logged out" });
+    }
+  }
+);
+
+
+export async function login(username: string, password: string, headers: Headers): Promise<Response> {
+  try {
+    // Validate input
+    if (!username || !password) {
+      return json({ error: "username and password required" }, 400);
+    }
+
+    // Validate credentials
+    const user = await validateCredentials(username, password);
+
+    if (!user) {
+      // Use generic error message to prevent user enumeration
+      return json({ error: "Invalid credentials" }, 401);
+    }
+
+    // Generate token pair
+    const accessToken = await createAccessToken(user.username);
+    const { token: refreshToken, tokenID } = await createRefreshToken(
+      user.username
+    );
+
+    // Create family ID for token rotation tracking
+    const familyId = crypto.randomUUID();
+
+    // Store refresh token metadata
+    const deviceInfo = headers.get("User-Agent") || "Unknown";
+    storeRefreshToken(tokenID, user.id?.toString() as string, familyId, deviceInfo);
+
+    return json({
+      accessToken,
+      refreshToken,
+      tokenType: "Bearer",
+      expiresIn: 900, // 15 minutes in seconds
+    });
+  } catch (error) {
+    return json({ error: "Login failed" }, 500);
+  }
+}
+

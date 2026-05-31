@@ -3,10 +3,7 @@ import { apiResourceScreenshotGet } from "./handlers/api_resources_screenshots";
 
 import { addResource, deleteResource, getResources, updateResource } from "./handlers/protected";
 import { config } from "./config";
-import { login } from "./handlers/login";
-import { logout } from "./handlers/logout";
-import { refresh } from "./handlers/refresh";
-import { register } from "./handlers/register";
+import { login, logout, refresh, register } from "./handlers/auth";
 import type { User } from "./shared/types";
 
 const PORT = config.PORT
