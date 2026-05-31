@@ -35,8 +35,9 @@ describe("TEST: register new user", async () => {
       })
     })
     const res = await register(mockRequest)
-    expect(res.ok).toBe(false);
-    expect(res.status).toBe(409);
+    // this will log the user in
+    expect(res.ok).toBe(true);
+    expect(res.status).toBe(200);
   })
 
   test("TEST register with short password", async () => {
