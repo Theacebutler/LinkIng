@@ -42,7 +42,7 @@ jobs:
         #   JWT_SECRET: ${{ secrets.JWT_SECRET }}
         #   REFRESH_SECRET: ${{ secrets.REFRESH_SECRET }}
         with:
-          files: docker-compose.yml
+          files: docker-compose.prod.yml
           push: true
           set: |
             *.platform=linux/amd64
