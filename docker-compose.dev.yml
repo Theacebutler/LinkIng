@@ -24,6 +24,8 @@ services:
           cpus: "1"
           memory: 512MB
     build: ./api
+    env_file:
+      - ./api/.env
     environment:
       PORT: 3000
       DB_CONN: /data/db.sqlite
