@@ -38,11 +38,12 @@ jobs:
 
       - name: Build and push all images
         uses: docker/bake-action@v6
-        # env:
-        #   JWT_SECRET: ${{ secrets.JWT_SECRET }}
-        #   REFRESH_SECRET: ${{ secrets.REFRESH_SECRET }}
+        env:
+          LOWERCASE_GITHUB_REPOSITORY_OWNER: ${{ env.LOWERCASE_GITHUB_REPOSITORY_OWNER }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          REFRESH_SECRET: ${{ secrets.REFRESH_SECRET }}
         with:
-          files: docker-compose.yml
+          files: docker-compose.prod.yml
           push: true
           set: |
             *.platform=linux/amd64
@@ -66,7 +67,7 @@ jobs:
           source: "Caddyfile"
           target: "~/linking/"
 
-      - name: Copy docker-compose.yml to server
+      - name: Copy docker-compose.prod.yml to server
         uses: appleboy/scp-action@master
         with:
           host: "${{ secrets.HOST }}"
