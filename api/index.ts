@@ -50,9 +50,6 @@ const server = Bun.serve({
       POST: async (req): Promise<Response> => {
         return addResource(req);
       },
-      DELETE: async (req): Promise<Response> => {
-        return deleteResource(req)
-      },
       OPTIONS: () => {
         return apiResourcesOpts()
       },
