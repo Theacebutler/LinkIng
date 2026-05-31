@@ -4,7 +4,7 @@ import { config } from "../config";
 import { screenshotsTable } from "../db/schema";
 import formatMemoryUsage from "./formatMemoryUsage";
 
-type ScreenshotJob = { timeAdded?: number, url: string, resourceId: number, isDone: boolean, timesTried: number }
+type ScreenshotJob = { timeAdded: number, url: string, resourceId: number, isDone: boolean, timesTried: number }
 const screenshotStack: ScreenshotJob[] = []
 let PROCESSING: boolean = false
 let BROWSER: Browser | null = null
@@ -30,7 +30,7 @@ async function handleNextScreenshot() {
       return
     }
     const curr = screenshotStack.shift()
-    if (curr?.timeAdded !== undefined && curr.timesTried > config.MAX_SCREENSHOT_TRIES) {
+    if (curr.timesTried > config.MAX_SCREENSHOT_TRIES) {
       console.error({
         message: "screenshot failed too many times",
         limit: config.MAX_SCREENSHOT_TRIES,
