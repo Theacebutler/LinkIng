@@ -19,8 +19,6 @@ export const addResource = withAuth(
 export const deleteResource = withAuth(
   async (request: AuthenticatedRequest): Promise<Response> => {
     // @ts-ignore
-    const id = request.params.id as number;
-    const name = request.user.sub;
-    return apiResourcesIdDelete(name, id)
+    return apiResourcesIdDelete(request)
   }
 )
