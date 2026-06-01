@@ -7,7 +7,7 @@ import InDevAlert from './components/inDevAlert';
 import { useAuths } from './hooks/useAuths';
 
 function App() {
-  const { resources, loading, addResource, deleteResource } = useResources();
+  const { resources, loading, addResource, updateResource, deleteResource } = useResources();
   const { isLogin } = useAuths();
   const handleAddResource = async (data: { title: string; resourceUrl: string; sourceUrl: string, owner: string }) => {
     return await addResource(data);
@@ -26,6 +26,7 @@ function App() {
               <ResourceList
                 resources={resources}
                 onDelete={deleteResource}
+                onUpdate={updateResource}
                 loading={loading}
               />
             </main >

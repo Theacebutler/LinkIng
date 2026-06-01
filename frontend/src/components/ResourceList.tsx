@@ -7,10 +7,11 @@ import { Toast, type ToastMessage } from './Toast';
 interface ResourceListProps {
   resources: Resource[];
   onDelete: (id: string) => Promise<boolean>;
+  onUpdate: (id: string, updatedData: { title: string; sourceUrl: string }) => Promise<boolean>;
   loading?: boolean;
 }
 
-export function ResourceList({ resources, onDelete, loading }: ResourceListProps) {
+export function ResourceList({ resources, onDelete, loading, onUpdate }: ResourceListProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [toast, setToast] = useState<ToastMessage | null>(null);
@@ -38,6 +39,7 @@ export function ResourceList({ resources, onDelete, loading }: ResourceListProps
     }
     setDeleteId(null);
   };
+
 
   const filteredResources = resources.filter((resource) => {
     const query = searchQuery.toLowerCase();
@@ -95,6 +97,15 @@ export function ResourceList({ resources, onDelete, loading }: ResourceListProps
                 key={resource.id}
                 resource={resource}
                 onDelete={(id) => setDeleteId(id)}
+                onUpdate={async (id, updatedData) => {
+                  const success = await onUpdate(id, updatedData);
+                  if (success) {
+                    showToast('Resource updated');
+                  } else {
+                    showToast('Failed to update resource', 'error');
+                  }
+                  return success;
+                }}
                 onCopy={handleCopy}
               />
             ))}
