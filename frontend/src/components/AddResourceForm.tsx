@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import Cookies from 'js-cookie';
 import type { ResourceFormData } from '../types/resource';
+import useClipboard from '../hooks/useClipboard';
 
 interface AddResourceFormProps {
   onSubmit: (data: ResourceFormData) => Promise<boolean>;
@@ -16,6 +17,7 @@ export function AddResourceForm({ onSubmit }: AddResourceFormProps) {
   const [errors, setErrors] = useState<Partial<ResourceFormData>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const { copydText, isCopied, setIsCopied } = useClipboard();
 
   const validateUrl = (url: string): boolean => {
     if (!url) return true;
@@ -45,6 +47,12 @@ export function AddResourceForm({ onSubmit }: AddResourceFormProps) {
   };
 
   const handlePaste = async () => {
+    if (isCopied) {
+      setFormData((prev) => ({ ...prev, resourceUrl: copydText }));
+      setErrors((prev) => ({ ...prev, resourceUrl: undefined }));
+      setIsCopied(false);
+      return
+    }
     const text = await navigator.clipboard.readText();
     if (text) {
       setFormData((prev) => ({ ...prev, resourceUrl: text }));
@@ -157,6 +165,6 @@ export function AddResourceForm({ onSubmit }: AddResourceFormProps) {
           </p>
         )}
       </form>
-    </section>
+    </section >
   );
 }
