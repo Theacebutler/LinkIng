@@ -7,7 +7,7 @@ on:
     branches:
       - main
     paths:
-      - './api/db/**'
+      - 'api/db/**'
   workflow_dispatch:
     
 jobs:
