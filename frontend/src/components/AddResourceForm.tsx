@@ -1,7 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import Cookies from 'js-cookie';
 import type { ResourceFormData } from '../types/resource';
-import useClipboard from '../hooks/useClipboard';
 
 interface AddResourceFormProps {
   onSubmit: (data: ResourceFormData) => Promise<boolean>;
@@ -17,7 +16,6 @@ export function AddResourceForm({ onSubmit }: AddResourceFormProps) {
   const [errors, setErrors] = useState<Partial<ResourceFormData>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
-  const { copydText, isCopied, setIsCopied } = useClipboard();
 
   const validateUrl = (url: string): boolean => {
     if (!url) return true;
@@ -46,19 +44,14 @@ export function AddResourceForm({ onSubmit }: AddResourceFormProps) {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handlePaste = async () => {
-    if (isCopied) {
-      setFormData((prev) => ({ ...prev, resourceUrl: copydText }));
-      setErrors((prev) => ({ ...prev, resourceUrl: undefined }));
-      setIsCopied(false);
-      return
-    }
-    const text = await navigator.clipboard.readText();
-    if (text) {
-      setFormData((prev) => ({ ...prev, resourceUrl: text }));
-      setErrors((prev) => ({ ...prev, resourceUrl: undefined }));
-    }
-  };
+  // const handlePaste = async () => {
+  //   const text = await navigator.clipboard.readText();
+  //   if (text) {
+  //     setErrors((prev) => ({ ...prev, resourceUrl: undefined }));
+  //     setFormData((prev) => ({ ...prev, resourceUrl: "" }));
+  //     setFormData((prev) => ({ ...prev, resourceUrl: text }));
+  //   }
+  // }
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -79,6 +72,7 @@ export function AddResourceForm({ onSubmit }: AddResourceFormProps) {
   };
 
   const handleChange = (field: keyof ResourceFormData, value: string) => {
+    window.setTimeout(() => { }, 100);
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: undefined }));
@@ -108,17 +102,19 @@ export function AddResourceForm({ onSubmit }: AddResourceFormProps) {
             <label htmlFor="resourceUrl" className="text-sm font-medium text-slate-300">
               Resource URL <span className="text-red-400">*</span>
             </label>
-            <button
-              onClick={handlePaste}
-              className="p-1 text-slate-500 rounded hover:text-blue-400 hover:bg-blue-900/30 transition-colors"
-              aria-label="Paste resource URL"
-              title="Paste"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
-                <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
-              </svg>
-            </button>
+
+            {/* <button */}
+            {/*   onClick={handlePaste} */}
+            {/*   className="p-1 text-slate-500 rounded hover:text-blue-400 hover:bg-blue-900/30 transition-colors" */}
+            {/*   aria-label="Paste resource URL" */}
+            {/*   title="Paste" */}
+            {/* > */}
+            {/*   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"> */}
+            {/*     <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" /> */}
+            {/*     <rect x="8" y="2" width="8" height="4" rx="1" ry="1" /> */}
+            {/*   </svg> */}
+            {/* </button> */}
+
           </div>
           <input
             type="url"
