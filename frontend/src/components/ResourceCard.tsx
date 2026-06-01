@@ -75,6 +75,9 @@ export function ResourceCard({ resource, onDelete, onCopy, onUpdate }: ResourceC
       year: 'numeric',
       month: 'short',
       day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric',
     });
   };
 
