@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import { config } from "../config";
-import { createAccessToken, createRefreshToken } from "../utils/jwt";
+import { createAccessToken, createApiAccessToken, createRefreshToken } from "../utils/jwt";
 import { db } from "../db";
 import { eq } from "drizzle-orm";
 import { getStoredToken } from "../utils/tokenStore";
@@ -200,4 +200,31 @@ export async function login(request: Request): Promise<Response> {
     return json({ error: "Login failed" }, 500);
   }
 }
+export async function apiGenerateToken(request: Request): Promise<Response> {
+  const { username, password } = await request.json() as { username: string; password: string; };
+  try {
+    // Validate input
+    if (!username || !password) {
+      return json({ error: "username and password required" }, 400);
+    }
 
+    // Validate credentials
+    const user = await validateCredentials(username, password);
+
+    if (!user) {
+      // Use generic error message to prevent user enumeration
+      return json({ error: "Invalid credentials" }, 401);
+    }
+
+    // Generate token pair
+    const accessToken = await createApiAccessToken(user.username);
+
+    return json({
+      accessToken,
+      tokenType: "Bearer",
+    });
+  } catch (error) {
+    return json({ error: "Login failed" }, 500);
+  }
+}
+// export async function apiPost(request: Request): Promise<Response { }

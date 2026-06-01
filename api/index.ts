@@ -3,7 +3,7 @@ import { apiResourceScreenshotGet } from "./handlers/api_resources_screenshots";
 
 import { addResource, deleteResource, getResources, updateResource } from "./handlers/protected";
 import { config } from "./config";
-import { login, logout, refresh, register } from "./handlers/auth";
+import { apiGenerateToken, login, logout, refresh, register } from "./handlers/auth";
 
 const PORT = config.PORT
 const server = Bun.serve({
@@ -29,6 +29,11 @@ const server = Bun.serve({
     "/api/users/refresh": {
       POST: async (req): Promise<Response> => {
         return await refresh(req)
+      }
+    },
+    "/api/users/generate_api_token": {
+      POST: async (req): Promise<Response> => {
+        return await apiGenerateToken(req)
       }
     },
     "/api/users/logout": {
