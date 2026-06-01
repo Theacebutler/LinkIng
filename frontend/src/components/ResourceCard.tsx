@@ -150,7 +150,7 @@ export function ResourceCard({ resource, onDelete, onCopy, onUpdate }: ResourceC
           />
         ) : (
           <h3 className="text-base font-semibold text-slate-100 flex-1 min-w-0">
-            {resource.title || 'Untitled Resource'}
+            {resource.title || `Added ${new Date(resource.createdAt).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric' })}`}
           </h3>
         )}
         <div className="flex items-center gap-1 shrink-0">
