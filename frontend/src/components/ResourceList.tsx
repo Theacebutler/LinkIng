@@ -3,17 +3,20 @@ import type { Resource } from '../types/resource';
 import { ResourceCard } from './ResourceCard';
 import { ConfirmDialog } from './ConfirmDialog';
 import { Toast, type ToastMessage } from './Toast';
+import useClipboard from '../hooks/useClipboard';
 
 interface ResourceListProps {
   resources: Resource[];
   onDelete: (id: string) => Promise<boolean>;
+  onUpdate: (id: string, updatedData: { title: string; sourceUrl: string }) => Promise<boolean>;
   loading?: boolean;
 }
 
-export function ResourceList({ resources, onDelete, loading }: ResourceListProps) {
+export function ResourceList({ resources, onDelete, loading, onUpdate }: ResourceListProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [toast, setToast] = useState<ToastMessage | null>(null);
+  const { setCopydText, setIsCopied } = useClipboard();
 
   const showToast = (message: string, type: ToastMessage['type'] = 'success') => {
     setToast({ message, type });
@@ -22,6 +25,8 @@ export function ResourceList({ resources, onDelete, loading }: ResourceListProps
   const handleCopy = async (text: string, type: 'resource' | 'source') => {
     try {
       await navigator.clipboard.writeText(text);
+      setCopydText(text);
+      setIsCopied(true);
       showToast(`${type === 'resource' ? 'Resource' : 'Source'} URL copied to clipboard`);
     } catch {
       showToast('Failed to copy URL', 'error');
@@ -38,6 +43,7 @@ export function ResourceList({ resources, onDelete, loading }: ResourceListProps
     }
     setDeleteId(null);
   };
+
 
   const filteredResources = resources.filter((resource) => {
     const query = searchQuery.toLowerCase();
@@ -95,6 +101,15 @@ export function ResourceList({ resources, onDelete, loading }: ResourceListProps
                 key={resource.id}
                 resource={resource}
                 onDelete={(id) => setDeleteId(id)}
+                onUpdate={async (id, updatedData) => {
+                  const success = await onUpdate(id, updatedData);
+                  if (success) {
+                    showToast('Resource updated');
+                  } else {
+                    showToast('Failed to update resource', 'error');
+                  }
+                  return success;
+                }}
                 onCopy={handleCopy}
               />
             ))}

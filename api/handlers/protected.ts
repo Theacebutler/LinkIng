@@ -1,13 +1,12 @@
 import { withAuth, type AuthenticatedRequest } from "../utils/token_gen";
-import { apiResourcesGet, apiResourcesPost, apiResourcesIdDelete } from "./api_resources";
+import { apiResourcesGet, apiResourcesPost, apiResourcesIdDelete, apiResourcesIdUpdate } from "./api_resources";
 
 
 export const getResources = withAuth(
   async (request: AuthenticatedRequest): Promise<Response> => {
-    return apiResourcesGet(request.user?.sub as string);
+    return apiResourcesGet(request);
   }
 )
-
 
 export const addResource = withAuth(
   async (request: AuthenticatedRequest): Promise<Response> => {
@@ -15,12 +14,13 @@ export const addResource = withAuth(
   }
 )
 
-
+export const updateResource = withAuth(
+  async (request: AuthenticatedRequest): Promise<Response> => {
+    return apiResourcesIdUpdate(request)
+  }
+)
 export const deleteResource = withAuth(
   async (request: AuthenticatedRequest): Promise<Response> => {
-    // @ts-ignore
-    const id = request.params.id as number;
-    const name = request.user.sub;
-    return apiResourcesIdDelete(name, id)
+    return apiResourcesIdDelete(request)
   }
 )

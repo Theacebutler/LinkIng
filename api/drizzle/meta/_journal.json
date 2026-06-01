@@ -71,6 +71,13 @@
       "when": 1780203103515,
       "tag": "0009_heavy_sumo",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1780246360242,
+      "tag": "0010_reflective_multiple_man",
+      "breakpoints": true
     }
   ]
 }

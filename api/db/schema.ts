@@ -18,6 +18,7 @@ export const resourcesTable = sqliteTable("resources_table", {
   resourceUrl: text(),
   sourceUrl: text(),
   createdAt: text(),
+  updatedAt: text(),
 })
 
 // screenshots table
