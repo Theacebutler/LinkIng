@@ -1,8 +1,6 @@
 {
   "version": "1.0.0",
   "manifest_version": 2,
-  "theme_color": "#363DFF",
-  "background_color": "#2EC6FE",
   "icons": [
     {
       "purpose": "maskable",
@@ -19,7 +17,6 @@
   ],
   "orientation": "any",
   "display": "standalone",
-  "dir": "auto",
   "lang": "en-US",
   "name": "Linking",
   "short_name": "Linking",
