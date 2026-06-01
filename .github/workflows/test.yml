@@ -4,8 +4,8 @@ on:
     branches:
       - main
     paths:
-      - './api/**'
-      - './frontend/**'
+      - 'api/**'
+      - 'frontend/**'
 
   workflow_dispatch:
 
