@@ -3,6 +3,7 @@ import type { Resource } from '../types/resource';
 import { ResourceCard } from './ResourceCard';
 import { ConfirmDialog } from './ConfirmDialog';
 import { Toast, type ToastMessage } from './Toast';
+import useClipboard from '../hooks/useClipboard';
 
 interface ResourceListProps {
   resources: Resource[];
@@ -15,6 +16,7 @@ export function ResourceList({ resources, onDelete, loading, onUpdate }: Resourc
   const [searchQuery, setSearchQuery] = useState('');
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [toast, setToast] = useState<ToastMessage | null>(null);
+  const { setCopydText, setIsCopied } = useClipboard();
 
   const showToast = (message: string, type: ToastMessage['type'] = 'success') => {
     setToast({ message, type });
@@ -23,6 +25,8 @@ export function ResourceList({ resources, onDelete, loading, onUpdate }: Resourc
   const handleCopy = async (text: string, type: 'resource' | 'source') => {
     try {
       await navigator.clipboard.writeText(text);
+      setCopydText(text);
+      setIsCopied(true);
       showToast(`${type === 'resource' ? 'Resource' : 'Source'} URL copied to clipboard`);
     } catch {
       showToast('Failed to copy URL', 'error');
