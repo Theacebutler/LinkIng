@@ -52,11 +52,6 @@ const server = Bun.serve({
         return deleteResource(req)
       },
       OPTIONS: () => {
-        return apiResourcesOpts()
-      },
-    },
-    "/api/resources/:id": {
-      OPTIONS: () => {
         const res = Response.json({});
         res.headers.set("Access-Control-Allow-Origin", config.FRONTEND_URL as string);
         res.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS, DELETE");
