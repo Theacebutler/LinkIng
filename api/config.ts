@@ -5,10 +5,12 @@ export const config = {
   FRONTEND_URL: "*",
   DB_CONN: Bun.env.DB_CONN,
   TOKEN_EXP: "3h", // expires is 3 hours
+  API_TOKEN_EXP: "30d",
   REFRESH_EXP: "12h", // expires is 12 hours
   HASH_ALG: 'HS256',
   JWT_ISSUER: "gatherlink",
   JWT_AUDIENCE: "gatherlink_frontend",
+  JWT_AUDIENCE_API: "linking_api",
   SALT_ROUNDS: 10,
   MAX_SCREENSHOT_TRIES: 3,
 }

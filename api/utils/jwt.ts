@@ -19,6 +19,22 @@ function ranbomTokenID(): string {
   return crypto.randomUUID()
 }
 
+export async function createApiAccessToken(username: string): Promise<string> {
+  const tokenID = ranbomTokenID();
+  const token = await new SignJWT({
+    sub: username,
+    type: "access",
+    jti: tokenID,
+  })
+    .setProtectedHeader({ alg: config.HASH_ALG })
+    .setIssuedAt()
+    .setIssuer(config.JWT_ISSUER)
+    .setAudience(config.JWT_AUDIENCE_API)
+    .setExpirationTime(config.API_TOKEN_EXP)
+    .sign(access_secret)
+  return token
+}
+
 export async function createAccessToken(username: string): Promise<string> {
   const tokenID = ranbomTokenID();
   const token = await new SignJWT({
@@ -32,9 +48,9 @@ export async function createAccessToken(username: string): Promise<string> {
     .setAudience(config.JWT_AUDIENCE)
     .setExpirationTime(config.TOKEN_EXP)
     .sign(access_secret)
-
   return token
 }
+
 export async function createRefreshToken(username: string): Promise<{ token: string, tokenID: string }> {
   const tokenID = ranbomTokenID();
   const token = await new SignJWT({
