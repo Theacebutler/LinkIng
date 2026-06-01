@@ -1,4 +1,4 @@
-import { desc, eq, and } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { db } from "../db";
 import { resourcesTable } from "../db/schema";
 import type { Resource } from "../shared/types";
@@ -7,10 +7,14 @@ import { config } from "../config";
 import type { AuthenticatedRequest } from "../utils/token_gen";
 
 
-export async function apiResourcesGet(name: string): Promise<Response> {
+export async function apiResourcesGet(request: AuthenticatedRequest): Promise<Response> {
+  const owner = request.user?.sub
+  if (!owner) {
+    return Response.json({ error: "owner is required" }, 400);
+  }
   const resources = await db.select()
     .from(resourcesTable)
-    .where((resource) => eq(resource.owner, name))
+    .where((resource) => eq(resource.owner, owner))
     .orderBy(desc(resourcesTable.createdAt));
   const res = Response.json(resources);
   res.headers.set("Access-Control-Allow-Origin", config.FRONTEND_URL as string);
@@ -27,7 +31,6 @@ export async function apiResourcesOpts(): Promise<Response> {
 
 export async function apiResourcesPost(req: AuthenticatedRequest) {
   const body = await req.json() as Omit<Resource, 'id' | 'createdAt' | 'sourceImage'>;
-
   const name = req.user.sub
   const newResource: Resource = {
     ...body,
@@ -48,34 +51,27 @@ export async function apiResourcesPost(req: AuthenticatedRequest) {
 
 export async function apiResourcesIdUpdate(request: AuthenticatedRequest): Promise<Response> {
   const body = await request.json() as Omit<Resource, 'createdAt' | 'sourceImage'>;
-  if (!body.id || !body.owner) {
-    return Response.json({ error: "id and owner are required" }, 400);
+  if (!body.id) {
+    return Response.json({ error: "id is required" }, 400);
   }
   await db.update(resourcesTable)
     .set({
       ...body,
       updatedAt: new Date().toISOString(),
     })
-    .where(
-      and(
-        eq(resourcesTable.id, body.id),
-        eq(resourcesTable.owner, body.owner)
-      ));
-  const res = Response.json({ deleted: true });
+    .where(eq(resourcesTable.id, body.id));
+  const res = Response.json({ updated: true });
   res.headers.set("Access-Control-Allow-Origin", config.FRONTEND_URL);
   return res
 }
 
 export async function apiResourcesIdDelete(request: AuthenticatedRequest): Promise<Response> {
-  const body = await request.json() as Omit<Resource, 'createdAt' | 'sourceImage'>;
-  if (!body.id || !body.owner) {
+  const json = await request.json() as { id: number }
+  const id = json.id
+  if (!id) {
     return Response.json({ error: "id and owner are required" }, 400);
   }
-  await db.delete(resourcesTable).where(
-    and(
-      eq(resourcesTable.id, body.id),
-      eq(resourcesTable.owner, body.owner)
-    ));
+  await db.delete(resourcesTable).where(eq(resourcesTable.id, id));
   const res = Response.json({ deleted: true });
   res.headers.set("Access-Control-Allow-Origin", config.FRONTEND_URL);
   return res

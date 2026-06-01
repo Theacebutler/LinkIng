@@ -60,7 +60,7 @@ export function useResources() {
   };
   const deleteResource = async (id: string) => {
     try {
-      const response = await fetchWithAuth(`${VITE_API_URL}/resources/${id}`, 'DELETE')
+      const response = await fetchWithAuth(`${VITE_API_URL}/resources`, 'DELETE', JSON.stringify({ id }))
       if (!response.ok) throw new Error('Failed to delete resource');
       setResources((prev) => prev.filter((r) => r.id !== id));
       return true;

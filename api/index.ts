@@ -3,11 +3,7 @@ import { apiResourceScreenshotGet } from "./handlers/api_resources_screenshots";
 
 import { addResource, deleteResource, getResources, updateResource } from "./handlers/protected";
 import { config } from "./config";
-import { login } from "./handlers/login";
-import { logout } from "./handlers/logout";
-import { refresh } from "./handlers/refresh";
-import { register } from "./handlers/register";
-import type { User } from "./shared/types";
+import { login, logout, refresh, register } from "./handlers/auth";
 
 const PORT = config.PORT
 const server = Bun.serve({
@@ -27,8 +23,7 @@ const server = Bun.serve({
     },
     "/api/users/login": {
       POST: async (req): Promise<Response> => {
-        const { username, password } = await req.json() as User;;
-        return await login(username, password, req.headers)
+        return await login(req)
       }
     },
     "/api/users/refresh": {
@@ -50,7 +45,10 @@ const server = Bun.serve({
       POST: async (req): Promise<Response> => {
         return addResource(req);
       },
-      DELETE: async (req): Promise<Response> => {
+      PATCH: async (req): Promise<Response> => {
+        return updateResource(req)
+      },
+      DELETE: async (req) => {
         return deleteResource(req)
       },
       OPTIONS: () => {
