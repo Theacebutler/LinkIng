@@ -41,6 +41,23 @@ export function useResources() {
     }
   };
 
+  const updateResource = async (id: string, updatedData: { title: string; sourceUrl: string }) => {
+    try {
+      const response = await fetchWithAuth(
+        `${VITE_API_URL}/resources`,
+        'PATCH',
+        JSON.stringify({ id, ...updatedData })
+      );
+      if (!response.ok) throw new Error('Failed to update resource');
+      setResources((prev) =>
+        prev.map((r) => (r.id === id ? { ...r, ...updatedData } : r))
+      );
+      return true;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update resource');
+      return false;
+    }
+  };
   const deleteResource = async (id: string) => {
     try {
       const response = await fetchWithAuth(`${VITE_API_URL}/resources`, 'DELETE', JSON.stringify({ id }))
@@ -63,6 +80,7 @@ export function useResources() {
     error,
     addResource,
     deleteResource,
+    updateResource,
     refetch: fetchResources,
   };
 }
