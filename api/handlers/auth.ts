@@ -200,6 +200,7 @@ export async function login(request: Request): Promise<Response> {
     return json({ error: "Login failed" }, 500);
   }
 }
+
 export async function apiGenerateToken(request: Request): Promise<Response> {
   const { username, password } = await request.json() as { username: string; password: string; };
   try {
@@ -216,15 +217,20 @@ export async function apiGenerateToken(request: Request): Promise<Response> {
       return json({ error: "Invalid credentials" }, 401);
     }
 
-    // Generate token pair
-    const accessToken = await createApiAccessToken(user.username);
+    const apiAuthToken = await createApiAccessToken(user.username);
+    try {
+      db.update(usersTable)
+        .set({ apiAuthToken })
+        .where(eq(usersTable.username, user.username))
+    } catch (e) {
+      console.error(e);
 
+    }
     return json({
-      accessToken,
+      accessToken: apiAuthToken,
       tokenType: "Bearer",
     });
   } catch (error) {
     return json({ error: "Login failed" }, 500);
   }
 }
-// export async function apiPost(request: Request): Promise<Response { }

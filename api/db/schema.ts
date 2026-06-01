@@ -8,6 +8,7 @@ export const usersTable = sqliteTable("users_table", {
   username: text().notNull().unique(),
   password: text().notNull(),
   createdAt: text(),
+  apiAuthToken: text()
 })
 
 // resources table
