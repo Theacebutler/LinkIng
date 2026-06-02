@@ -1,11 +1,11 @@
 name: Test
 on:
-  push:
+  pull_request:
     branches:
       - main
-    paths:
-      - 'api/**'
-      - 'frontend/**'
+    paths-ignore:
+      - 'README.md'
+      - 'api/drizzle/**'
 
   workflow_dispatch:
 
