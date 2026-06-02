@@ -224,6 +224,7 @@ export async function apiGenerateToken(request: Request): Promise<Response> {
     return json({
       accessToken: apiAuthToken,
       tokenType: "Bearer",
+      expiresIn: config.API_TOKEN_EXP
     });
   } catch (error) {
     return json({ error: "Login failed" }, 500);
