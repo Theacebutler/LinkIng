@@ -13,6 +13,7 @@ describe("TEST: register new user", async () => {
       password: "test-password"
     })
   })
+
   test("TEST register", async () => {
     const res = await register(mockRequest)
     const data = await res.json() as { message: string; userId?: number, error?: string | unknown };
@@ -33,8 +34,8 @@ describe("TEST: register new user", async () => {
         password: "test-password"
       })
     })
+    // this registers function will log the user in as well
     const res = await register(mockRequest)
-    // this will log the user in
     expect(res.ok).toBe(true);
     expect(res.status).toBe(200);
   })
@@ -55,6 +56,7 @@ describe("TEST: register new user", async () => {
 })
 
 describe("TEST login", async () => {
+
   test("TEST login with valid credentials", async () => {
     const mockRequest: Request = new Request(
       "http://localhost:3000/api/users/login/", {
@@ -74,6 +76,7 @@ describe("TEST login", async () => {
     expect(data.tokenType).toBeDefined();
     expect(data.expiresIn).toBeDefined();
   });
+
   test("TEST login with invalid credentials", async () => {
     const mockRequest: Request = new Request(
       "http://localhost:3000/api/users/register/", {
@@ -88,4 +91,5 @@ describe("TEST login", async () => {
     expect(res.ok).toBe(false);
     expect(res.status).toBe(401);
   })
+
 });
