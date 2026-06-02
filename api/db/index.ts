@@ -6,4 +6,4 @@ const sqlite = new Database(process.env.DB_CONN as string);
 export const db = drizzle({ client: sqlite })
 
 // run the migration when the server starts
-migrate(db, { migrationsFolder: "./drizzle" })
+migrate(db, { migrationsFolder: new URL("../drizzle", import.meta.url).pathname })
