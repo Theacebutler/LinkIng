@@ -218,14 +218,9 @@ export async function apiGenerateToken(request: Request): Promise<Response> {
     }
 
     const apiAuthToken = await createApiAccessToken(user.username);
-    try {
-      db.update(usersTable)
-        .set({ apiAuthToken })
-        .where(eq(usersTable.username, user.username))
-    } catch (e) {
-      console.error(e);
-
-    }
+    await db.update(usersTable)
+      .set({ apiAuthToken })
+      .where(eq(usersTable.username, user.username));
     return json({
       accessToken: apiAuthToken,
       tokenType: "Bearer",
