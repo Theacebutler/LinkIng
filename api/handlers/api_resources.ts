@@ -5,6 +5,7 @@ import type { Resource } from "../shared/types";
 import addToScreenshotQ from "../utils/screenshot";
 import { config } from "../config";
 import type { AuthenticatedRequest } from "../utils/token_gen";
+import { verifyAccessToken } from "../utils/jwt";
 
 
 export async function apiResourcesGet(request: AuthenticatedRequest): Promise<Response> {
@@ -47,6 +48,55 @@ export async function apiResourcesPost(req: AuthenticatedRequest) {
   const res = Response.json(out);
   res.headers.set("Access-Control-Allow-Origin", config.FRONTEND_URL as string);
   return res;
+}
+
+export async function apiResourcesPostAPI(req: Request) {
+  const body = await req.json() as Omit<Resource, 'id' | 'createdAt' | 'owner'>;
+  const authHeader = req.headers.get("Authorization")
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return Response.json(
+      { error: "Authorization header missing" },
+      { status: 401, headers: { "Content-Type": "application/json" } }
+    )
+  }
+  const token = authHeader.substring(7)
+  if (!token) {
+    return Response.json(
+      { error: "token missing" },
+      { status: 401, headers: { "Content-Type": "application/json" } }
+    )
+  }
+  let name: string | undefined
+  await verifyAccessToken(token)
+    .then(payload => {
+      name = payload.sub
+    })
+    .catch(() => {
+      return Response.json(
+        { error: "Invalid or expired token" },
+        { status: 401, headers: { "Content-Type": "application/json" } }
+      )
+    })
+
+  if (!name) {
+    return Response.json(
+      { error: "Invalid or expired token" },
+      { status: 401, headers: { "Content-Type": "application/json" } }
+    )
+  }
+
+  const newResource: Resource = {
+    ...body,
+    createdAt: new Date().toISOString(),
+    owner: name
+  };
+  // save the screenshot to the DB
+  const [id] = await db.insert(resourcesTable)
+    .values(newResource)
+    .returning();
+  const insertId = id?.id
+  addToScreenshotQ(newResource.resourceUrl, insertId)
+  return Response.json({ "created": true });
 }
 
 export async function apiResourcesIdUpdate(request: AuthenticatedRequest): Promise<Response> {
