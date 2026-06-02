@@ -3,7 +3,6 @@ import { Header } from './components/Header';
 import { AddResourceForm } from './components/AddResourceForm';
 import { ResourceList } from './components/ResourceList';
 import LoginOrReg from './components/LoginOrReg';
-import InDevAlert from './components/inDevAlert';
 import { useAuths } from './hooks/useAuths';
 
 function App() {
@@ -16,7 +15,6 @@ function App() {
 
   return (
     <>
-      <InDevAlert />
       <Header />
       {
         isLogin ?
