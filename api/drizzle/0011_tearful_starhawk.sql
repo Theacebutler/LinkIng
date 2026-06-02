@@ -1,0 +1,1 @@
+ALTER TABLE `users_table` ADD `apiAuthToken` text;

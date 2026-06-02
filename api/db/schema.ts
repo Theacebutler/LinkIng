@@ -1,4 +1,13 @@
 // import { serial, pgTable, text } from "drizzle-orm/pg-core"
+// Historical migration notes (do not "fix" the old SQL files - they're
+// applied in production):
+//   0002: FK resources.owner -> users_table.name where name isn't UNIQUE.
+//         0006 rewrites it to point at users_table.username (which is).
+//   0003 / 0006: resources.title is declared `integer`. 0008 corrects it
+//         to `text`. Don't insert non-numeric titles between those.
+//   0005: UNIQUE INDEX on users_table.password (kept by 0006/0007).
+//         Cosmetically odd; functionally fine with bcrypt.
+//   0006 -> 0007: password -> passwordHash -> password round-trip. Net zero.
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core"
 
 
