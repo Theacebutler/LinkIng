@@ -9,6 +9,8 @@ interface ResourceListProps {
   onDelete: (id: string) => Promise<boolean>;
   onUpdate: (id: string, updatedData: { title: string; sourceUrl: string }) => Promise<boolean>;
   loading?: boolean;
+  domainFilter: string | null;
+  onClearDomainFilter: () => void;
 }
 
 const SearchIcon = () => (
@@ -38,7 +40,7 @@ const ListIcon = ({ active }: { active?: boolean }) => (
 
 type SortKey = 'newest' | 'oldest' | 'title';
 
-export function ResourceList({ resources, onDelete, loading, onUpdate }: ResourceListProps) {
+export function ResourceList({ resources, onDelete, loading, onUpdate, domainFilter, onClearDomainFilter }: ResourceListProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [toast, setToast] = useState<ToastMessage | null>(null);
@@ -67,21 +69,30 @@ export function ResourceList({ resources, onDelete, loading, onUpdate }: Resourc
 
   const filteredResources = useMemo(() => {
     const q = searchQuery.toLowerCase().trim();
-    const list = q
-      ? resources.filter(
-          (r) =>
-            r.title.toLowerCase().includes(q) ||
-            r.resourceUrl.toLowerCase().includes(q) ||
-            r.sourceUrl.toLowerCase().includes(q),
-        )
-      : resources.slice();
+    const list = resources.filter((r) => {
+      if (domainFilter) {
+        try {
+          if (new URL(r.resourceUrl).hostname.replace(/^www\./, '') !== domainFilter) return false;
+        } catch {
+          return false;
+        }
+      }
+      if (q) {
+        return (
+          r.title.toLowerCase().includes(q) ||
+          r.resourceUrl.toLowerCase().includes(q) ||
+          r.sourceUrl.toLowerCase().includes(q)
+        );
+      }
+      return true;
+    });
     list.sort((a, b) => {
       if (sort === 'title') return (a.title || '').localeCompare(b.title || '');
       if (sort === 'oldest') return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
     return list;
-  }, [resources, searchQuery, sort]);
+  }, [resources, searchQuery, sort, domainFilter]);
 
   if (loading) {
     return (
@@ -134,17 +145,38 @@ export function ResourceList({ resources, onDelete, loading, onUpdate }: Resourc
         </div>
 
         {resources.length > 0 && (
-          <div className="relative">
-            <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted pointer-events-none">
-              <SearchIcon />
-            </span>
-            <input
-              type="search"
-              placeholder="Search your resources…"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="input pl-10"
-            />
+          <div className="space-y-2">
+            {domainFilter && (
+              <div className="flex items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 pl-2.5 pr-1 py-1 rounded-full bg-primary-soft text-primary text-xs font-medium border border-primary/30">
+                  {domainFilter}
+                  <button
+                    onClick={onClearDomainFilter}
+                    className="w-5 h-5 rounded-full hover:bg-primary/20 inline-flex items-center justify-center"
+                    aria-label="Clear domain filter"
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} className="w-3 h-3">
+                      <path d="M18 6 6 18M6 6l12 12" strokeLinecap="round" />
+                    </svg>
+                  </button>
+                </span>
+                <span className="text-xs text-text-soft">
+                  {filteredResources.length} match{filteredResources.length !== 1 ? 'es' : ''}
+                </span>
+              </div>
+            )}
+            <div className="relative">
+              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted pointer-events-none">
+                <SearchIcon />
+              </span>
+              <input
+                type="search"
+                placeholder="Search your resources…"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="input pl-10"
+              />
+            </div>
           </div>
         )}
 

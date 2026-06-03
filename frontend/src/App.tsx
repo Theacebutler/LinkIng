@@ -1,9 +1,10 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useResources } from './hooks/useResources';
 import { Header } from './components/Header';
 import { Sidebar } from './components/Sidebar';
 import { AddResourceForm } from './components/AddResourceForm';
 import { ResourceList } from './components/ResourceList';
+import { Domains } from './components/Domains';
 import LoginOrReg from './components/LoginOrReg';
 import { useAuths } from './hooks/useAuths';
 import Footer from './components/Footer';
@@ -11,6 +12,7 @@ import Footer from './components/Footer';
 function App() {
   const { resources, loading, addResource, updateResource, deleteResource } = useResources();
   const { isLogin } = useAuths();
+  const [domainFilter, setDomainFilter] = useState<string | null>(null);
 
   const handleAddResource = async (data: { title: string; resourceUrl: string; sourceUrl: string; owner: string }) => {
     return await addResource(data);
@@ -38,6 +40,8 @@ function App() {
                   onDelete={deleteResource}
                   onUpdate={updateResource}
                   loading={loading}
+                  domainFilter={domainFilter}
+                  onClearDomainFilter={() => setDomainFilter(null)}
                 />
               </div>
               <aside className="hidden xl:block space-y-4">
@@ -55,14 +59,11 @@ function App() {
                   </div>
                 </div>
 
-                <div className="card p-5">
-                  <h3 className="text-sm font-semibold text-text mb-2">Tips</h3>
-                  <ul className="text-xs text-text-soft space-y-2 leading-relaxed">
-                    <li>· Use the search to quickly find any saved resource.</li>
-                    <li>· Click any card to open the source link.</li>
-                    <li>· Switch between grid and list view using the toggle above.</li>
-                  </ul>
-                </div>
+                <Domains
+                  resources={resources}
+                  activeDomain={domainFilter}
+                  onSelect={setDomainFilter}
+                />
               </aside>
             </div>
           ) : (
