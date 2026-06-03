@@ -5,14 +5,14 @@ const GitHubIcon = () => (
 );
 
 const contact_methods = [
-  { name: 'GitHub', link: 'https://github.com/theacebutler', icon: <GitHubIcon /> },
+  { name: 'GitHub', link: 'https://github.com/theacebutler/linkIng', icon: <GitHubIcon /> },
 ];
 
 export default function Footer() {
   return (
     <footer className="border-t border-border mt-12 py-6 px-4">
       <div className="max-w-[1400px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted">
-        <span>Made with care by Avi Butler</span>
+        <span>Made with ❤️ and ☕️ by <a href="https://github.com/theacebutler" target="_blank" rel="noreferrer" className="text-primary hover:underline">Avi Butler</a></span>
         <div className="flex items-center gap-4">
           {contact_methods.map((method) => (
             <a
