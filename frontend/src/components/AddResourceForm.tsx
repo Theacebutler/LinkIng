@@ -6,19 +6,6 @@ interface AddResourceFormProps {
   onSubmit: (data: ResourceFormData) => Promise<boolean>;
 }
 
-const LinkIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
-    <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" />
-    <path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" />
-  </svg>
-);
-
-const PlusIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
-    <path d="M12 5v14M5 12h14" />
-  </svg>
-);
-
 export function AddResourceForm({ onSubmit }: AddResourceFormProps) {
   const [formData, setFormData] = useState<ResourceFormData>({
     title: '',
@@ -29,7 +16,6 @@ export function AddResourceForm({ onSubmit }: AddResourceFormProps) {
   const [errors, setErrors] = useState<Partial<ResourceFormData>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [expanded, setExpanded] = useState(false);
 
   const validateUrl = (url: string): boolean => {
     if (!url) return true;
@@ -43,130 +29,138 @@ export function AddResourceForm({ onSubmit }: AddResourceFormProps) {
 
   const validate = (): boolean => {
     const newErrors: Partial<ResourceFormData> = {};
+
     if (!formData.resourceUrl) {
       newErrors.resourceUrl = 'Resource URL is required';
     } else if (!validateUrl(formData.resourceUrl)) {
       newErrors.resourceUrl = 'Please enter a valid URL';
     }
+
     if (formData.sourceUrl && !validateUrl(formData.sourceUrl)) {
       newErrors.sourceUrl = 'Please enter a valid URL';
     }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
+  // const handlePaste = async () => {
+  //   const text = await navigator.clipboard.readText();
+  //   if (text) {
+  //     setErrors((prev) => ({ ...prev, resourceUrl: undefined }));
+  //     setFormData((prev) => ({ ...prev, resourceUrl: "" }));
+  //     setFormData((prev) => ({ ...prev, resourceUrl: text }));
+  //   }
+  // }
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setSuccess(false);
+
     if (!validate()) return;
 
     setIsSubmitting(true);
-    const ok = await onSubmit(formData);
+    const success = await onSubmit(formData);
     setIsSubmitting(false);
 
-    if (ok) {
-      const name = Cookies.get('name') || '';
+    if (success) {
+      const name = Cookies.get('name') || ''
       setFormData({ title: '', resourceUrl: '', sourceUrl: '', owner: name });
       setSuccess(true);
-      setExpanded(false);
-      setTimeout(() => setSuccess(false), 1800);
+      setTimeout(() => setSuccess(false), 1000);
     }
   };
 
   const handleChange = (field: keyof ResourceFormData, value: string) => {
+    window.setTimeout(() => { }, 100);
     setFormData((prev) => ({ ...prev, [field]: value }));
-    if (errors[field]) setErrors((prev) => ({ ...prev, [field]: undefined }));
+    if (errors[field]) {
+      setErrors((prev) => ({ ...prev, [field]: undefined }));
+    }
   };
 
   return (
-    <section id="add-resource" className="card p-4 md:p-5">
-      <form onSubmit={handleSubmit} noValidate>
-        <div className="flex items-center gap-2 mb-3">
-          <div className="inline-flex items-center justify-center w-7 h-7 rounded-md bg-primary-soft text-primary">
-            <PlusIcon />
-          </div>
-          <h2 className="text-sm font-semibold text-text">Add a new resource</h2>
-          <span className="ml-auto text-xs text-muted hidden sm:inline">
-            Paste a link to save it to your collection
-          </span>
+    <section className="bg-slate-800 border border-slate-700 rounded-lg p-6 mb-6">
+      <h2 className="text-xl font-semibold text-slate-100 mb-4">Add New Resource</h2>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
+        <div className="flex flex-col gap-1">
+          <label htmlFor="title" className="text-sm font-medium text-slate-300">
+            Title
+          </label>
+          <input
+            type="text"
+            id="title"
+            value={formData.title}
+            onChange={(e) => handleChange('title', e.target.value)}
+            placeholder="e.g., CSS Grid Guide"
+            className="px-3 py-2 border border-slate-600 rounded text-base bg-slate-900 text-slate-100 placeholder-slate-500 transition-colors focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-500/10"
+          />
         </div>
 
-        <div className="flex flex-col md:flex-row gap-2">
-          <div className="flex-1 relative">
-            <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted pointer-events-none">
-              <LinkIcon />
-            </span>
-            <input
-              type="url"
-              value={formData.resourceUrl}
-              onChange={(e) => handleChange('resourceUrl', e.target.value)}
-              placeholder="Paste a resource URL…"
-              className={`input pl-10 ${errors.resourceUrl ? 'input-error' : ''}`}
-              required
-            />
+        <div className="flex flex-col gap-1">
+          <div className="flex items-end shrink-0" >
+            <label htmlFor="resourceUrl" className="text-sm font-medium text-slate-300">
+              Resource URL <span className="text-red-400">*</span>
+            </label>
+
+            {/* <button */}
+            {/*   onClick={handlePaste} */}
+            {/*   className="p-1 text-slate-500 rounded hover:text-blue-400 hover:bg-blue-900/30 transition-colors" */}
+            {/*   aria-label="Paste resource URL" */}
+            {/*   title="Paste" */}
+            {/* > */}
+            {/*   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"> */}
+            {/*     <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" /> */}
+            {/*     <rect x="8" y="2" width="8" height="4" rx="1" ry="1" /> */}
+            {/*   </svg> */}
+            {/* </button> */}
+
           </div>
-          <button
-            type="button"
-            onClick={() => setExpanded((v) => !v)}
-            className="btn btn-ghost text-xs"
-            aria-expanded={expanded}
-          >
-            {expanded ? 'Hide details' : 'Add details'}
-          </button>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="btn btn-primary px-5"
-          >
-            {isSubmitting ? 'Adding…' : 'Add resource'}
-          </button>
+          <input
+            type="url"
+            id="resourceUrl"
+            value={formData.resourceUrl}
+            onChange={(e) => handleChange('resourceUrl', e.target.value)}
+            placeholder="https://..."
+            className={`px-3 py-2 border rounded text-base bg-slate-900 text-slate-100 placeholder-slate-500 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/10 ${errors.resourceUrl ? 'border-red-400 focus:border-red-400' : 'border-slate-600 focus:border-blue-400'}`}
+            required
+          />
+          {errors.resourceUrl && (
+            <span className="text-sm text-red-400">{errors.resourceUrl}</span>
+          )}
         </div>
 
-        {errors.resourceUrl && (
-          <p className="mt-2 text-xs text-danger">{errors.resourceUrl}</p>
-        )}
+        <div className="flex flex-col gap-1">
+          <label htmlFor="sourceUrl" className="text-sm font-medium text-slate-300">
+            Source URL
+          </label>
+          <input
+            type="url"
+            id="sourceUrl"
+            value={formData.sourceUrl}
+            onChange={(e) => handleChange('sourceUrl', e.target.value)}
+            placeholder="https://... (where you found it)"
+            className={`px-3 py-2 border rounded text-base bg-slate-900 text-slate-100 placeholder-slate-500 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/10 ${errors.sourceUrl ? 'border-red-400 focus:border-red-400' : 'border-slate-600 focus:border-blue-400'}`}
+          />
+          {errors.sourceUrl && (
+            <span className="text-sm text-red-400">{errors.sourceUrl}</span>
+          )}
+        </div>
 
-        {expanded && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
-            <div>
-              <label className="block text-xs font-medium text-text-soft mb-1.5">
-                Title <span className="text-muted">(optional)</span>
-              </label>
-              <input
-                type="text"
-                value={formData.title}
-                onChange={(e) => handleChange('title', e.target.value)}
-                placeholder="e.g., CSS Grid Guide"
-                className="input"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-text-soft mb-1.5">
-                Source URL <span className="text-muted">(optional)</span>
-              </label>
-              <input
-                type="url"
-                value={formData.sourceUrl}
-                onChange={(e) => handleChange('sourceUrl', e.target.value)}
-                placeholder="https://… (where you found it)"
-                className={`input ${errors.sourceUrl ? 'input-error' : ''}`}
-              />
-              {errors.sourceUrl && (
-                <p className="mt-1 text-xs text-danger">{errors.sourceUrl}</p>
-              )}
-            </div>
-          </div>
-        )}
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="px-4 py-2 bg-blue-600 text-white rounded font-medium transition-colors hover:bg-blue-500 disabled:opacity-60 disabled:cursor-not-allowed w-full"
+        >
+          {isSubmitting ? 'Adding...' : 'Add Resource'}
+        </button>
 
         {success && (
-          <div className="mt-3 flex items-center gap-2 text-sm text-success bg-success/10 border border-success/20 rounded-lg px-3 py-2">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-4 h-4">
-              <path d="M5 12l5 5L20 7" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-            Resource added successfully
-          </div>
+          <p className="text-sm text-emerald-400 text-center py-2 bg-emerald-900/30 rounded">
+            Resource added successfully!
+          </p>
         )}
       </form>
-    </section>
+    </section >
   );
 }

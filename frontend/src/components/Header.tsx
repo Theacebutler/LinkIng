@@ -1,37 +1,12 @@
-const MobileLogo = () => (
-  <svg viewBox="0 0 32 32" fill="none" className="w-7 h-7">
-    <rect width="32" height="32" rx="9" fill="url(#logo-gradient-header)" />
-    <path
-      d="M13.5 18.5l5-5m-2-2a3.5 3.5 0 0 1 5 5l-2 2a3.5 3.5 0 0 1-5-5m-4 4a3.5 3.5 0 0 1-5-5l2-2a3.5 3.5 0 0 1 5 5"
-      stroke="#0b0b10"
-      strokeWidth={2.2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <defs>
-      <linearGradient id="logo-gradient-header" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
-        <stop stopColor="#c4b5fd" />
-        <stop offset="1" stopColor="#8b5cf6" />
-      </linearGradient>
-    </defs>
-  </svg>
-);
-
-const Wordmark = () => (
-  <div className="flex items-center gap-2.5">
-    <MobileLogo />
-    <span className="text-base font-semibold text-text tracking-tight">Linking</span>
-  </div>
-);
-
 export function Header() {
   return (
-    <header className="sticky top-0 z-30 bg-bg/85 backdrop-blur-md border-b border-border">
-      <div className="max-w-[1400px] mx-auto flex items-center gap-3 px-4 md:px-6 py-3">
-        <div className="md:hidden">
-          <Wordmark />
-        </div>
-      </div>
+    <header className="text-center mb-8">
+      <h1 className="text-3xl font-bold text-slate-100">
+        Resource Collection
+      </h1>
+      <p className="text-lg text-slate-400">
+        Your curated list of discovered resources
+      </p>
     </header>
   );
 }
