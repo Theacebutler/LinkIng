@@ -1,5 +1,7 @@
+import { useMemo } from 'react';
 import { useResources } from './hooks/useResources';
 import { Header } from './components/Header';
+import { Sidebar } from './components/Sidebar';
 import { AddResourceForm } from './components/AddResourceForm';
 import { ResourceList } from './components/ResourceList';
 import LoginOrReg from './components/LoginOrReg';
@@ -9,37 +11,68 @@ import Footer from './components/Footer';
 function App() {
   const { resources, loading, addResource, updateResource, deleteResource } = useResources();
   const { isLogin } = useAuths();
-  const handleAddResource = async (data: { title: string; resourceUrl: string; sourceUrl: string, owner: string }) => {
+
+  const handleAddResource = async (data: { title: string; resourceUrl: string; sourceUrl: string; owner: string }) => {
     return await addResource(data);
   };
 
+  const addedThisWeek = useMemo(() => {
+    // eslint-disable-next-line react-hooks/purity -- timestamp intentionally captures current time on render
+    const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+    return resources.filter((r) => new Date(r.createdAt).getTime() >= weekAgo).length;
+  }, [resources]);
 
   return (
-    <>
+    <div className="min-h-screen flex flex-col">
       <Header />
-      {
-        isLogin ?
-          <>
-            <main>
-              <AddResourceForm onSubmit={handleAddResource} />
-              <ResourceList
-                resources={resources}
-                onDelete={deleteResource}
-                onUpdate={updateResource}
-                loading={loading}
-              />
-            </main >
-            <footer className="text-center py-4 text-slate-400 text-sm">
-              {resources.length > 0 && (
-                <p>{resources.length} resource{resources.length !== 1 ? 's' : ''} saved</p>
-              )}
-            </footer>
-          </>
-          :
-          <LoginOrReg />
-      }
+      <Sidebar />
+
+      <main className="flex-1 md:pl-16 lg:pl-20">
+        <div className="max-w-[1400px] mx-auto px-4 md:px-6 py-5 md:py-6">
+          {isLogin ? (
+            <div className="grid grid-cols-1 xl:grid-cols-[1fr_300px] gap-5">
+              <div className="space-y-5">
+                <AddResourceForm onSubmit={handleAddResource} />
+                <ResourceList
+                  resources={resources}
+                  onDelete={deleteResource}
+                  onUpdate={updateResource}
+                  loading={loading}
+                />
+              </div>
+              <aside className="hidden xl:block space-y-4">
+                <div className="card p-5">
+                  <h3 className="text-sm font-semibold text-text mb-3">At a glance</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-text-soft">Total saved</span>
+                      <span className="font-semibold text-text">{resources.length}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-text-soft">Added this week</span>
+                      <span className="font-semibold text-text">{addedThisWeek}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="card p-5">
+                  <h3 className="text-sm font-semibold text-text mb-2">Tips</h3>
+                  <ul className="text-xs text-text-soft space-y-2 leading-relaxed">
+                    <li>· Use the search to quickly find any saved resource.</li>
+                    <li>· Click any card to open the source link.</li>
+                    <li>· Switch between grid and list view using the toggle above.</li>
+                  </ul>
+                </div>
+              </aside>
+            </div>
+          ) : (
+            <LoginOrReg />
+          )}
+        </div>
+      </main>
+
       <Footer />
-    </>
+    </div>
   );
 }
 
