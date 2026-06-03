@@ -4,6 +4,7 @@ import { AddResourceForm } from './components/AddResourceForm';
 import { ResourceList } from './components/ResourceList';
 import LoginOrReg from './components/LoginOrReg';
 import { useAuths } from './hooks/useAuths';
+import Footer from './components/Footer';
 
 function App() {
   const { resources, loading, addResource, updateResource, deleteResource } = useResources();
@@ -37,6 +38,7 @@ function App() {
           :
           <LoginOrReg />
       }
+      <Footer />
     </>
   );
 }
