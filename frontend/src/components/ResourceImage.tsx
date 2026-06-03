@@ -16,10 +16,17 @@ export default function ResourceImage({ imageUrl, imageLoading }: ResourceImageP
     <img
       src={imageUrl}
       alt="Resource preview"
+      width={1820}
+      height={720}
       className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.02]"
       loading="lazy"
       decoding="async"
-      style={{ imageRendering: '-webkit-optimize-contrast' }}
+      fetchPriority="low"
+      style={{
+        imageRendering: '-webkit-optimize-contrast',
+        WebkitImageRendering: '-webkit-optimize-contrast',
+        filter: 'contrast(1.04) saturate(1.05)',
+      } as React.CSSProperties}
     />
   );
 }

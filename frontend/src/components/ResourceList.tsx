@@ -198,7 +198,7 @@ export function ResourceList({ resources, onDelete, loading, onUpdate, domainFil
           <div
             className={
               view === 'grid'
-                ? 'grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4'
+                ? 'grid grid-cols-1 md:grid-cols-2 gap-4'
                 : 'flex flex-col gap-3'
             }
           >
