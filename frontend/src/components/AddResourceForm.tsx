@@ -7,6 +7,7 @@ interface AddResourceFormProps {
 }
 
 export function AddResourceForm({ onSubmit }: AddResourceFormProps) {
+  const [showAddDetails, setShowAddDetails] = useState(false);
   const [formData, setFormData] = useState<ResourceFormData>({
     title: '',
     resourceUrl: '',
@@ -84,20 +85,6 @@ export function AddResourceForm({ onSubmit }: AddResourceFormProps) {
       <h2 className="text-xl font-semibold text-slate-100 mb-4">Add New Resource</h2>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
         <div className="flex flex-col gap-1">
-          <label htmlFor="title" className="text-sm font-medium text-slate-300">
-            Title
-          </label>
-          <input
-            type="text"
-            id="title"
-            value={formData.title}
-            onChange={(e) => handleChange('title', e.target.value)}
-            placeholder="e.g., CSS Grid Guide"
-            className="px-3 py-2 border border-slate-600 rounded text-base bg-slate-900 text-slate-100 placeholder-slate-500 transition-colors focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-500/10"
-          />
-        </div>
-
-        <div className="flex flex-col gap-1">
           <div className="flex items-end shrink-0" >
             <label htmlFor="resourceUrl" className="text-sm font-medium text-slate-300">
               Resource URL <span className="text-red-400">*</span>
@@ -129,31 +116,59 @@ export function AddResourceForm({ onSubmit }: AddResourceFormProps) {
             <span className="text-sm text-red-400">{errors.resourceUrl}</span>
           )}
         </div>
+        <div className="flex items-center gap-2">
+          <button
+            type="submit"
+            onClick={() => setShowAddDetails(!showAddDetails)}
+            className="px-4 py-2 bg-blue-600 text-white rounded font-medium transition-colors hover:bg-blue-500 disabled:opacity-60 disabled:cursor-not-allowed w-full"
+          >
+            {showAddDetails ? 'Hide Details' : 'Add Details'}
+          </button>
 
-        <div className="flex flex-col gap-1">
-          <label htmlFor="sourceUrl" className="text-sm font-medium text-slate-300">
-            Source URL
-          </label>
-          <input
-            type="url"
-            id="sourceUrl"
-            value={formData.sourceUrl}
-            onChange={(e) => handleChange('sourceUrl', e.target.value)}
-            placeholder="https://... (where you found it)"
-            className={`px-3 py-2 border rounded text-base bg-slate-900 text-slate-100 placeholder-slate-500 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/10 ${errors.sourceUrl ? 'border-red-400 focus:border-red-400' : 'border-slate-600 focus:border-blue-400'}`}
-          />
-          {errors.sourceUrl && (
-            <span className="text-sm text-red-400">{errors.sourceUrl}</span>
-          )}
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="px-4 py-2 bg-blue-600 text-white rounded font-medium transition-colors hover:bg-blue-500 disabled:opacity-60 disabled:cursor-not-allowed w-full"
+          >
+            {isSubmitting ? 'Adding...' : 'Add Resource'}
+          </button>
         </div>
+        {
+          showAddDetails &&
+          <>
+            <div className="flex flex-col gap-1">
+              <label htmlFor="title" className="text-sm font-medium text-slate-300">
+                Title
+              </label>
+              <input
+                type="text"
+                id="title"
+                value={formData.title}
+                onChange={(e) => handleChange('title', e.target.value)}
+                placeholder="e.g., CSS Grid Guide"
+                className="px-3 py-2 border border-slate-600 rounded text-base bg-slate-900 text-slate-100 placeholder-slate-500 transition-colors focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-500/10"
+              />
+            </div>
 
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="px-4 py-2 bg-blue-600 text-white rounded font-medium transition-colors hover:bg-blue-500 disabled:opacity-60 disabled:cursor-not-allowed w-full"
-        >
-          {isSubmitting ? 'Adding...' : 'Add Resource'}
-        </button>
+
+            <div className="flex flex-col gap-1">
+              <label htmlFor="sourceUrl" className="text-sm font-medium text-slate-300">
+                Source URL
+              </label>
+              <input
+                type="url"
+                id="sourceUrl"
+                value={formData.sourceUrl}
+                onChange={(e) => handleChange('sourceUrl', e.target.value)}
+                placeholder="https://... (where you found it)"
+                className={`px-3 py-2 border rounded text-base bg-slate-900 text-slate-100 placeholder-slate-500 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/10 ${errors.sourceUrl ? 'border-red-400 focus:border-red-400' : 'border-slate-600 focus:border-blue-400'}`}
+              />
+              {errors.sourceUrl && (
+                <span className="text-sm text-red-400">{errors.sourceUrl}</span>
+              )}
+            </div>
+          </>
+        }
 
         {success && (
           <p className="text-sm text-emerald-400 text-center py-2 bg-emerald-900/30 rounded">
