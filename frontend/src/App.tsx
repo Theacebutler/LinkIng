@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useResources } from './hooks/useResources';
 import { Header } from './components/Header';
-import { Sidebar } from './components/Sidebar';
 import { AddResourceForm } from './components/AddResourceForm';
 import { ResourceList } from './components/ResourceList';
 import { Domains } from './components/Domains';
@@ -27,10 +26,9 @@ function App() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <Sidebar />
 
       <main className="flex-1 md:pl-16 lg:pl-20">
-        <div className="max-w-[1400px] mx-auto px-4 md:px-6 py-5 md:py-6">
+        <div className="max-w-350 mx-auto px-4 md:px-6 py-5 md:py-6">
           {isLogin ? (
             <div className="grid grid-cols-1 xl:grid-cols-[1fr_300px] gap-5">
               <div className="space-y-5">
