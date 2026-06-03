@@ -128,22 +128,23 @@ export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate }: Res
   const fallbackTitle = `Resource from ${hostname}`;
 
   return (
-    <article className={`card card-hover overflow-hidden flex ${view === 'list' ? 'flex-row' : 'flex-col'}`}>
+    <article className={`card card-hover overflow-hidden flex group ${view === 'list' ? 'flex-row' : 'flex-col'}`}>
       <div
         className={
           view === 'list'
-            ? 'w-40 sm:w-48 shrink-0 bg-surface relative cursor-pointer'
-            : 'aspect-[16/10] w-full bg-surface relative cursor-pointer'
+            ? 'w-44 sm:w-52 shrink-0 self-stretch bg-surface relative cursor-pointer overflow-hidden'
+            : 'aspect-[2.5/1] w-full bg-surface relative cursor-pointer overflow-hidden'
         }
         onClick={openResource}
       >
         {!imageLoadingError ? (
           <ResourceImage imageUrl={imageUrl} imageLoading={imageLoading} />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-muted text-xs">
+          <div className="absolute inset-0 flex items-center justify-center text-muted text-xs">
             <span className="opacity-60">No preview</span>
           </div>
         )}
+        <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
         {saved && (
           <div className="absolute top-2 right-2 px-2 py-0.5 rounded-md bg-success/90 text-bg text-[10px] font-semibold uppercase tracking-wide">
             Saved
