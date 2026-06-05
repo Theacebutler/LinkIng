@@ -65,7 +65,7 @@ export default function LoginOrReg() {
           <Logo />
           <h1 className="mt-4 text-2xl font-semibold text-text">Welcome to Linking</h1>
           <p className="mt-1 text-sm text-text-soft">
-            Sign in or create an account to start saving resources
+            Sign in or create an account to start saving your links.
           </p>
         </div>
 
