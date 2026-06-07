@@ -7,6 +7,7 @@ import { Domains } from './components/Domains';
 import LoginOrReg from './components/LoginOrReg';
 import { useAuths } from './hooks/useAuths';
 import Footer from './components/Footer';
+import { GetUserKey } from './components/GetUserKey';
 
 function App() {
   const { resources, loading, addResource, updateResource, deleteResource } = useResources();
@@ -62,6 +63,7 @@ function App() {
                   activeDomain={domainFilter}
                   onSelect={setDomainFilter}
                 />
+                <GetUserKey />
               </aside>
             </div>
           ) : (

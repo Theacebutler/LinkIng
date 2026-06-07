@@ -86,3 +86,17 @@ export async function logout(username: string, password: string): Promise<undefi
   })
   return undefined
 }
+
+export async function getUserKey(): Promise<{ key: string, owner: string }> {
+  const accessToken = Cookies.get('accessToken')
+  if (!accessToken) throw new Error("No access token")
+  const res = await fetch(`${config.VITE_API_URL}/users/get-key`, {
+    method: "GET",
+    headers: {
+      "Authorization": `Bearer ${accessToken}`
+    }
+  })
+  if (!res.ok) throw new Error("Failed to get user key")
+  return await res.json() as { key: string, owner: string }
+}
+
