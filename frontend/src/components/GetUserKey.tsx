@@ -5,8 +5,25 @@ import { Toast } from './Toast';
 
 export function GetUserKey() {
   const { showToast, toast, setToast } = useToast();
-  const [key, setKey] = useState<string | null>("TEST_KEY");
-  const [owner, setOwner] = useState<string | null>("TEST_OWNER");
+  const [key, setKey] = useState<string | null>(null);
+  const [owner, setOwner] = useState<string | null>(null);
+
+  function handleClick() {
+    try {
+      getUserKey()
+        .then((data) => {
+          setKey(data.key);
+          setOwner(data.owner);
+        })
+        .catch((e) => {
+          showToast('Failed to get your API key', 'error');
+          console.log("Error attempting to get API key", e);
+        });
+    } catch (e) {
+      showToast('Failed to get your API key', 'error');
+      console.log("Error attempting to get API key", e);
+    }
+  }
 
   const handleCopy = async (text: string, type: 'key' | 'owner') => {
     try {
@@ -17,20 +34,6 @@ export function GetUserKey() {
     }
   };
 
-  function handleClick() {
-    console.log('clicked');
-    try {
-      getUserKey().then((data) => {
-        setKey(data.key);
-        setOwner(data.owner);
-        console.log(key);
-        alert(`Your API key is: ${key}
-            Your API owner is: ${owner}`)
-      });
-    } catch (e) {
-      console.log(e);
-    }
-  }
   return (
     <>
       <div className="card p-4">
@@ -74,14 +77,14 @@ export function GetUserKey() {
               Copy
             </button>
           </div>
-          <Toast
-            message={toast?.message || ''}
-            type={toast?.type || 'success'}
-            onClose={() => setToast(null)}
-          />
         </>
         : null
       }
+      <Toast
+        message={toast?.message || ''}
+        type={toast?.type || 'success'}
+        onClose={() => setToast(null)}
+      />
     </>
   );
 }

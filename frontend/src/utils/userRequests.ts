@@ -93,6 +93,7 @@ export async function getUserKey(): Promise<{ key: string, owner: string }> {
   const res = await fetch(`${config.VITE_API_URL}/users/get-key`, {
     method: "GET",
     headers: {
+      "Content-Type": "application/json",
       "Authorization": `Bearer ${accessToken}`
     }
   })
