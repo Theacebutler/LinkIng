@@ -27,7 +27,7 @@ const Wordmark = () => (
 export function Header() {
   return (
     <header className="sticky top-0 z-30 bg-bg/85 backdrop-blur-md border-b border-border">
-      <div className="max-w-[1400px] mx-auto flex items-center gap-3 px-4 md:px-6 py-3">
+      <div className="max-w-350 mx-auto flex justify-between items-center gap-3 px-4 md:px-6 py-3">
         <div className="md:hidden">
           <Wordmark />
         </div>
