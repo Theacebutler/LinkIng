@@ -15,5 +15,5 @@ export default async function getUserKeyFromDB(req: AuthenticatedRequest): Promi
   if (!userFromDB) {
     return new Response("User not found", { status: 404 })
   }
-  return new Response(JSON.stringify({ key: userFromDB.key }), { status: 200 })
+  return new Response(JSON.stringify({ key: userFromDB.key, owner: userFromDB.username }), { status: 200 })
 }
