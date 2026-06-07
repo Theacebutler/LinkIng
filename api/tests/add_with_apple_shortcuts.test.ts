@@ -40,12 +40,32 @@ describe("TEST: get user key", async () => {
       },
     })
     const res = await getUserKey(mockRequest)
-    const data = await res.json() as { key: string };
+    const data = await res.json() as { key: string, owner: string };
     TEST_KEY = data.key
+    expect(res.ok).toBe(true);
+    expect(res.status).toBe(200);
+    expect(data.key).toBe(TEST_KEY);
+    expect(data.owner).toBe(TEST_USER);
+  })
+  test("TEST get user key with invalid token", async () => {
+    const mockRequest: Request = new Request(
+      "http://localhost:3000/api/users/get-key/", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + "invalid-token"
+      },
+    })
+    const res = await getUserKey(mockRequest)
+    const data = await res.json() as { error: string };
+    expect(res.ok).toBe(false);
+    expect(res.status).toBe(401);
+    expect(data.error).toBeDefined();
   })
 })
 
 describe("TEST: add resource with apple shortcuts", async () => {
+
   test("TEST add resource with apple shortcuts", async () => {
     const mockRequest: Request = new Request(
       "http://localhost:3000/api/resources/apple-shortcuts/", {
@@ -73,6 +93,29 @@ describe("TEST: add resource with apple shortcuts", async () => {
     expect(data.sourceUrl).toBe(TEST_SOURCE_URL);
     expect(data.owner).toBe(TEST_USER);
   });
+
+  test("TEST add resource with apple shortcuts with no user agent", async () => {
+    const mockRequest: Request = new Request(
+      "http://localhost:3000/api/resources/apple-shortcuts/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        resourceUrl: TEST_RESOURCE_URL,
+        title: TEST_TITLE,
+        sourceUrl: TEST_SOURCE_URL,
+        owner: TEST_USER,
+      })
+    })
+    const res = await apiAppleShortcutsPost(mockRequest)
+    const data = await res.json() as { error: string };
+    expect(res.ok).toBe(false);
+    expect(res.status).toBe(400);
+    // test the data.message output
+    expect(data.error).toBeDefined();
+  });
+
   test("TEST add resource with apple shortcuts with invalid user agent", async () => {
     const mockRequest: Request = new Request(
       "http://localhost:3000/api/resources/apple-shortcuts/", {
@@ -94,5 +137,121 @@ describe("TEST: add resource with apple shortcuts", async () => {
     expect(res.status).toBe(400);
     // test the data.message output
     expect(data.error).toBe("User-Agent header must include BackgroundShortcutRunner");
+  });
+
+  test("TEST add resource with apple shortcuts with bad body - no resourceUrl", async () => {
+    const mockRequest: Request = new Request(
+      "http://localhost:3000/api/resources/apple-shortcuts/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "User-Agent": "BackgroundShortcutRunner/3612.0.1.5 CFNetwork/3826.600.41.2.1 Darwin/24.6.0"
+      },
+      body: JSON.stringify({
+        title: TEST_TITLE,
+        sourceUrl: TEST_SOURCE_URL,
+        owner: TEST_USER,
+      })
+    })
+    const res = await apiAppleShortcutsPost(mockRequest)
+    const data = await res.json() as { error: string };
+    expect(res.ok).toBe(false);
+    expect(res.status).toBe(400);
+    // test the data.message output
+    expect(data.error).toBeDefined();
+  });
+
+  test("TEST add resource with apple shortcuts with bad body - no key", async () => {
+    const mockRequest: Request = new Request(
+      "http://localhost:3000/api/resources/apple-shortcuts/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "User-Agent": "BackgroundShortcutRunner/3612.0.1.5 CFNetwork/3826.600.41.2.1 Darwin/24.6.0"
+      },
+      body: JSON.stringify({
+        resourceUrl: TEST_RESOURCE_URL,
+        title: TEST_TITLE,
+        sourceUrl: TEST_SOURCE_URL,
+        owner: TEST_USER,
+      })
+    })
+    const res = await apiAppleShortcutsPost(mockRequest)
+    const data = await res.json() as { error: string };
+    expect(res.ok).toBe(false);
+    expect(res.status).toBe(400);
+    // test the data.message output
+    expect(data.error).toBeDefined();
+  });
+
+  test("TEST add resource with apple shortcuts with bad body - no owner", async () => {
+    const mockRequest: Request = new Request(
+      "http://localhost:3000/api/resources/apple-shortcuts/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "User-Agent": "BackgroundShortcutRunner/3612.0.1.5 CFNetwork/3826.600.41.2.1 Darwin/24.6.0"
+      },
+      body: JSON.stringify({
+        resourceUrl: TEST_RESOURCE_URL,
+        title: TEST_TITLE,
+        sourceUrl: TEST_SOURCE_URL,
+        key: TEST_KEY,
+      })
+    })
+    const res = await apiAppleShortcutsPost(mockRequest)
+    const data = await res.json() as { error: string };
+    expect(res.ok).toBe(false);
+    expect(res.status).toBe(400);
+    // test the data.message output
+    expect(data.error).toBeDefined();
+  });
+
+  test("TEST add resource with apple shortcuts with bad key", async () => {
+    const mockRequest: Request = new Request(
+      "http://localhost:3000/api/resources/apple-shortcuts/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "User-Agent": "BackgroundShortcutRunner/3612.0.1.5 CFNetwork/3826.600.41.2.1 Darwin/24.6.0"
+      },
+      body: JSON.stringify({
+        resourceUrl: TEST_RESOURCE_URL,
+        title: TEST_TITLE,
+        sourceUrl: TEST_SOURCE_URL,
+        key: TEST_KEY + "bad",
+        owner: TEST_USER,
+      })
+    })
+    const res = await apiAppleShortcutsPost(mockRequest)
+    const data = await res.json() as { error: string };
+    expect(res.ok).toBe(false);
+    expect(res.status).toBe(400);
+    // test the data.message output
+    expect(data.error).toBe("Invalid user or key");
+  });
+
+  test("TEST add resource with apple shortcuts with bad owner", async () => {
+    const mockRequest: Request = new Request(
+      "http://localhost:3000/api/resources/apple-shortcuts/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "User-Agent": "BackgroundShortcutRunner/3612.0.1.5 CFNetwork/3826.600.41.2.1 Darwin/24.6.0"
+      },
+      body: JSON.stringify({
+        resourceUrl: TEST_RESOURCE_URL,
+        title: TEST_TITLE,
+        key: TEST_KEY,
+        sourceUrl: TEST_SOURCE_URL,
+        owner: "test-user-lerwo",
+      })
+    })
+    const res = await apiAppleShortcutsPost(mockRequest)
+    const data = await res.json() as { error: string };
+    expect(res.ok).toBe(false);
+    expect(res.status).toBe(400);
+    // test the data.message output
+    expect(data.error).toBe("Invalid user or key");
   });
 });
