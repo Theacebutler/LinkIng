@@ -1,10 +1,12 @@
 import { beforeAll, describe, expect, test } from "bun:test";
 import { apiAppleShortcutsPost } from "../handlers/api_resources";
 import { register, login } from "../handlers/auth";
+import { getUserKey } from "../handlers/protected";
 
 const TEST_USER = `test-user-${Math.random().toString(36).substring(7)}`
 const TEST_PASSWORD = "test-password"
 let token: string;
+let TEST_KEY: string;
 const TEST_TITLE = "some title"
 const TEST_RESOURCE_URL = "https://www.google.com/some-source"
 const TEST_SOURCE_URL = "https://www.google.com/some-source"
@@ -27,6 +29,21 @@ beforeAll(async () => {
     })
 })
 
+describe("TEST: get user key", async () => {
+  test("TEST get user key", async () => {
+    const mockRequest: Request = new Request(
+      "http://localhost:3000/api/users/get-key/", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token
+      },
+    })
+    const res = await getUserKey(mockRequest)
+    const data = await res.json() as { key: string };
+    TEST_KEY = data.key
+  })
+})
 
 describe("TEST: add resource with apple shortcuts", async () => {
   test("TEST add resource with apple shortcuts", async () => {
@@ -41,6 +58,7 @@ describe("TEST: add resource with apple shortcuts", async () => {
         resourceUrl: TEST_RESOURCE_URL,
         title: TEST_TITLE,
         sourceUrl: TEST_SOURCE_URL,
+        key: TEST_KEY,
         owner: TEST_USER,
       })
     })

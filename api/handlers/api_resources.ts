@@ -5,6 +5,7 @@ import type { Resource } from "../shared/types";
 import addToScreenshotQ from "../utils/screenshot";
 import { config } from "../config";
 import type { AuthenticatedRequest } from "../utils/token_gen";
+import { validateAppleShortcutsUser } from "../utils/validateCred";
 
 
 export async function apiResourcesGet(request: AuthenticatedRequest): Promise<Response> {
@@ -30,7 +31,6 @@ export async function apiResourcesOpts(): Promise<Response> {
 }
 
 export async function apiAppleShortcutsPost(req: Request): Promise<Response> {
-  // WARNING: This is a dangerous route since it allows anyone to add resources, it should only be used by Apple Shortcuts
   const headers = req.headers;
   const userAgent = headers.get("user-agent");
   if (!userAgent) {
@@ -39,10 +39,13 @@ export async function apiAppleShortcutsPost(req: Request): Promise<Response> {
   if (!userAgent.includes("BackgroundShortcutRunner")) {
     return Response.json({ error: "User-Agent header must include BackgroundShortcutRunner" }, { status: 400 });
   }
-  const body = await req.json() as { resourceUrl: string; title: string; sourceUrl: string; owner: string; };
-  // TODO: validate the request body
-  if (!body.resourceUrl || !body.owner) {
-    return Response.json({ error: "Invalid request body, missing resourceUrl or owner" }, { status: 400 });
+  const body = await req.json() as { resourceUrl: string; title: string; sourceUrl: string; owner: string; key: string; };
+  if (!body.resourceUrl || !body.owner || !body.key) {
+    return Response.json({ error: "Invalid request body, missing resourceUrl, owner or key" }, { status: 400 });
+  }
+  // validate the user
+  if (!await validateAppleShortcutsUser(body.owner, body.key)) {
+    return Response.json({ error: "Invalid user or key" }, { status: 400 });
   }
   const newResource: Resource = {
     resourceUrl: body.resourceUrl,
