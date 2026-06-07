@@ -13,13 +13,8 @@
     body: {
       "resourceUrl": "https://example.com/some-resource",
       "title": "Example resource",
-      "sourceUrl": "https://example.com/some-source
+      "sourceUrl": "https://example.com/some-source",
+      "key": "key",
       "owner": "avi"
     }
     ```
-
-  - Get the owner and resource data from the POST request
-
-  ```TypeScript
-  const body = await req.json() as Omit<Resource, 'id' | 'createdAt' | 'sourceImage'>;
-  ```
