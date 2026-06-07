@@ -29,6 +29,36 @@ export async function apiResourcesOpts(): Promise<Response> {
   return res;
 }
 
+export async function apiAppleShortcutsPost(req: Request): Promise<Response> {
+  // WARNING: This is a dangerous route since it allows anyone to add resources, it should only be used by Apple Shortcuts
+  const headers = req.headers;
+  const userAgent = headers.get("user-agent");
+  if (!userAgent) {
+    return Response.json({ error: "User-Agent header missing" }, { status: 400 });
+  }
+  if (!userAgent.includes("BackgroundShortcutRunner")) {
+    return Response.json({ error: "User-Agent header must include BackgroundShortcutRunner" }, { status: 400 });
+  }
+  const body = await req.json() as { resourceUrl: string; title: string; sourceUrl: string; owner: string; };
+  // TODO: validate the request body
+  const newResource: Resource = {
+    resourceUrl: body.resourceUrl,
+    title: body.title,
+    sourceUrl: body.sourceUrl,
+    createdAt: new Date().toISOString(),
+    owner: body.owner,
+  };
+  // save the screenshot to the DB
+  const [id] = await db.insert(resourcesTable)
+    .values(newResource)
+    .returning();
+  const insertId = id?.id
+  addToScreenshotQ(newResource.resourceUrl, insertId)
+  const out = { ...newResource, id: insertId };
+  const res = Response.json(out);
+  return res;
+}
+
 export async function apiResourcesPost(req: AuthenticatedRequest) {
   const body = await req.json() as Omit<Resource, 'id' | 'createdAt' | 'sourceImage'>;
   const name = req.user.sub

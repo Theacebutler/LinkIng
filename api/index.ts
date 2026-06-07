@@ -1,4 +1,4 @@
-import { apiResourcesOpts } from "./handlers/api_resources";
+import { apiResourcesOpts, apiAppleShortcutsPost } from "./handlers/api_resources";
 import { apiResourceScreenshotGet } from "./handlers/api_resources_screenshots";
 
 import { addResource, deleteResource, getResources, updateResource } from "./handlers/protected";
@@ -58,6 +58,11 @@ const server = Bun.serve({
         res.headers.set("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Origin, Authorization");
         return res;
       },
+    },
+    "/api/resources/apple-shortcuts": {
+      POST: async (req): Promise<Response> => {
+        return apiAppleShortcutsPost(req);
+      }
     },
     "/api/resources/screenshots/:id": {
       OPTIONS: () => apiResourcesOpts(),
