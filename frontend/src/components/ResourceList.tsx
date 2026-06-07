@@ -2,7 +2,8 @@ import { useMemo, useState } from 'react';
 import type { Resource } from '../types/resource';
 import { ResourceCard } from './ResourceCard';
 import { ConfirmDialog } from './ConfirmDialog';
-import { Toast, type ToastMessage } from './Toast';
+import { Toast } from './Toast';
+import useToast from '../hooks/useToast';
 
 interface ResourceListProps {
   resources: Resource[];
@@ -43,13 +44,9 @@ type SortKey = 'newest' | 'oldest' | 'title';
 export function ResourceList({ resources, onDelete, loading, onUpdate, domainFilter, onClearDomainFilter }: ResourceListProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [toast, setToast] = useState<ToastMessage | null>(null);
   const [view, setView] = useState<'grid' | 'list'>('grid');
   const [sort, setSort] = useState<SortKey>('newest');
-
-  const showToast = (message: string, type: ToastMessage['type'] = 'success') => {
-    setToast({ message, type });
-  };
+  const { showToast, toast, setToast } = useToast();
 
   const handleCopy = async (text: string, type: 'resource' | 'source') => {
     try {

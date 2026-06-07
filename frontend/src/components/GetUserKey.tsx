@@ -1,15 +1,19 @@
 import { getUserKey } from '../utils/userRequests';
 import { useState } from 'react';
+import useToast from '../hooks/useToast';
+import { Toast } from './Toast';
 
 export function GetUserKey() {
+  const { showToast, toast, setToast } = useToast();
   const [key, setKey] = useState<string | null>("TEST_KEY");
   const [owner, setOwner] = useState<string | null>("TEST_OWNER");
+
   const handleCopy = async (text: string, type: 'key' | 'owner') => {
     try {
       await navigator.clipboard.writeText(text);
-      // showToast(`${type === 'resource' ? 'Resource' : 'Source'} URL copied to clipboard`);
+      showToast(`${type === 'key' ? 'key' : 'owner'}  copied to clipboard`);
     } catch {
-      // showToast('Failed to copy URL', 'error');
+      showToast('Failed to copy URL', 'error');
     }
   };
 
@@ -59,7 +63,7 @@ export function GetUserKey() {
             <h3 className="text-sm font-semibold text-text mb-3">API owner</h3>
             <p className="text-sm text-text-soft">{owner}</p>
             <button
-              onClick={() => handleCopy(key, 'key')}
+              onClick={() => handleCopy(key, 'owner')}
               className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[11px] text-text-soft hover:text-text hover:bg-surface transition-colors"
               title="Copy key"
             >
@@ -70,6 +74,11 @@ export function GetUserKey() {
               Copy
             </button>
           </div>
+          <Toast
+            message={toast?.message || ''}
+            type={toast?.type || 'success'}
+            onClose={() => setToast(null)}
+          />
         </>
         : null
       }
