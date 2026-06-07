@@ -41,10 +41,13 @@ export async function apiAppleShortcutsPost(req: Request): Promise<Response> {
   }
   const body = await req.json() as { resourceUrl: string; title: string; sourceUrl: string; owner: string; };
   // TODO: validate the request body
+  if (!body.resourceUrl || !body.owner) {
+    return Response.json({ error: "Invalid request body, missing resourceUrl or owner" }, { status: 400 });
+  }
   const newResource: Resource = {
     resourceUrl: body.resourceUrl,
-    title: body.title,
-    sourceUrl: body.sourceUrl,
+    title: body.title || "Added via Apple Shortcuts",
+    sourceUrl: body.sourceUrl || "",
     createdAt: new Date().toISOString(),
     owner: body.owner,
   };
