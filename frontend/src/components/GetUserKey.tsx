@@ -9,20 +9,15 @@ export function GetUserKey() {
   const [owner, setOwner] = useState<string | null>(null);
 
   function handleClick() {
-    try {
-      getUserKey()
-        .then((data) => {
-          setKey(data.key);
-          setOwner(data.owner);
-        })
-        .catch((e) => {
-          showToast('Failed to get your API key', 'error');
-          console.log("Error attempting to get API key", e);
-        });
-    } catch (e) {
-      showToast('Failed to get your API key', 'error');
-      console.log("Error attempting to get API key", e);
-    }
+    getUserKey()
+      .then((data) => {
+        setKey(data.key);
+        setOwner(data.owner);
+      })
+      .catch((e) => {
+        showToast('Failed to get your API key', 'error');
+        console.log("Error attempting to get API key", e);
+      });
   }
 
   const handleCopy = async (text: string, type: 'key' | 'owner') => {
