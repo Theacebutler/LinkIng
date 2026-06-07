@@ -4,6 +4,7 @@ import { apiResourceScreenshotGet } from "./handlers/api_resources_screenshots";
 import { addResource, deleteResource, getResources, updateResource } from "./handlers/protected";
 import { config } from "./config";
 import { login, logout, refresh, register } from "./handlers/auth";
+import { getUserKey } from "./handlers/protected";
 
 const PORT = config.PORT
 const server = Bun.serve({
@@ -35,6 +36,11 @@ const server = Bun.serve({
       POST: async (req): Promise<Response> => {
         return await logout(req)
       }
+    },
+    "/api/users/get-key": {
+      GET: async (req): Promise<Response> => {
+        return await getUserKey(req)
+      },
     },
 
     "/api/resources": {
