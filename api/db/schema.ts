@@ -1,4 +1,3 @@
-// import { serial, pgTable, text } from "drizzle-orm/pg-core"
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core"
 
 
