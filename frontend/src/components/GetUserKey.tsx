@@ -35,7 +35,7 @@ export function GetUserKey() {
         <h3 className="text-sm font-semibold text-text mb-3">Get your API key</h3>
         <button
           onClick={handleClick}
-          className="w-full flex items-center justify-center px-4 py-2 rounded-lg text-sm font-semibold text-text-soft transition-colors hover:bg-primary hover:text-primary-soft"
+          className="w-full flex items-center justify-center px-4 py-2 rounded-lg text-sm font-semibold text-text-soft transition-colors hover:bg-primary hover:text-text"
         >
           Get your API key
         </button>
