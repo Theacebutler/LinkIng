@@ -1,20 +1,34 @@
 import { useMemo, useState } from 'react';
-import { useResources } from './hooks/useResources';
 import { Header } from './components/Header';
 import { AddResourceForm } from './components/AddResourceForm';
 import { ResourceList } from './components/ResourceList';
-import { Domains } from './components/Domains';
 import LoginOrReg from './components/LoginOrReg';
-import { useAuths } from './hooks/useAuths';
 import Footer from './components/Footer';
+import { Toast } from './components/Toast';
+import { KeyAndOwner } from './components/KeyAndOwner';
+import Aside from './components/Aside';
+
+import { useToast } from './hooks/useToast';
+import { useAuths } from './hooks/useAuths';
+import { useResources } from './hooks/useResources';
+
 
 function App() {
-  const { resources, loading, addResource, updateResource, deleteResource } = useResources();
   const { isLogin } = useAuths();
+  const { resources, loading, addResource, updateResource, deleteResource } = useResources();
+  const { toast, setToast } = useToast();
   const [domainFilter, setDomainFilter] = useState<string | null>(null);
+  const [showKeyAndOwner, setShowKeyAndOwner] = useState(false);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+
 
   const handleAddResource = async (data: { title: string; resourceUrl: string; sourceUrl: string; owner: string }) => {
     return await addResource(data);
+  };
+
+  const handleDomainFilter = (domainFilter: string | null) => {
+    setIsPopupOpen(false);
+    setDomainFilter(domainFilter);
   };
 
   const addedThisWeek = useMemo(() => {
@@ -25,7 +39,7 @@ function App() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
+      <Header isPopupOpen={isPopupOpen} setIsPopupOpen={setIsPopupOpen} />
 
       <main className="flex-1 md:pl-16 lg:pl-20">
         <div className="max-w-350 mx-auto px-4 md:px-6 py-5 md:py-6">
@@ -42,36 +56,42 @@ function App() {
                   onClearDomainFilter={() => setDomainFilter(null)}
                 />
               </div>
-              <aside className="hidden xl:block space-y-4">
-                <div className="card p-5">
-                  <h3 className="text-sm font-semibold text-text mb-3">At a glance</h3>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-text-soft">Total saved</span>
-                      <span className="font-semibold text-text">{resources.length}</span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-text-soft">Added this week</span>
-                      <span className="font-semibold text-text">{addedThisWeek}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <Domains
-                  resources={resources}
-                  activeDomain={domainFilter}
-                  onSelect={setDomainFilter}
+              {isPopupOpen && (
+                <div
+                  className="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 xl:hidden animate-fade-in"
+                  onClick={() => setIsPopupOpen(false)}
                 />
-              </aside>
+              )}
+              <Aside
+                setIsPopupOpen={setIsPopupOpen}
+                isOpen={isPopupOpen}
+                resources={resources}
+                setDomainFilter={setDomainFilter}
+                addedThisWeek={addedThisWeek}
+                domainFilter={domainFilter}
+                showKeyAndOwner={showKeyAndOwner}
+                setShowKeyAndOwner={setShowKeyAndOwner}
+                handleDomainFilter={handleDomainFilter}
+              />
+              {showKeyAndOwner && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+                  <KeyAndOwner setShowKeyAndOwner={setShowKeyAndOwner} />
+                </div>
+              )}
             </div>
           ) : (
             <LoginOrReg />
           )}
         </div>
-      </main>
+      </main >
 
       <Footer />
-    </div>
+      <Toast
+        message={toast?.message || ''}
+        type={toast?.type || 'success'}
+        onClose={() => setToast(null)}
+      />
+    </div >
   );
 }
 

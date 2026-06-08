@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const useClipboard = () => {
+export const useClipboard = () => {
   const [isCopied, setIsCopied] = useState(false);
   const [copydText, setCopydText] = useState('');
   return {
@@ -11,4 +11,4 @@ const useClipboard = () => {
   };
 };
 
-export default useClipboard;
+

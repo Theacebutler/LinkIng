@@ -1,0 +1,1 @@
+ALTER TABLE `users_table` ADD `key` text DEFAULT '30566b0c-eb27-4b5c-80a2-17fe810a4827' NOT NULL;

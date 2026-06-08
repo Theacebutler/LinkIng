@@ -5,6 +5,7 @@ import type { Resource } from "../shared/types";
 import addToScreenshotQ from "../utils/screenshot";
 import { config } from "../config";
 import type { AuthenticatedRequest } from "../utils/token_gen";
+import { validateAppleShortcutsUser } from "../utils/validateCred";
 
 
 export async function apiResourcesGet(request: AuthenticatedRequest): Promise<Response> {
@@ -26,6 +27,41 @@ export async function apiResourcesOpts(): Promise<Response> {
   res.headers.set("Access-Control-Allow-Origin", config.FRONTEND_URL as string);
   res.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.headers.set("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Origin, Authorization");
+  return res;
+}
+
+export async function apiAppleShortcutsPost(req: Request): Promise<Response> {
+  const headers = req.headers;
+  const userAgent = headers.get("user-agent");
+  if (!userAgent) {
+    return Response.json({ error: "User-Agent header missing" }, { status: 400 });
+  }
+  if (!userAgent.includes("BackgroundShortcutRunner")) {
+    return Response.json({ error: "User-Agent header must include BackgroundShortcutRunner" }, { status: 400 });
+  }
+  const body = await req.json() as { resourceUrl: string; title: string; sourceUrl: string; owner: string; key: string; };
+  if (!body.resourceUrl || !body.owner || !body.key) {
+    return Response.json({ error: "Invalid request body, missing resourceUrl, owner or key" }, { status: 400 });
+  }
+  // validate the user
+  if (!await validateAppleShortcutsUser(body.owner, body.key)) {
+    return Response.json({ error: "Invalid user or key" }, { status: 400 });
+  }
+  const newResource: Resource = {
+    resourceUrl: body.resourceUrl,
+    title: body.title || "Added via Apple Shortcuts",
+    sourceUrl: body.sourceUrl || "",
+    createdAt: new Date().toISOString(),
+    owner: body.owner,
+  };
+  // save the screenshot to the DB
+  const [id] = await db.insert(resourcesTable)
+    .values(newResource)
+    .returning();
+  const insertId = id?.id
+  addToScreenshotQ(newResource.resourceUrl, insertId)
+  const out = { ...newResource, id: insertId };
+  const res = Response.json(out);
   return res;
 }
 

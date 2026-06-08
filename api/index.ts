@@ -1,9 +1,10 @@
-import { apiResourcesOpts } from "./handlers/api_resources";
+import { apiResourcesOpts, apiAppleShortcutsPost } from "./handlers/api_resources";
 import { apiResourceScreenshotGet } from "./handlers/api_resources_screenshots";
 
 import { addResource, deleteResource, getResources, updateResource } from "./handlers/protected";
 import { config } from "./config";
 import { login, logout, refresh, register } from "./handlers/auth";
+import { getUserKey } from "./handlers/protected";
 
 const PORT = config.PORT
 const server = Bun.serve({
@@ -36,6 +37,11 @@ const server = Bun.serve({
         return await logout(req)
       }
     },
+    "/api/users/get-key": {
+      GET: async (req): Promise<Response> => {
+        return await getUserKey(req)
+      },
+    },
 
     "/api/resources": {
       GET: async (req) => {
@@ -58,6 +64,11 @@ const server = Bun.serve({
         res.headers.set("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Origin, Authorization");
         return res;
       },
+    },
+    "/api/resources/apple-shortcuts": {
+      POST: async (req): Promise<Response> => {
+        return apiAppleShortcutsPost(req);
+      }
     },
     "/api/resources/screenshots/:id": {
       OPTIONS: () => apiResourcesOpts(),

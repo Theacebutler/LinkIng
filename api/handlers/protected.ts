@@ -1,6 +1,12 @@
+import getUserKeyFromDB from "../utils/getUserKey";
 import { withAuth, type AuthenticatedRequest } from "../utils/token_gen";
 import { apiResourcesGet, apiResourcesPost, apiResourcesIdDelete, apiResourcesIdUpdate } from "./api_resources";
 
+export const getUserKey = withAuth(
+  async (request: AuthenticatedRequest): Promise<Response> => {
+    return getUserKeyFromDB(request);
+  }
+)
 
 export const getResources = withAuth(
   async (request: AuthenticatedRequest): Promise<Response> => {
