@@ -39,13 +39,23 @@ export async function apiAppleShortcutsPost(req: Request): Promise<Response> {
   if (!userAgent.includes("BackgroundShortcutRunner")) {
     return Response.json({ error: "User-Agent header must include BackgroundShortcutRunner" }, { status: 400 });
   }
-  const body = await req.json() as { resourceUrl: string; title: string; sourceUrl: string; owner: string; key: string; };
+  const body = await req.json() as Omit<Resource, 'id' | 'createdAt' | 'sourceImage'> & { 'key': string };
   if (!body.resourceUrl || !body.owner || !body.key) {
     return Response.json({ error: "Invalid request body, missing resourceUrl, owner or key" }, { status: 400 });
   }
   // validate the user
   if (!await validateAppleShortcutsUser(body.owner, body.key)) {
     return Response.json({ error: "Invalid user or key" }, { status: 400 });
+  }
+  const tags: string[] = []
+  if (body.tags) {
+    body.tags.map((tag: string) => {
+      if (!tag.startsWith('#')) {
+        tags.push(`#${tag}`)
+      } else {
+        tags.push(tag)
+      }
+    })
   }
   const newResource: Resource = {
     resourceUrl: body.resourceUrl,
@@ -68,11 +78,23 @@ export async function apiAppleShortcutsPost(req: Request): Promise<Response> {
 export async function apiResourcesPost(req: AuthenticatedRequest) {
   const body = await req.json() as Omit<Resource, 'id' | 'createdAt' | 'sourceImage'>;
   const name = req.user.sub
+  const tags: string[] = []
+  if (body.tags) {
+    body.tags.map((tag: string) => {
+      if (!tag.startsWith('#')) {
+        tags.push(`#${tag}`)
+      } else {
+        tags.push(tag)
+      }
+    })
+  }
   const newResource: Resource = {
     ...body,
     createdAt: new Date().toISOString(),
     owner: name,
   };
+  console.log(newResource)
+
   // save the screenshot to the DB
   const [id] = await db.insert(resourcesTable)
     .values(newResource)
