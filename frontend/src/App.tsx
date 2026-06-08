@@ -5,7 +5,7 @@ import { ResourceList } from './components/ResourceList';
 import LoginOrReg from './components/LoginOrReg';
 import Footer from './components/Footer';
 import { Toast } from './components/Toast';
-// import { KeyAndOwner } from './components/KeyAndOwner';
+import { KeyAndOwner } from './components/KeyAndOwner';
 import Aside from './components/Aside';
 
 import { useToast } from './hooks/useToast';
@@ -73,11 +73,11 @@ function App() {
                 setShowKeyAndOwner={setShowKeyAndOwner}
                 handleDomainFilter={handleDomainFilter}
               />
-              {/* {showKeyAndOwner && ( */}
-              {/*   <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in"> */}
-              {/*     <KeyAndOwner setShowKeyAndOwner={setShowKeyAndOwner} /> */}
-              {/*   </div> */}
-              {/* )} */}
+              {showKeyAndOwner && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+                  <KeyAndOwner setShowKeyAndOwner={setShowKeyAndOwner} />
+                </div>
+              )}
             </div>
           ) : (
             <LoginOrReg />
