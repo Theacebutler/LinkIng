@@ -7,6 +7,7 @@ import Footer from './components/Footer';
 import { Toast } from './components/Toast';
 import { KeyAndOwner } from './components/KeyAndOwner';
 import Aside from './components/Aside';
+import InDevAlert from './components/inDevAlert';
 
 import { useToast } from './hooks/useToast';
 import { useAuths } from './hooks/useAuths';
@@ -40,7 +41,7 @@ function App() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header isPopupOpen={isPopupOpen} setIsPopupOpen={setIsPopupOpen} />
-
+      <InDevAlert />
       <main className="flex-1 md:pl-16 lg:pl-20">
         <div className="max-w-350 mx-auto px-4 md:px-6 py-5 md:py-6">
           {isLogin ? (

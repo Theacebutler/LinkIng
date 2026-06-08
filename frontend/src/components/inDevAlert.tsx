@@ -1,16 +1,14 @@
 export default function InDevAlert() {
   return (
-    <div className="bg-warning/10 border border-warning/30 text-warning text-center py-2 px-4 text-xs mb-3 rounded-lg">
-      This application is in development — previews may take time or fail to load.{' '}
-      <a
+    <div className="bg-indigo-600/10 border border-indigo-600/20 rounded-lg px-3 py-6 text-sm mx-3 mt-3 text-indigo-600 text-center">
+      New: You can add resources via apple shortcuts. Check out the  <a
         className="underline hover:text-text"
         href="https://github.com/theacebutler/linkIng"
         target="_blank"
         rel="noreferrer"
       >
-        Follow the project on GitHub
-      </a>
-      .
+        project on GitHub
+      </a> to learn more.
     </div>
   );
 }

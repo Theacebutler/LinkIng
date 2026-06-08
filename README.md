@@ -16,11 +16,10 @@ to a global collection you can easily access from anywhere, anytime.
 
 ## Apple Screenshots integration
 
-To add a resource with Apple Shortcuts, you can get a pre-built Apple Shortcut
-[here](), or you can build your own.
+To add a resource with Apple Shortcuts, you can build a shortcut that makes a
+POST request to the following endpoint:
 
-The shortcut needs to make a POST request to the following endpoint:
-`https://linkIng.acbutler.dev/api/resources/apple-shortcuts/`
+`https://linking.acbutler.dev/api/resources/apple-shortcuts`
 with the following body:
 
 ```json
@@ -33,8 +32,8 @@ with the following body:
 }
 ```
 
-To get the `key` and `owner` for a user, you can make a GET request to the
-following endpoint:
+You get the `key` and `owner` from the [website](https://linking.acbutler.dev),
+or by cUrling the following endpoint:
 `https://linkIng.acbutler.dev/api/users/get-key/`
 with the following headers:
 
@@ -45,13 +44,7 @@ with the following headers:
 }
 ```
 
-Or get it from the website.
-
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to
 discuss what you would like to change.
-
-```
-
-```
