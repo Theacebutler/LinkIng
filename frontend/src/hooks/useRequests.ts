@@ -1,5 +1,5 @@
 import { config } from "../../config"
-import { COOKIE_CONFIG } from "./cookies"
+import { COOKIE_CONFIG } from "../utils/cookies"
 import Cookies from "js-cookie"
 
 export async function register(username: string, password: string): Promise<void> {
