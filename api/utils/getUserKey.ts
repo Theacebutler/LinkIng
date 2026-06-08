@@ -1,5 +1,6 @@
 import { db } from "../db";
 import { eq } from "drizzle-orm";
+import { config } from "../config";
 import { usersTable } from "../db/schema";
 import type { AuthenticatedRequest } from "./token_gen";
 
@@ -13,7 +14,20 @@ export default async function getUserKeyFromDB(req: AuthenticatedRequest): Promi
     .execute()
 
   if (!userFromDB) {
-    return new Response("User not found", { status: 404 })
+    return new Response("User not found", {
+      status: 404,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": config.FRONTEND_URL as string
+      }
+    })
   }
-  return new Response(JSON.stringify({ key: userFromDB.key, owner: userFromDB.username }), { status: 200 })
+  return new Response(JSON.stringify(
+    { key: userFromDB.key, owner: userFromDB.username }), {
+    status: 200,
+    headers: {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": config.FRONTEND_URL as string
+    }
+  })
 }
