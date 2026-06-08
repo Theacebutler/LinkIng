@@ -3,7 +3,7 @@ import type { Resource } from '../types/resource';
 import { ResourceCard } from './ResourceCard';
 import { ConfirmDialog } from './ConfirmDialog';
 import { Toast } from './Toast';
-import useToast from '../hooks/useToast';
+import { useToast } from '../hooks/useToast';
 
 interface ResourceListProps {
   resources: Resource[];
