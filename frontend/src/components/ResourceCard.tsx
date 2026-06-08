@@ -46,6 +46,7 @@ export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate }: Res
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(resource.title || '');
   const [editSourceUrl, setEditSourceUrl] = useState(resource.sourceUrl || '');
+  const [editTags, setEditTags] = useState(resource.tags || "#TEST");
   const [titleError, setTitleError] = useState(false);
   const [sourceUrlError, setSourceUrlError] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -238,6 +239,33 @@ export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate }: Res
           </div>
         </div>
 
+        {isEditing ? (
+          <div>
+            <label className="block text-[11px] font-medium text-text-soft mb-1">
+              Tags <span className="text-muted">(optional)</span>
+            </label>
+            <input
+              type="text"
+              value={editTags}
+              onChange={(e) => {
+                setEditTags(e.target.value);
+              }}
+              // className={`input text-xs ${tagsError ? 'input-error' : ''}`}
+              placeholder="#css #grid #guide"
+            />
+          </div>
+        ) : (
+          resource.sourceUrl && (
+            <div className="flex items-center gap-1.5 text-[11px] text-text-soft">
+              <button
+                onClick={openSource}
+                className="text-primary hover:underline truncate min-w-0 text-left"
+              >
+                {resource.tags || "#TEST"}
+              </button>
+            </div>
+          )
+        )}
         {isEditing ? (
           <div>
             <label className="block text-[11px] font-medium text-text-soft mb-1">
