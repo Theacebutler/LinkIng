@@ -20,7 +20,7 @@ export const resourcesTable = sqliteTable("resources_table", {
   sourceUrl: text(),
   createdAt: text(),
   updatedAt: text(),
-  tags: text(),
+  tags: text('tags', { mode: 'json' }).$type<string[]>().default([]),
 })
 
 // screenshots table
