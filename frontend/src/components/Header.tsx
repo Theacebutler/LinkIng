@@ -1,3 +1,31 @@
+const DetailsIcon = () => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={2}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className="w-5 h-5"
+  >
+    <path d="M4 6h16M4 12h12M4 18h6" />
+  </svg>
+);
+
+const CloseIcon = () => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={2}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className="w-5 h-5"
+  >
+    <path d="M18 6L6 18M6 6l12 12" />
+  </svg>
+);
+
 const MobileLogo = () => (
   <svg viewBox="0 0 32 32" fill="none" className="w-7 h-7">
     <rect width="32" height="32" rx="9" fill="url(#logo-gradient-header)" />
@@ -24,12 +52,19 @@ const Wordmark = () => (
   </div>
 );
 
-export function Header() {
+export function Header({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (isOpen: boolean) => void }) {
   return (
     <header className="sticky top-0 z-30 bg-bg/85 backdrop-blur-md border-b border-border">
       <div className="max-w-350 mx-auto flex justify-between items-center gap-3 px-4 md:px-6 py-3">
-        <div className="md:hidden">
+        <div>
           <Wordmark />
+        </div>
+        <div className="">
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            {isOpen ? <CloseIcon /> : <DetailsIcon />}
+          </button>
         </div>
       </div>
     </header>
