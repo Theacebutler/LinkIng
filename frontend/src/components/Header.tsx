@@ -59,13 +59,13 @@ export function Header({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (isO
         <div>
           <Wordmark />
         </div>
-        <div className="">
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-          >
-            {isOpen ? <CloseIcon /> : <DetailsIcon />}
-          </button>
-        </div>
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="xl:hidden inline-flex items-center justify-center w-9 h-9 rounded-lg text-text-soft hover:text-text hover:bg-surface transition-colors"
+          aria-label="Toggle details"
+        >
+          {isOpen ? <CloseIcon /> : <DetailsIcon />}
+        </button>
       </div>
     </header>
   );
