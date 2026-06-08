@@ -1,7 +1,7 @@
 import { useKeyAndOwner } from "../hooks/useKeyAndOwner";
 import type { Resource } from "../types/resource";
 import { Domains } from "./Domains";
-import { GetUserKey } from "./GetUserKey";
+// import { GetUserKey } from "./GetUserKey";
 
 interface AsideProps {
   setIsPopupOpen: (isOpen: boolean) => void;
@@ -21,7 +21,7 @@ export default function Aside({
   addedThisWeek,
   domainFilter,
   handleDomainFilter,
-  setShowKeyAndOwner
+  // setShowKeyAndOwner
 }: AsideProps) {
   const { setKey, setOwner } = useKeyAndOwner();
   return (
@@ -73,7 +73,7 @@ export default function Aside({
         activeDomain={domainFilter}
         onSelect={handleDomainFilter}
       />
-      <GetUserKey setIsOpen={setIsOpen} setShowKeyAndOwner={setShowKeyAndOwner} />
+      {/* <GetUserKey setIsOpen={setIsOpen} setShowKeyAndOwner={setShowKeyAndOwner} /> */}
     </aside >
   )
 }
