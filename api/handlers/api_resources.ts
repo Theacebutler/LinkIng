@@ -13,13 +13,21 @@ export async function apiResourcesGet(request: AuthenticatedRequest): Promise<Re
   if (!owner) {
     return Response.json({ error: "owner is required" }, 400);
   }
-  const resources = await db.select()
-    .from(resourcesTable)
-    .where((resource) => eq(resource.owner, owner))
-    .orderBy(desc(resourcesTable.createdAt));
-  const res = Response.json(resources);
-  res.headers.set("Access-Control-Allow-Origin", config.FRONTEND_URL as string);
-  return res;
+  try {
+    const resources = await db.select()
+      .from(resourcesTable)
+      .where((resource) => eq(resource.owner, owner))
+      .orderBy(desc(resourcesTable.createdAt))
+      .limit(100)
+      .execute();
+
+    const res = Response.json(resources);
+    res.headers.set("Access-Control-Allow-Origin", config.FRONTEND_URL as string);
+    return res;
+  } catch (e) {
+    console.error(e)
+    return Response.json({ error: "Internal server error" }, 500);
+  }
 }
 
 export async function apiResourcesOpts(): Promise<Response> {
@@ -93,7 +101,6 @@ export async function apiResourcesPost(req: AuthenticatedRequest) {
     createdAt: new Date().toISOString(),
     owner: name,
   };
-  console.log(newResource)
 
   // save the screenshot to the DB
   const [id] = await db.insert(resourcesTable)
