@@ -48,7 +48,7 @@ export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate }: Res
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(resource.title || fallbackTitle);
   const [editSourceUrl, setEditSourceUrl] = useState(resource.sourceUrl || '');
-  const [editTags, setEditTags] = useState<string[]>(resource.tags);
+  const [editTags, setEditTags] = useState<string[]>(resource.tags || []);
   const [titleError, setTitleError] = useState(false);
   const [sourceUrlError, setSourceUrlError] = useState(false);
   const [saved, setSaved] = useState(false);
