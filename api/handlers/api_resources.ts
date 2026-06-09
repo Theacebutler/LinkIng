@@ -1,4 +1,4 @@
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, and } from "drizzle-orm";
 import { db } from "../db";
 import { resourcesTable } from "../db/schema";
 import type { Resource } from "../shared/types";
@@ -87,15 +87,22 @@ export async function apiResourcesPost(req: AuthenticatedRequest) {
 
 export async function apiResourcesIdUpdate(request: AuthenticatedRequest): Promise<Response> {
   const body = await request.json() as Omit<Resource, 'createdAt' | 'sourceImage'>;
+  const username = request.user?.sub;
+  
   if (!body.id) {
     return Response.json({ error: "id is required" }, 400);
   }
+  
+  if (!username) {
+    return Response.json({ error: "username is required" }, 400);
+  }
+  
   await db.update(resourcesTable)
     .set({
       ...body,
       updatedAt: new Date().toISOString(),
     })
-    .where(eq(resourcesTable.id, body.id));
+    .where(and(eq(resourcesTable.id, body.id), eq(resourcesTable.owner, username)));
   const res = Response.json({ updated: true });
   res.headers.set("Access-Control-Allow-Origin", config.FRONTEND_URL);
   return res
@@ -104,10 +111,17 @@ export async function apiResourcesIdUpdate(request: AuthenticatedRequest): Promi
 export async function apiResourcesIdDelete(request: AuthenticatedRequest): Promise<Response> {
   const json = await request.json() as { id: number }
   const id = json.id
+  const username = request.user?.sub;
+  
   if (!id) {
-    return Response.json({ error: "id and owner are required" }, 400);
+    return Response.json({ error: "id is required" }, 400);
   }
-  await db.delete(resourcesTable).where(eq(resourcesTable.id, id));
+  
+  if (!username) {
+    return Response.json({ error: "username is required" }, 400);
+  }
+  
+  await db.delete(resourcesTable).where(and(eq(resourcesTable.id, id), eq(resourcesTable.owner, username)));
   const res = Response.json({ deleted: true });
   res.headers.set("Access-Control-Allow-Origin", config.FRONTEND_URL);
   return res
