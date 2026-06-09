@@ -1,9 +1,8 @@
-
 export const config = {
-  PORT: process.env.PORT,
+  PORT: Bun.env.PORT,
   JWT_SECRET: Bun.env.JWT_SECRET,
   REFRESH_SECRET: Bun.env.REFRESH_SECRET,
-  FRONTEND_URL: process.env.FRONTEND_URL as string,
+  FRONTEND_URL: "*",
   DB_CONN: Bun.env.DB_CONN,
   TOKEN_EXP: "3h", // expires is 3 hours
   REFRESH_EXP: "12h", // expires is 12 hours
@@ -18,9 +17,4 @@ if (!config.JWT_SECRET || config.JWT_SECRET.length < 32) {
 }
 if (!config.REFRESH_SECRET || config.REFRESH_SECRET.length < 32) {
   throw new Error("REFRESH_SECRET must be set and at least 32 characters");
-}
-
-if (!config.FRONTEND_URL) {
-  // config.FRONTEND_URL = "http://localhost:5173"
-  console.warn("FRONTEND_URL is not set, defaulting to http://localhost:5173")
 }
