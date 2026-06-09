@@ -89,6 +89,7 @@ export async function apiResourcesPost(req: AuthenticatedRequest) {
   const tags: string[] = []
   if (body.tags) {
     body.tags.map((tag: string) => {
+      if (tags.includes(tag)) return
       if (!tag.startsWith('#')) {
         tags.push(`#${tag}`)
       } else {
