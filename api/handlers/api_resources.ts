@@ -47,7 +47,7 @@ export async function apiAppleShortcutsPost(req: Request): Promise<Response> {
   if (!userAgent.includes("BackgroundShortcutRunner")) {
     return Response.json({ error: "User-Agent header must include BackgroundShortcutRunner" }, { status: 400 });
   }
-  const body = await req.json() as Omit<Resource, 'id' | 'createdAt' | 'sourceImage'> & { 'key': string };
+  const body = await req.json() as Omit<Resource, 'id' | 'tags' | 'createdAt' | 'sourceImage'> & { 'key': string | undefined, 'tags': string };
   if (!body.resourceUrl || !body.owner || !body.key) {
     return Response.json({ error: "Invalid request body, missing resourceUrl, owner or key" }, { status: 400 });
   }
@@ -55,9 +55,10 @@ export async function apiAppleShortcutsPost(req: Request): Promise<Response> {
   if (!await validateAppleShortcutsUser(body.owner, body.key)) {
     return Response.json({ error: "Invalid user or key" }, { status: 400 });
   }
-  const tags: string[] = []
+  const tags: string[] = [];
   if (body.tags) {
-    body.tags.map((tag: string) => {
+    const tagsFromBody = body.tags.split(" ");
+    tagsFromBody.map((tag: string) => {
       if (!tag.startsWith('#')) {
         tags.push(`#${tag}`)
       } else {
@@ -69,6 +70,7 @@ export async function apiAppleShortcutsPost(req: Request): Promise<Response> {
     resourceUrl: body.resourceUrl,
     title: body.title || "Added via Apple Shortcuts",
     sourceUrl: body.sourceUrl || "",
+    tags,
     createdAt: new Date().toISOString(),
     owner: body.owner,
   };
