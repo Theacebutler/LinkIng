@@ -131,7 +131,7 @@ export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate }: Res
 
 
   return (
-    <article className={`card card-hover overflow-hidden flex group ${view === 'list' ? 'flex-row' : 'flex-col'}`}>
+    <article className={`card card-hover border hover:border-primary-hover overflow-hidden flex group ${view === 'list' ? 'flex-row' : 'flex-col'}`}>
       <div
         className={
           view === 'list'
@@ -352,6 +352,6 @@ export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate }: Res
           )}
         </div>
       </div>
-    </article>
+    </article >
   );
 }

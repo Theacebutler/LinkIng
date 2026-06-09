@@ -34,7 +34,7 @@ export function Domains({ resources, activeDomain, onSelect }: DomainsProps) {
   if (domains.length === 0) return null;
 
   return (
-    <div className="card p-4">
+    <div className="card p-4 border border-border-strong border-opacity-10">
       <div className="flex items-center justify-between mb-3 px-1">
         <h3 className="text-sm font-semibold text-text">Quick access</h3>
         {activeDomain && (
@@ -53,26 +53,23 @@ export function Domains({ resources, activeDomain, onSelect }: DomainsProps) {
             <li key={domain}>
               <button
                 onClick={() => onSelect(active ? null : domain)}
-                className={`w-full flex items-center gap-2.5 px-2 py-1.5 rounded-lg text-left transition-colors ${
-                  active
-                    ? 'bg-primary-soft text-primary'
-                    : 'text-text-soft hover:bg-surface hover:text-text'
-                }`}
+                className={`w-full flex items-center gap-2.5 px-2 py-1.5 rounded-lg text-left transition-colors ${active
+                  ? 'bg-primary-soft text-primary'
+                  : 'text-text-soft hover:bg-surface hover:text-text'
+                  }`}
               >
                 <span
-                  className={`w-7 h-7 rounded-md flex items-center justify-center text-[10px] font-semibold shrink-0 ${
-                    active
-                      ? 'bg-primary text-bg'
-                      : 'bg-surface text-text-soft border border-border'
-                  }`}
+                  className={`w-7 h-7 rounded-md flex items-center justify-center text-[10px] font-semibold shrink-0 ${active
+                    ? 'bg-primary text-bg'
+                    : 'bg-surface text-text-soft border border-border'
+                    }`}
                 >
                   {getInitials(domain)}
                 </span>
                 <span className="flex-1 min-w-0 text-xs truncate">{domain}</span>
                 <span
-                  className={`text-[11px] font-medium tabular-nums ${
-                    active ? 'text-primary' : 'text-muted'
-                  }`}
+                  className={`text-[11px] font-medium tabular-nums ${active ? 'text-primary' : 'text-muted'
+                    }`}
                 >
                   {count}
                 </span>

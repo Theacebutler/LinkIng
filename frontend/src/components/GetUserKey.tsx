@@ -28,7 +28,7 @@ export function GetUserKey({ setIsOpen, setShowKeyAndOwner }: GetUserKeyProps) {
 
   return (
     <>
-      <div className="card p-4">
+      <div className="card p-4 border border-border-strong border-opacity-10">
         <h3 className="text-sm font-semibold text-text mb-3">Get your API key</h3>
         <p className="text-xs text-text-soft mb-3">
           Get your API key to use with Apple Shortcuts
