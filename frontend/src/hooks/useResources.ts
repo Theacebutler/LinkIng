@@ -6,8 +6,36 @@ import { fetchWithAuth } from '../utils/authClient';
 const VITE_API_URL = config.VITE_API_URL
 
 
-
 export function useResources() {
+  const [MOCK_RESOURCES, setMOCK_RESOURCES] = useState<Resource[]>(
+    [{
+      id: '1',
+      title: 'CSS Grid Guide',
+      resourceUrl: 'https://github.com/theacebutler/theacebutler/',
+      sourceUrl: 'https://avi.im/css-grid-guide',
+      imageUrl: 'https://avi.im/css-grid-guide/image.png',
+      createdAt: '2023-01-01T00:00:00.000Z',
+      tags: ['css', 'grid', 'guide'],
+    },
+    {
+      id: '2',
+      title: 'CSS Tricks',
+      resourceUrl: 'https://github.com/theacebutler/linking',
+      sourceUrl: 'https://avi.im/css-tricks',
+      imageUrl: 'https://avi.im/css-tricks/image.png',
+      createdAt: '2023-01-02T00:00:00.000Z',
+      tags: ['css', 'tricks'],
+    },
+    {
+      id: '3',
+      title: 'CSS Tricks',
+      resourceUrl: 'https://github.com/theacebutler/linking#apple-screenshots-integration',
+      sourceUrl: 'https://avi.im/css-tricks',
+      imageUrl: 'https://avi.im/css-tricks/image.png',
+      createdAt: '2023-01-03T00:00:00.000Z',
+      tags: ['css', 'tricks'],
+    },
+    ]);
   const [resources, setResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -18,8 +46,8 @@ export function useResources() {
       setLoading(true);
       const response = await fetchWithAuth(`${VITE_API_URL}/resources`)
       if (!response.ok) throw new Error('Failed to fetch resources');
-      const data = await response.json() as Resource[];
-      setResources(data);
+      // const data = await response.json() as Resource[];
+      setResources(MOCK_RESOURCES);
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
@@ -33,6 +61,7 @@ export function useResources() {
       const response = await fetchWithAuth(`${VITE_API_URL}/resources`, 'POST', JSON.stringify(resource))
       if (!response.ok) throw new Error('Failed to add resource');
       const newResource = await response.json() as Resource;
+      setMOCK_RESOURCES((prev) => [...prev, newResource]);
       setResources((prev) => [newResource, ...prev]);
       return true;
     } catch (err) {
@@ -41,7 +70,10 @@ export function useResources() {
     }
   };
 
-  const updateResource = async (id: string, updatedData: { title: string; sourceUrl: string }) => {
+  const updateResource = async (id: string, updatedData: { title: string; sourceUrl: string; tags?: string[] }) => {
+    setMOCK_RESOURCES((prev) =>
+      prev.map((r) => (r.id === id ? { ...r, ...updatedData } : r))
+    );
     try {
       const response = await fetchWithAuth(
         `${VITE_API_URL}/resources`,
@@ -58,6 +90,7 @@ export function useResources() {
       return false;
     }
   };
+
   const deleteResource = async (id: string) => {
     try {
       const response = await fetchWithAuth(`${VITE_API_URL}/resources`, 'DELETE', JSON.stringify({ id }))
