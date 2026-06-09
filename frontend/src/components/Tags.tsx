@@ -9,16 +9,27 @@ interface TagsProps {
 
 export function Tags({ resources, tagFilter, onSelect }: TagsProps) {
   const tags = useMemo(() => {
-    const map = new Map<string, number>();
-    for (const r of resources) {
-      for (const tag of r.tags) {
-        map.set(tag, (map.get(tag) ?? 0) + 1);
-      }
+    if (resources.length === 0) {
+      return [];
     }
-    return Array.from(map.entries()).sort((a, b) => b[1] - a[1]);
+    const map = new Map<string, number>();
+    try {
+      for (const r of resources) {
+        if (!r.tags) break;
+        for (const tag of r.tags) {
+          map.set(tag, (map.get(tag) ?? 0) + 1);
+        }
+      }
+      return Array.from(map.entries()).sort((a, b) => b[1] - a[1]);
+    } catch (e) {
+      console.error(e);
+      return [];
+    }
   }, [resources]);
 
-  if (tags.length === 0) return null;
+  if (tags.length === 0 || tagFilter === null) {
+    return null;
+  }
 
   return (
     <div className="card p-4 border border-border-strong border-opacity-10">
