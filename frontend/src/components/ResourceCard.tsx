@@ -135,8 +135,8 @@ export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate }: Res
       <div
         className={
           view === 'list'
-            ? 'w-44 sm:w-52 shrink-0 self-stretch bg-surface relative cursor-pointer overflow-hidden ring-1 ring-inset ring-white/[0.04]'
-            : 'aspect-[2.5/1] w-full bg-surface relative cursor-pointer overflow-hidden ring-1 ring-inset ring-white/[0.04]'
+            ? 'w-44 sm:w-52 shrink-0 self-stretch bg-surface relative cursor-pointer overflow-hidden ring-1 ring-inset ring-white/0.04'
+            : 'aspect-2.5/1 w-full bg-surface relative cursor-pointer overflow-hidden ring-1 ring-inset ring-white/0.04'
         }
         onClick={openResource}
       >
@@ -147,7 +147,7 @@ export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate }: Res
             <span className="opacity-60">No preview</span>
           </div>
         )}
-        <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
+        <div className="absolute inset-x-0 bottom-0 h-12 bg-linear-to-t from-black/40 to-transparent pointer-events-none" />
         {saved && (
           <div className="absolute top-2 right-2 px-2 py-0.5 rounded-md bg-success/90 text-bg text-[10px] font-semibold uppercase tracking-wide">
             Saved
