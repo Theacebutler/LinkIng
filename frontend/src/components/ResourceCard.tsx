@@ -40,11 +40,13 @@ const formatDate = (dateString: string) => {
 };
 
 export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate }: ResourceCardProps) {
+  const hostname = getHostname(resource.resourceUrl);
+  const fallbackTitle = `Resource from ${hostname}`;
   const [imageUrl, setImageUrl] = useState('');
   const [imageLoading, setImageLoading] = useState(false);
   const [imageLoadingError, setImageLoadingError] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [editTitle, setEditTitle] = useState(resource.title || '');
+  const [editTitle, setEditTitle] = useState(resource.title || fallbackTitle);
   const [editSourceUrl, setEditSourceUrl] = useState(resource.sourceUrl || '');
   const [editTags, setEditTags] = useState(resource.tags || "#TEST");
   const [titleError, setTitleError] = useState(false);
@@ -125,8 +127,6 @@ export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate }: Res
     setIsEditing(false);
   };
 
-  const hostname = getHostname(resource.resourceUrl);
-  const fallbackTitle = `Resource from ${hostname}`;
 
   return (
     <article className={`card card-hover overflow-hidden flex group ${view === 'list' ? 'flex-row' : 'flex-col'}`}>
