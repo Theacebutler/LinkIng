@@ -23,6 +23,7 @@ export function AddResourceForm({ onSubmit }: AddResourceFormProps) {
     title: '',
     resourceUrl: '',
     sourceUrl: '',
+    tags: [],
   });
   const [errors, setErrors] = useState<Partial<ResourceFormData>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -63,6 +64,7 @@ export function AddResourceForm({ onSubmit }: AddResourceFormProps) {
     setIsSubmitting(false);
 
     if (ok) {
+      setFormData({ title: '', resourceUrl: '', sourceUrl: '', tags: [] });
       setSuccess(true);
       setExpanded(false);
       setTimeout(() => setSuccess(false), 1800);
@@ -133,6 +135,18 @@ export function AddResourceForm({ onSubmit }: AddResourceFormProps) {
                 value={formData.title}
                 onChange={(e) => handleChange('title', e.target.value)}
                 placeholder="e.g., CSS Grid Guide"
+                className="input"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-text-soft mb-1.5">
+                Tags <span className="text-muted">(optional)</span>
+              </label>
+              <input
+                type="text"
+                value={formData.tags}
+                onChange={(e) => handleChange('tags', e.target.value)}
+                placeholder="#css"
                 className="input"
               />
             </div>
