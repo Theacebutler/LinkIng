@@ -23,7 +23,7 @@ function App() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
 
-  const handleAddResource = async (data: { title: string; resourceUrl: string; sourceUrl: string; owner: string }) => {
+  const handleAddResource = async (data: { title: string; resourceUrl: string; sourceUrl: string; tags: string[] }) => {
     return await addResource(data);
   };
 

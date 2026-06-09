@@ -71,7 +71,7 @@ export function AddResourceForm({ onSubmit }: AddResourceFormProps) {
     }
   };
 
-  const handleChange = (field: keyof ResourceFormData, value: string) => {
+  const handleChange = (field: keyof ResourceFormData, value: string | string[]) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) setErrors((prev) => ({ ...prev, [field]: undefined }));
   };
@@ -144,8 +144,8 @@ export function AddResourceForm({ onSubmit }: AddResourceFormProps) {
               </label>
               <input
                 type="text"
-                value={formData.tags}
-                onChange={(e) => handleChange('tags', e.target.value)}
+                value={formData.tags.join(' ')}
+                onChange={(e) => handleChange('tags', e.target.value.split(' '))}
                 placeholder="#css"
                 className="input"
               />

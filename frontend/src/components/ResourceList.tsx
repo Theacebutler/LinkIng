@@ -8,7 +8,7 @@ import { useToast } from '../hooks/useToast';
 interface ResourceListProps {
   resources: Resource[];
   onDelete: (id: string) => Promise<boolean>;
-  onUpdate: (id: string, updatedData: { title: string; sourceUrl: string }) => Promise<boolean>;
+  onUpdate: (id: string, updatedData: { title: string; sourceUrl: string; tags?: string[] }) => Promise<boolean>;
   loading?: boolean;
   domainFilter: string | null;
   onClearDomainFilter: () => void;

@@ -8,7 +8,7 @@ interface ResourceCardProps {
   resource: Resource;
   view: 'grid' | 'list';
   onDelete: (id: string) => void;
-  onUpdate: (id: string, updatedData: { title: string; sourceUrl: string }) => Promise<boolean>;
+  onUpdate: (id: string, updatedData: { title: string; sourceUrl: string, tags?: string[] }) => Promise<boolean>;
   onCopy: (text: string, type: 'resource' | 'source') => void;
 }
 
@@ -48,7 +48,7 @@ export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate }: Res
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(resource.title || fallbackTitle);
   const [editSourceUrl, setEditSourceUrl] = useState(resource.sourceUrl || '');
-  const [editTags, setEditTags] = useState(resource.tags || "#TEST");
+  const [editTags, setEditTags] = useState<string[]>(resource.tags);
   const [titleError, setTitleError] = useState(false);
   const [sourceUrlError, setSourceUrlError] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -111,6 +111,7 @@ export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate }: Res
     const success = await onUpdate(resource.id, {
       title: editTitle.trim(),
       sourceUrl: editSourceUrl.trim(),
+      tags: editTags,
     });
     if (success) {
       setIsEditing(false);
@@ -122,6 +123,7 @@ export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate }: Res
   const handleCancel = () => {
     setEditTitle(resource.title || '');
     setEditSourceUrl(resource.sourceUrl || '');
+    setEditTags(resource.tags || []);
     setTitleError(false);
     setSourceUrlError(false);
     setIsEditing(false);
@@ -183,8 +185,22 @@ export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate }: Res
                 {resource.title || fallbackTitle}
               </h3>
             )}
-            <p className="mt-0.5 text-[11px] text-muted truncate">
-              {hostname} · {formatDate(resource.createdAt)}
+            <p className="mt-0.5 text-[11px] text-shadow-muted truncate flex flex-row gap-1">
+              {hostname} · {formatDate(resource.createdAt)}  {resource.tags ? (
+                <div className="flex items-center gap-1.5 text-[11px] text-text-soft">
+                  {
+                    resource.tags.map((tag, i) => (
+                      <button
+                        key={i}
+                        onClick={() => alert("Not implemented, this will filter the resources by tag")}
+                        className="text-shadow-muted hover:underline truncate min-w-0 text-left"
+                      >
+                        {tag.startsWith('#') ? tag : `#${tag}`}
+                      </button>
+                    ))
+                  }
+                </div>
+              ) : null}
             </p>
           </div>
           <div className="flex items-center gap-0.5 shrink-0">
@@ -246,26 +262,19 @@ export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate }: Res
             </label>
             <input
               type="text"
-              value={editTags}
+              value={editTags.join(' ')}
               onChange={(e) => {
-                setEditTags(e.target.value);
+                setEditTags(e.target.value.split(' '));
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleSave();
+                if (e.key === 'Escape') handleCancel();
               }}
               // className={`input text-xs ${tagsError ? 'input-error' : ''}`}
               placeholder="#css #grid #guide"
             />
           </div>
-        ) : (
-          resource.sourceUrl && (
-            <div className="flex items-center gap-1.5 text-[11px] text-text-soft">
-              <button
-                onClick={openSource}
-                className="text-primary hover:underline truncate min-w-0 text-left"
-              >
-                {resource.tags || "#TEST"}
-              </button>
-            </div>
-          )
-        )}
+        ) : null}
         {isEditing ? (
           <div>
             <label className="block text-[11px] font-medium text-text-soft mb-1">
