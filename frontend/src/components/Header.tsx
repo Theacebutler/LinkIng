@@ -38,8 +38,8 @@ const MobileLogo = () => (
     />
     <defs>
       <linearGradient id="logo-gradient-header" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
-        <stop stopColor="#c4b5fd" />
-        <stop offset="1" stopColor="#8b5cf6" />
+        <stop stopColor="#a1a1aa" />
+        <stop offset="1" stopColor="#155dfc" />
       </linearGradient>
     </defs>
   </svg>
