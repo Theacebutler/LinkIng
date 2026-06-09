@@ -78,7 +78,8 @@ export function ResourceList({ resources, onDelete, loading, onUpdate, domainFil
         return (
           r.title.toLowerCase().includes(q) ||
           r.resourceUrl.toLowerCase().includes(q) ||
-          r.sourceUrl.toLowerCase().includes(q)
+          r.sourceUrl.toLowerCase().includes(q) ||
+          r.tags.some((tag) => tag.toLowerCase().includes(q))
         );
       }
       return true;
