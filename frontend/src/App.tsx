@@ -19,18 +19,12 @@ function App() {
   const { resources, loading, addResource, updateResource, deleteResource } = useResources();
   const { toast, setToast } = useToast();
   const [domainFilter, setDomainFilter] = useState<string | null>(null);
-  const [tagFilter, setTagFilter] = useState<string | null>(null);
   const [showKeyAndOwner, setShowKeyAndOwner] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
 
-  const handleAddResource = async (data: { title: string; resourceUrl: string; sourceUrl: string; tags: string[] }) => {
+  const handleAddResource = async (data: { title: string; resourceUrl: string; sourceUrl: string; owner: string }) => {
     return await addResource(data);
-  };
-
-  const handleTagFilter = (tag: string | null) => {
-    setIsPopupOpen(false);
-    setTagFilter(tag);
   };
 
   const handleDomainFilter = (domainFilter: string | null) => {
@@ -61,8 +55,6 @@ function App() {
                   loading={loading}
                   domainFilter={domainFilter}
                   onClearDomainFilter={() => setDomainFilter(null)}
-                  tagFilter={tagFilter}
-                  onClearTagFilter={() => setTagFilter(null)}
                 />
               </div>
               {isPopupOpen && (
@@ -81,8 +73,6 @@ function App() {
                 showKeyAndOwner={showKeyAndOwner}
                 setShowKeyAndOwner={setShowKeyAndOwner}
                 handleDomainFilter={handleDomainFilter}
-                handleTagFilter={handleTagFilter}
-                tagFilter={tagFilter}
               />
               {showKeyAndOwner && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">

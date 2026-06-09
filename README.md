@@ -25,9 +25,8 @@ with the following body:
 ```json
 {
   "resourceUrl": "https://example.com/some-resource",
-  "title": "Example resource", // optional
-  "sourceUrl": "https://example.com/some-source", // optional
-  "tags": "#tag1 #tag2", // optional
+  "title": "Example resource",
+  "sourceUrl": "https://example.com/some-source",
   "key": "key",
   "owner": "owner"
 }

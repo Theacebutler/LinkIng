@@ -10,9 +10,9 @@
   --color-muted: #71717a;
   --color-text: #e4e4e7;
   --color-text-soft: #a1a1aa;
-  --color-primary: #155dfc; 
-  --color-primary-hover: #193cb8; 
-  --color-primary-soft: #51a2ff; 
+  --color-primary: #a78bfa;
+  --color-primary-hover: #8b5cf6;
+  --color-primary-soft: rgba(167, 139, 250, 0.12);
   --color-success: #34d399;
   --color-danger: #f87171;
   --color-warning: #fbbf24;
