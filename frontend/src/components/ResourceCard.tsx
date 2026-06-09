@@ -8,7 +8,7 @@ interface ResourceCardProps {
   resource: Resource;
   view: 'grid' | 'list';
   onDelete: (id: string) => void;
-  onUpdate: (id: string, updatedData: { title: string; sourceUrl: string }) => Promise<boolean>;
+  onUpdate: (id: string, updatedData: { title: string; sourceUrl: string, tags?: string[] }) => Promise<boolean>;
   onCopy: (text: string, type: 'resource' | 'source') => void;
 }
 
@@ -40,12 +40,15 @@ const formatDate = (dateString: string) => {
 };
 
 export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate }: ResourceCardProps) {
+  const hostname = getHostname(resource.resourceUrl);
+  const fallbackTitle = `Resource from ${hostname}`;
   const [imageUrl, setImageUrl] = useState('');
   const [imageLoading, setImageLoading] = useState(false);
   const [imageLoadingError, setImageLoadingError] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [editTitle, setEditTitle] = useState(resource.title || '');
+  const [editTitle, setEditTitle] = useState(resource.title || fallbackTitle);
   const [editSourceUrl, setEditSourceUrl] = useState(resource.sourceUrl || '');
+  const [editTags, setEditTags] = useState<string[]>(resource.tags || []);
   const [titleError, setTitleError] = useState(false);
   const [sourceUrlError, setSourceUrlError] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -108,6 +111,7 @@ export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate }: Res
     const success = await onUpdate(resource.id, {
       title: editTitle.trim(),
       sourceUrl: editSourceUrl.trim(),
+      tags: editTags,
     });
     if (success) {
       setIsEditing(false);
@@ -119,21 +123,20 @@ export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate }: Res
   const handleCancel = () => {
     setEditTitle(resource.title || '');
     setEditSourceUrl(resource.sourceUrl || '');
+    setEditTags(resource.tags || []);
     setTitleError(false);
     setSourceUrlError(false);
     setIsEditing(false);
   };
 
-  const hostname = getHostname(resource.resourceUrl);
-  const fallbackTitle = `Resource from ${hostname}`;
 
   return (
-    <article className={`card card-hover overflow-hidden flex group ${view === 'list' ? 'flex-row' : 'flex-col'}`}>
+    <article className={`card card-hover border hover:border-primary-hover overflow-hidden flex group ${view === 'list' ? 'flex-row' : 'flex-col'}`}>
       <div
         className={
           view === 'list'
-            ? 'w-44 sm:w-52 shrink-0 self-stretch bg-surface relative cursor-pointer overflow-hidden ring-1 ring-inset ring-white/[0.04]'
-            : 'aspect-[2.5/1] w-full bg-surface relative cursor-pointer overflow-hidden ring-1 ring-inset ring-white/[0.04]'
+            ? 'w-44 sm:w-52 shrink-0 self-stretch bg-surface relative cursor-pointer overflow-hidden ring-1 ring-inset ring-white/0.04'
+            : 'aspect-2.5/1 w-full bg-surface relative cursor-pointer overflow-hidden ring-1 ring-inset ring-white/0.04'
         }
         onClick={openResource}
       >
@@ -144,7 +147,7 @@ export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate }: Res
             <span className="opacity-60">No preview</span>
           </div>
         )}
-        <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
+        <div className="absolute inset-x-0 bottom-0 h-12 bg-linear-to-t from-black/40 to-transparent pointer-events-none" />
         {saved && (
           <div className="absolute top-2 right-2 px-2 py-0.5 rounded-md bg-success/90 text-bg text-[10px] font-semibold uppercase tracking-wide">
             Saved
@@ -182,8 +185,22 @@ export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate }: Res
                 {resource.title || fallbackTitle}
               </h3>
             )}
-            <p className="mt-0.5 text-[11px] text-muted truncate">
-              {hostname} · {formatDate(resource.createdAt)}
+            <p className="mt-0.5 text-[11px] text-shadow-muted truncate flex flex-row gap-1">
+              {hostname} · {formatDate(resource.createdAt)}  {resource.tags ? (
+                <div className="flex items-center gap-1.5 text-[11px] text-text-soft">
+                  {
+                    resource.tags.map((tag, i) => (
+                      <button
+                        key={i}
+                        onClick={() => alert("Not implemented, this will filter the resources by tag")}
+                        className="text-shadow-muted hover:underline truncate min-w-0 text-left"
+                      >
+                        {tag.startsWith('#') ? tag : `#${tag}`}
+                      </button>
+                    ))
+                  }
+                </div>
+              ) : null}
             </p>
           </div>
           <div className="flex items-center gap-0.5 shrink-0">
@@ -238,6 +255,26 @@ export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate }: Res
           </div>
         </div>
 
+        {isEditing ? (
+          <div>
+            <label className="block text-[11px] font-medium text-text-soft mb-1">
+              Tags <span className="text-muted">(optional)</span>
+            </label>
+            <input
+              type="text"
+              value={editTags.join(' ')}
+              onChange={(e) => {
+                setEditTags(e.target.value.split(' '));
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleSave();
+                if (e.key === 'Escape') handleCancel();
+              }}
+              // className={`input text-xs ${tagsError ? 'input-error' : ''}`}
+              placeholder="#css #grid #guide"
+            />
+          </div>
+        ) : null}
         {isEditing ? (
           <div>
             <label className="block text-[11px] font-medium text-text-soft mb-1">
@@ -315,6 +352,6 @@ export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate }: Res
           )}
         </div>
       </div>
-    </article>
+    </article >
   );
 }

@@ -1,4 +1,3 @@
-// import { serial, pgTable, text } from "drizzle-orm/pg-core"
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core"
 
 
@@ -20,6 +19,7 @@ export const resourcesTable = sqliteTable("resources_table", {
   sourceUrl: text(),
   createdAt: text(),
   updatedAt: text(),
+  tags: text('tags', { mode: 'json' }).$type<string[]>().default([]),
 })
 
 // screenshots table
