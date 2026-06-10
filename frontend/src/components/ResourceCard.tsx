@@ -206,6 +206,46 @@ export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate }: Res
             </div>
           </div>
           <div className="flex items-center gap-0.5 shrink-0">
+
+            {isEditing ? (
+              <div>
+                <label className="block text-[11px] font-medium text-text-soft mb-1">
+                  Tags <span className="text-muted">(optional)</span>
+                </label>
+                <input
+                  type="text"
+                  value={editTags.join(' ')}
+                  onChange={(e) => {
+                    setEditTags(e.target.value.split(' '));
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') handleSave();
+                    if (e.key === 'Escape') handleCancel();
+                  }}
+                  // className={`input text-xs ${tagsError ? 'input-error' : ''}`}
+                  placeholder="#css #grid #guide"
+                />
+              </div>
+            ) : null}
+            <div>
+              <label className="block text-[11px] font-medium text-text-soft mb-1">
+                Tags <span className="text-muted">(optional)</span>
+              </label>
+              <input
+                type="text"
+                value={editTags.join(' ')}
+                onChange={(e) => {
+                  setEditTags(e.target.value.split(' '));
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') handleSave();
+                  if (e.key === 'Escape') handleCancel();
+                }}
+                // className={`input text-xs ${tagsError ? 'input-error' : ''}`}
+                placeholder="#css #grid #guide"
+              />
+            </div>
+        ) : null}
             {isEditing ? (
               <>
                 <button
