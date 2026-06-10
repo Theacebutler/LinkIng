@@ -19,14 +19,19 @@ function App() {
   const { resources, loading, addResource, updateResource, deleteResource } = useResources();
   const { toast, setToast } = useToast();
   const [domainFilter, setDomainFilter] = useState<string | null>(null);
+  const [tagFilter, setTagFilter] = useState<string | null>(null)
   const [showKeyAndOwner, setShowKeyAndOwner] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
 
-  const handleAddResource = async (data: { title: string; resourceUrl: string; sourceUrl: string; owner: string }) => {
+  const handleAddResource = async (data: { title: string; resourceUrl: string; sourceUrl: string; tags: string[] }) => {
     return await addResource(data);
   };
 
+  const handleTagFilter = (tagFilter: string | null) => {
+    setIsPopupOpen(false);
+    setTagFilter(tagFilter);
+  };
   const handleDomainFilter = (domainFilter: string | null) => {
     setIsPopupOpen(false);
     setDomainFilter(domainFilter);
@@ -41,9 +46,11 @@ function App() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header isPopupOpen={isPopupOpen} setIsPopupOpen={setIsPopupOpen} />
-      <InDevAlert />
-      <main className="flex-1 md:pl-16 lg:pl-20">
-        <div className="max-w-350 mx-auto px-4 md:px-6 py-5 md:py-6">
+      <div className="block md:hidden">
+        <InDevAlert />
+      </div>
+      <main className="flex-1 md:px-12 lg:px-20">
+        <div className="max-w-full mx-auto px-4 md:px-6 py-5 md:py-6">
           {isLogin ? (
             <div className="grid grid-cols-1 xl:grid-cols-[1fr_300px] gap-5">
               <div className="space-y-5">
@@ -55,6 +62,9 @@ function App() {
                   loading={loading}
                   domainFilter={domainFilter}
                   onClearDomainFilter={() => setDomainFilter(null)}
+                  tagFilter={tagFilter}
+                  handleTagFilter={handleTagFilter}
+                  onClearTagFilter={() => setTagFilter(null)}
                 />
               </div>
               {isPopupOpen && (
@@ -70,6 +80,8 @@ function App() {
                 setDomainFilter={setDomainFilter}
                 addedThisWeek={addedThisWeek}
                 domainFilter={domainFilter}
+                tagFilter={tagFilter}
+                handleTagFilter={handleTagFilter}
                 showKeyAndOwner={showKeyAndOwner}
                 setShowKeyAndOwner={setShowKeyAndOwner}
                 handleDomainFilter={handleDomainFilter}

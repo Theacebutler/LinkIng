@@ -1,18 +1,20 @@
 import { useKeyAndOwner } from "../hooks/useKeyAndOwner";
 import type { Resource } from "../types/resource";
 import { Domains } from "./Domains";
+import { Tags } from "./Tags";
 import { GetUserKey } from "./GetUserKey";
-
 interface AsideProps {
   setIsPopupOpen: (isOpen: boolean) => void;
   isOpen: boolean;
   resources: Resource[];
   addedThisWeek: number;
   domainFilter: string | null;
+  tagFilter: string | null;
   showKeyAndOwner: boolean;
   setDomainFilter: (domainFilter: string | null) => void;
   setShowKeyAndOwner: (showKeyAndOwner: boolean) => void;
   handleDomainFilter: (domainFilter: string | null) => void;
+  handleTagFilter: (tagFilter: string | null) => void;
 }
 export default function Aside({
   setIsPopupOpen: setIsOpen,
@@ -20,7 +22,9 @@ export default function Aside({
   resources,
   addedThisWeek,
   domainFilter,
+  tagFilter,
   handleDomainFilter,
+  handleTagFilter,
   setShowKeyAndOwner
 }: AsideProps) {
   const { setKey, setOwner } = useKeyAndOwner();
@@ -54,7 +58,7 @@ export default function Aside({
         </button>
       </div>
 
-      <div className="card p-5">
+      <div className="card p-4 border border-border-strong border-opacity-10 hover:border-primary-hover">
         <h3 className="text-sm font-semibold text-text mb-3">At a glance</h3>
         <div className="space-y-3">
           <div className="flex items-center justify-between text-sm">
@@ -68,10 +72,20 @@ export default function Aside({
         </div>
       </div>
 
+      <Tags
+        resources={resources}
+        tagFilter={tagFilter}
+        onSelect={handleTagFilter}
+      />
       <Domains
         resources={resources}
         activeDomain={domainFilter}
         onSelect={handleDomainFilter}
+      />
+      <Tags
+        resources={resources}
+        tagFilter={tagFilter}
+        onSelect={handleTagFilter}
       />
       <GetUserKey setIsOpen={setIsOpen} setShowKeyAndOwner={setShowKeyAndOwner} />
     </aside >

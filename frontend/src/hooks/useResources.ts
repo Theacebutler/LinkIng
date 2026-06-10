@@ -6,7 +6,6 @@ import { fetchWithAuth } from '../utils/authClient';
 const VITE_API_URL = config.VITE_API_URL
 
 
-
 export function useResources() {
   const [resources, setResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
@@ -41,7 +40,7 @@ export function useResources() {
     }
   };
 
-  const updateResource = async (id: string, updatedData: { title: string; sourceUrl: string }) => {
+  const updateResource = async (id: string, updatedData: { title: string; sourceUrl: string; tags?: string[] }) => {
     try {
       const response = await fetchWithAuth(
         `${VITE_API_URL}/resources`,
@@ -58,6 +57,7 @@ export function useResources() {
       return false;
     }
   };
+
   const deleteResource = async (id: string) => {
     try {
       const response = await fetchWithAuth(`${VITE_API_URL}/resources`, 'DELETE', JSON.stringify({ id }))

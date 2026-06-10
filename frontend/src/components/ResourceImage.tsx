@@ -7,8 +7,10 @@ export default function ResourceImage({ imageUrl, imageLoading }: ResourceImageP
   if (imageLoading) {
     return (
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="absolute inset-0 bg-gradient-to-br from-surface to-bg-elevated animate-pulse" />
-        <span className="relative text-[11px] text-muted/70 font-medium">Generating preview…</span>
+        <div className="absolute inset-0 animate-skeleton" />
+        <div className="absolute inset-0 flex items-center justify-center text-muted text-md font-bold">
+          <span className="opacity-60">Loading preview</span>
+        </div>
       </div>
     );
   }

@@ -1,0 +1,37 @@
+<svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Blue gradient background -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stopColor="#2E7DB3"/>
+      <stop offset="100%" stopColor="#1B4A7E"/>
+    </linearGradient>
+    
+    <!-- Metallic gradient -->
+    <linearGradient id="metalGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stopColor="#F0F0F0"/>
+      <stop offset="50%" stopColor="#D0D0D0"/>
+      <stop offset="100%" stopColor="#A8A8A8"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Blue gradient background -->
+  <rect width="200" height="200" rx="35" fill="url(#bgGrad)"/>
+  
+  <!-- "Li" - Large, left aligned -->
+  <text x="8" y="145" font-family="Arial, sans-serif" font-size="130" font-weight="bold" fill="url(#metalGrad)" stroke="#888888" stroke-width="0.5" letter-spacing="-8">Li</text>
+  
+  <!-- "nking" - Same vertical level as "Li" but smaller height -->
+  <text x="75" y="145" font-family="Arial, sans-serif" font-size="70" font-weight="600" fill="url(#metalGrad)" stroke="#888888" stroke-width="0.3" letter-spacing="-2">nking</text>
+  
+  <!-- Chain link icon - diagonal from top of "n" -->
+  <g transform="translate(75, 55) rotate(-45)">
+    <!-- First ring -->
+    <circle cx="0" cy="0" r="16" fill="none" stroke="url(#metalGrad)" stroke-width="6" stroke-linecap="round"/>
+    
+    <!-- Second ring -->
+    <circle cx="28" cy="0" r="16" fill="none" stroke="url(#metalGrad)" stroke-width="6" stroke-linecap="round"/>
+    
+    <!-- Connection section -->
+    <ellipse cx="14" cy="0" rx="8" ry="16" fill="url(#bgGrad)"/>
+  </g>
+</svg>

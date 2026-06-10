@@ -1,0 +1,42 @@
+<svg viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Blue gradient background matching the app theme -->
+    <linearGradient id="appBgGradient" x1="0" y1="0" x2="1024" y2="1024" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor="#1e5ba8" />
+      <stop offset="100%" stopColor="#0d47a1" />
+    </linearGradient>
+    
+    <!-- Metallic gradient for text -->
+    <linearGradient id="metallicGradient" x1="0" y1="0" x2="0" y2="400" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor="#ffffff" />
+      <stop offset="50%" stopColor="#e0e0e0" />
+      <stop offset="100%" stopColor="#b0b0b0" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1024" height="1024" fill="url(#appBgGradient)" />
+  
+  <!-- "Li" text -->
+  <text x="200" y="650" fontFamily="Arial, sans-serif" fontSize="520" fontWeight="bold" fill="url(#metallicGradient)" letterSpacing="-20">Li</text>
+  
+  <!-- "nking" text -->
+  <text x="580" y="750" fontFamily="Arial, sans-serif" fontSize="380" fontWeight="500" fill="url(#metallicGradient)" letterSpacing="-10">nking</text>
+  
+  <!-- Link chain icon (2 connected rings) -->
+  <g transform="translate(700, 250)">
+    <!-- First ring -->
+    <circle cx="40" cy="80" r="60" fill="none" stroke="url(#metallicGradient)" strokeWidth="30"/>
+    
+    <!-- Second ring overlapping -->
+    <circle cx="160" cy="80" r="60" fill="none" stroke="url(#metallicGradient)" strokeWidth="30"/>
+    
+    <!-- Connection point overlay for linked effect -->
+    <ellipse cx="100" cy="80" rx="30" ry="60" fill="url(#appBgGradient)"/>
+  </g>
+  
+  <!-- Decorative star in corner -->
+  <g transform="translate(850, 850)">
+    <path d="M 0 -30 L 8 -8 L 32 0 L 8 8 L 0 30 L -8 8 L -32 0 L -8 -8 Z" fill="#4a7ba7" opacity="0.6"/>
+  </g>
+</svg>
