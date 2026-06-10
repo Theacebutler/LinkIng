@@ -143,20 +143,42 @@ export function ResourceList({ resources, onDelete, loading, onUpdate, domainFil
 
         {resources.length > 0 && (
           <div className="space-y-2">
-            {domainFilter && (
-              <div className="flex items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 pl-2.5 pr-1 py-1 rounded-full bg-primary-soft text-primary text-xs font-medium border border-primary/30">
-                  {domainFilter}
-                  <button
-                    onClick={onClearDomainFilter}
-                    className="w-5 h-5 rounded-full hover:bg-primary/20 inline-flex items-center justify-center"
-                    aria-label="Clear domain filter"
-                  >
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} className="w-3 h-3">
-                      <path d="M18 6 6 18M6 6l12 12" strokeLinecap="round" />
-                    </svg>
-                  </button>
-                </span>
+            <div className="flex items-center gap-2">
+              {/* tag and domain filter */}
+              {tagFilter && (
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex items-center gap-1.5 pl-2.5 pr-1 py-1 rounded-full bg-primary-soft text-black text-xs font-medium border border-primary/30">
+                    {tagFilter}
+                    <button
+                      onClick={onClearTagFilter}
+                      className="w-5 h-5 rounded-full hover:bg-primary/20 inline-flex items-center justify-center"
+                      aria-label="Clear domain filter"
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} className="w-3 h-3">
+                        <path d="M18 6 6 18M6 6l12 12" strokeLinecap="round" />
+                      </svg>
+                    </button>
+                  </span>
+                </div>
+              )}
+              {domainFilter && (
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex items-center gap-1.5 pl-2.5 pr-1 py-1 rounded-full bg-primary-soft text-black text-xs font-medium border border-primary/30">
+                    {domainFilter}
+                    <button
+                      onClick={onClearDomainFilter}
+                      className="w-5 h-5 rounded-full hover:bg-primary/20 inline-flex items-center justify-center"
+                      aria-label="Clear domain filter"
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} className="w-3 h-3">
+                        <path d="M18 6 6 18M6 6l12 12" strokeLinecap="round" />
+                      </svg>
+                    </button>
+                  </span>
+                </div>
+              )}
+              {/* show number of matches */}
+              {
                 <span className="text-xs text-text-soft">
                   {filteredResources.length} match{filteredResources.length !== 1 ? 'es' : ''}
                 </span>

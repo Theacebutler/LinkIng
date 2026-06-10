@@ -53,11 +53,10 @@ export function Domains({ resources, activeDomain, onSelect }: DomainsProps) {
             <li key={domain}>
               <button
                 onClick={() => onSelect(active ? null : domain)}
-                className={`w-full flex items-center gap-2.5 px-2 py-1.5 rounded-lg text-left transition-colors ${
-                  active
-                    ? 'bg-primary-soft text-primary'
-                    : 'text-text-soft hover:bg-surface hover:text-text'
-                }`}
+                className={`w-full flex items-center gap-2.5 px-2 py-1.5 rounded-lg text-left transition-colors ${active
+                  ? 'bg-primary-soft text-bg'
+                  : 'text-text-soft hover:bg-surface hover:text-text'
+                  }`}
               >
                 <span
                   className={`w-7 h-7 rounded-md flex items-center justify-center text-[10px] font-semibold shrink-0 ${

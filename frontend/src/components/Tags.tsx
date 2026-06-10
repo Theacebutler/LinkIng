@@ -52,7 +52,7 @@ export function Tags({ resources, tagFilter, onSelect }: TagsProps) {
               <button
                 onClick={() => onSelect(active ? null : tag)}
                 className={`w-full flex items-center gap-2.5 px-2 py-1.5 rounded-lg text-left transition-colors ${active
-                  ? 'bg-primary-soft text-primary'
+                  ? 'bg-primary-soft text-black'
                   : 'text-text-soft hover:bg-surface hover:text-text'
                   }`}
               >
