@@ -60,6 +60,9 @@ function App() {
                   loading={loading}
                   domainFilter={domainFilter}
                   onClearDomainFilter={() => setDomainFilter(null)}
+                  tagFilter={tagFilter}
+                  handleTagFilter={handleTagFilter}
+                  onClearTagFilter={() => setTagFilter(null)}
                 />
               </div>
               {isPopupOpen && (

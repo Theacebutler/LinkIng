@@ -12,6 +12,9 @@ interface ResourceListProps {
   loading?: boolean;
   domainFilter: string | null;
   onClearDomainFilter: () => void;
+  tagFilter: string | null;
+  handleTagFilter: (tag: string | null) => void;
+  onClearTagFilter: () => void;
 }
 
 const SearchIcon = () => (
@@ -41,7 +44,7 @@ const ListIcon = ({ active }: { active?: boolean }) => (
 
 type SortKey = 'newest' | 'oldest' | 'title';
 
-export function ResourceList({ resources, onDelete, loading, onUpdate, domainFilter, onClearDomainFilter }: ResourceListProps) {
+export function ResourceList({ resources, onDelete, loading, onUpdate, domainFilter, onClearDomainFilter, tagFilter, handleTagFilter, onClearTagFilter }: ResourceListProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [view, setView] = useState<'grid' | 'list'>('grid');
@@ -226,6 +229,8 @@ export function ResourceList({ resources, onDelete, loading, onUpdate, domainFil
                 key={resource.id}
                 resource={resource}
                 view={view}
+                tagFilter={tagFilter}
+                onTagSelect={handleTagFilter}
                 onDelete={(id) => setDeleteId(id)}
                 onUpdate={async (id, updatedData) => {
                   const success = await onUpdate(id, updatedData);
