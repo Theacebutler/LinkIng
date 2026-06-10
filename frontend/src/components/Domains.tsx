@@ -36,7 +36,7 @@ export function Domains({ resources, activeDomain, onSelect }: DomainsProps) {
   return (
     <div className="card p-4 border border-border-strong border-opacity-10 hover:border-primary-hover">
       <div className="flex items-center justify-between mb-3 px-1">
-        <h3 className="text-sm font-semibold text-text">Quick access</h3>
+        <h3 className="text-sm font-semibold text-text">Domains</h3>
         {activeDomain && (
           <button
             onClick={() => onSelect(null)}
