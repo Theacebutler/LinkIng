@@ -1,3 +1,4 @@
+import InDevAlert from "./inDevAlert";
 const DetailsIcon = () => (
   <svg
     viewBox="0 0 24 24"
@@ -43,9 +44,12 @@ const Wordmark = () => (
 export function Header({ isPopupOpen: isOpen, setIsPopupOpen: setIsOpen }: { isPopupOpen: boolean; setIsPopupOpen: (isOpen: boolean) => void }) {
   return (
     <header className="sticky top-0 z-30 bg-bg/85 backdrop-blur-md border-b border-border">
-      <div className="max-w-350 mx-auto flex justify-between items-center gap-3 px-4 md:px-6 py-3">
+      <div className="max-w-350 mx-auto flex  justify-between items-center gap-3 px-4 md:px-6 py-3">
         <div>
           <Wordmark />
+        </div>
+        <div className="hidden md:block flex-1 min-w-0">
+          <InDevAlert />
         </div>
         <button
           onClick={() => setIsOpen(!isOpen)}

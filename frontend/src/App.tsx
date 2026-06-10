@@ -46,7 +46,9 @@ function App() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header isPopupOpen={isPopupOpen} setIsPopupOpen={setIsPopupOpen} />
-      <InDevAlert />
+      <div className="block md:hidden">
+        <InDevAlert />
+      </div>
       <main className="flex-1 md:pl-16 lg:pl-20">
         <div className="max-w-350 mx-auto px-4 md:px-6 py-5 md:py-6">
           {isLogin ? (
