@@ -187,7 +187,11 @@ export function ResourceList({ resources, onDelete, loading, onUpdate, domainFil
               {/* show number of matches */}
               {
                 <span className="text-xs text-text-soft">
-                  {filteredResources.length} match{filteredResources.length !== 1 ? 'es' : ''}
+                  {
+                    tagFilter || domainFilter && filteredResources.length > 0 ?
+                      filteredResources.length + ' match' + (filteredResources.length !== 1 ? 'es' : '') :
+                      null
+                  }
                 </span>
               }
             </div>
