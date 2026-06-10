@@ -46,6 +46,25 @@
   .animate-fade-in {
     animation: fade-in 150ms ease-out;
   }
+  @keyframes skeleton-shimmer {
+    0% {
+      background-position: -1000px 0;
+    }
+    100% {
+      background-position: 1000px 0;
+    }
+  }
+  .animate-skeleton {
+    animation: skeleton-shimmer 2s infinite;
+    background: linear-gradient(
+      90deg,
+      var(--color-surface) 0%,
+      var(--color-surface-hover) 50%,
+      var(--color-surface) 100%
+    );
+    background-size: 1000px 100%;
+    background-position: -1000px 0;
+  }
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;

@@ -140,7 +140,7 @@ export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate }: Res
         {!imageLoadingError ? (
           <ResourceImage imageUrl={imageUrl} imageLoading={imageLoading} />
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center text-muted text-xs">
+          <div className="absolute inset-0 flex items-center justify-center text-muted text-md font-bold">
             <span className="opacity-60">No preview</span>
           </div>
         )}
