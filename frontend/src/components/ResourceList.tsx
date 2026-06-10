@@ -153,7 +153,7 @@ export function ResourceList({ resources, onDelete, loading, onUpdate, domainFil
               {/* tag and domain filter */}
               {tagFilter && (
                 <div className="flex items-center gap-2">
-                  <span className="inline-flex items-center gap-1.5 pl-2.5 pr-1 py-1 rounded-full bg-primary-soft text-primary text-xs font-medium border border-primary/30">
+                  <span className="inline-flex items-center gap-1.5 pl-2.5 pr-1 py-1 rounded-full bg-primary-soft text-black text-xs font-medium border border-primary/30">
                     {tagFilter}
                     <button
                       onClick={onClearTagFilter}
@@ -169,7 +169,7 @@ export function ResourceList({ resources, onDelete, loading, onUpdate, domainFil
               )}
               {domainFilter && (
                 <div className="flex items-center gap-2">
-                  <span className="inline-flex items-center gap-1.5 pl-2.5 pr-1 py-1 rounded-full bg-primary-soft text-primary text-xs font-medium border border-primary/30">
+                  <span className="inline-flex items-center gap-1.5 pl-2.5 pr-1 py-1 rounded-full bg-primary-soft text-black text-xs font-medium border border-primary/30">
                     {domainFilter}
                     <button
                       onClick={onClearDomainFilter}
