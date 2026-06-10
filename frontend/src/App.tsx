@@ -41,9 +41,11 @@ function App() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header isPopupOpen={isPopupOpen} setIsPopupOpen={setIsPopupOpen} />
-      <InDevAlert />
-      <main className="flex-1 md:pl-16 lg:pl-20">
-        <div className="max-w-350 mx-auto px-4 md:px-6 py-5 md:py-6">
+      <div className="block md:hidden">
+        <InDevAlert />
+      </div>
+      <main className="flex-1 md:px-12 lg:px-20">
+        <div className="max-w-full mx-auto px-4 md:px-6 py-5 md:py-6">
           {isLogin ? (
             <div className="grid grid-cols-1 xl:grid-cols-[1fr_300px] gap-5">
               <div className="space-y-5">
@@ -55,6 +57,9 @@ function App() {
                   loading={loading}
                   domainFilter={domainFilter}
                   onClearDomainFilter={() => setDomainFilter(null)}
+                  tagFilter={tagFilter}
+                  handleTagFilter={handleTagFilter}
+                  onClearTagFilter={() => setTagFilter(null)}
                 />
               </div>
               {isPopupOpen && (

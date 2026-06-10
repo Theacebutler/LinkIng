@@ -1,3 +1,4 @@
+import InDevAlert from "./inDevAlert";
 const DetailsIcon = () => (
   <svg
     viewBox="0 0 24 24"
@@ -27,21 +28,9 @@ const CloseIcon = () => (
 );
 
 const MobileLogo = () => (
-  <svg viewBox="0 0 32 32" fill="none" className="w-7 h-7">
-    <rect width="32" height="32" rx="9" fill="url(#logo-gradient-header)" />
-    <path
-      d="M13.5 18.5l5-5m-2-2a3.5 3.5 0 0 1 5 5l-2 2a3.5 3.5 0 0 1-5-5m-4 4a3.5 3.5 0 0 1-5-5l2-2a3.5 3.5 0 0 1 5 5"
-      stroke="#0b0b10"
-      strokeWidth={2.2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <defs>
-      <linearGradient id="logo-gradient-header" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
-        <stop stopColor="#c4b5fd" />
-        <stop offset="1" stopColor="#8b5cf6" />
-      </linearGradient>
-    </defs>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7 text-primary">
+    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
   </svg>
 );
 
@@ -54,10 +43,13 @@ const Wordmark = () => (
 
 export function Header({ isPopupOpen: isOpen, setIsPopupOpen: setIsOpen }: { isPopupOpen: boolean; setIsPopupOpen: (isOpen: boolean) => void }) {
   return (
-    <header className="sticky top-0 z-30 bg-bg/85 backdrop-blur-md border-b border-border">
-      <div className="max-w-350 mx-auto flex justify-between items-center gap-3 px-4 md:px-6 py-3">
+    <header className="sticky top-0 z-30 bg-bg/85 backdrop-blur-md ">
+      <div className="max-w-350 mx-auto flex  justify-between items-center gap-3 px-4 md:px-6 py-3">
         <div>
           <Wordmark />
+        </div>
+        <div className="hidden md:block flex-1 min-w-0">
+          <InDevAlert />
         </div>
         <button
           onClick={() => setIsOpen(!isOpen)}

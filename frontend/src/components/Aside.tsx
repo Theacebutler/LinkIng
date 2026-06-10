@@ -54,7 +54,7 @@ export default function Aside({
         </button>
       </div>
 
-      <div className="card p-5">
+      <div className="card p-4 border border-border-strong border-opacity-10 hover:border-primary-hover">
         <h3 className="text-sm font-semibold text-text mb-3">At a glance</h3>
         <div className="space-y-3">
           <div className="flex items-center justify-between text-sm">
