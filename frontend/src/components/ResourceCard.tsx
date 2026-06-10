@@ -10,6 +10,8 @@ interface ResourceCardProps {
   onDelete: (id: string) => void;
   onUpdate: (id: string, updatedData: { title: string; sourceUrl: string, tags?: string[] }) => Promise<boolean>;
   onCopy: (text: string, type: 'resource' | 'source') => void;
+  onTagSelect: (tag: string | null) => void;
+  tagFilter: string | null;
 }
 
 const getHostname = (url: string) => {
@@ -39,7 +41,7 @@ const formatDate = (dateString: string) => {
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 };
 
-export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate }: ResourceCardProps) {
+export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate, onTagSelect, tagFilter }: ResourceCardProps) {
   const hostname = getHostname(resource.resourceUrl);
   const fallbackTitle = `Resource from ${hostname}`;
   const [imageUrl, setImageUrl] = useState('');
@@ -129,6 +131,10 @@ export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate }: Res
     setIsEditing(false);
   };
 
+  const handleTagSelect = (tag: string) => {
+    const active = tag === tagFilter;
+    onTagSelect(active ? null : tag);
+  };
 
   return (
     <article className={`card card-hover border hover:border-primary-hover overflow-hidden flex group ${view === 'list' ? 'flex-row' : 'flex-col'}`}>
@@ -185,8 +191,8 @@ export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate }: Res
                 {resource.title || fallbackTitle}
               </h3>
             )}
-            <div className="flex flex-row gap-2">
-              <p className="mt-0.5 text-[11px] text-shadow-muted truncate flex flex-row gap-1">
+            <div className="flex flex-row gap-2 align-middle items-center">
+              <p className="text-[11px] text-shadow-muted truncate flex flex-row gap-1">
                 {hostname} · {formatDate(resource.createdAt)}
               </p>
               <div>
@@ -196,8 +202,9 @@ export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate }: Res
                       resource.tags.map((tag, i) => (
                         <button
                           key={i}
-                          onClick={() => alert("Not implemented, this will filter the resources by tag")}
-                          className="text-shadow-muted hover:underline truncate min-w-0 text-left"
+                          onClick={() => handleTagSelect(tag)}
+                          className={`text-shadow-muted hover:underline truncate min-w-0 text-left  pr-2 pl-2 rounded-full text-xs/snug
+${tagFilter === tag ? 'bg-primary-soft text-black' : 'text-text-soft hover:bg-surface hover:text-text border border-border'}`}
                         >
                           {tag.startsWith('#') ? tag : `#${tag}`}
                         </button>

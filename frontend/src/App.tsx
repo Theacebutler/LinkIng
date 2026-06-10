@@ -62,6 +62,7 @@ function App() {
                   domainFilter={domainFilter}
                   onClearDomainFilter={() => setDomainFilter(null)}
                   tagFilter={tagFilter}
+                  handleTagFilter={handleTagFilter}
                   onClearTagFilter={() => setTagFilter(null)}
                 />
               </div>
