@@ -132,8 +132,8 @@ export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate }: Res
       <div
         className={
           view === 'list'
-            ? 'w-44 sm:w-52 shrink-0 self-stretch bg-surface relative cursor-pointer overflow-hidden ring-1 ring-inset ring-white/[0.04]'
-            : 'aspect-[2.5/1] w-full bg-surface relative cursor-pointer overflow-hidden ring-1 ring-inset ring-white/[0.04]'
+            ? 'w-44 sm:w-52 shrink-0 self-stretch bg-surface relative cursor-pointer overflow-hidden'
+            : 'aspect-2.5/1 w-full bg-surface relative cursor-pointer overflow-hidden'
         }
         onClick={openResource}
       >
