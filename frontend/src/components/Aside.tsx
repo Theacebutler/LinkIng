@@ -3,7 +3,6 @@ import type { Resource } from "../types/resource";
 import { Domains } from "./Domains";
 import { Tags } from "./Tags";
 import { GetUserKey } from "./GetUserKey";
-
 interface AsideProps {
   setIsPopupOpen: (isOpen: boolean) => void;
   isOpen: boolean;
@@ -73,15 +72,15 @@ export default function Aside({
         </div>
       </div>
 
-      <Domains
-        resources={resources}
-        activeDomain={domainFilter}
-        onSelect={handleDomainFilter}
-      />
       <Tags
         resources={resources}
         tagFilter={tagFilter}
         onSelect={handleTagFilter}
+      />
+      <Domains
+        resources={resources}
+        activeDomain={domainFilter}
+        onSelect={handleDomainFilter}
       />
       <GetUserKey setIsOpen={setIsOpen} setShowKeyAndOwner={setShowKeyAndOwner} />
     </aside >
