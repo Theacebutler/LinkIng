@@ -24,7 +24,6 @@ export function AddResourceForm({ onSubmit }: AddResourceFormProps) {
     resourceUrl: '',
     sourceUrl: '',
     tags: [],
-    owner: '',
   });
   const [errors, setErrors] = useState<Partial<ResourceFormData>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);

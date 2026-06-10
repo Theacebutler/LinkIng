@@ -82,11 +82,11 @@ export function ResourceList({ resources, onDelete, loading, onUpdate, domainFil
           r.title.toLowerCase().includes(q) ||
           r.resourceUrl.toLowerCase().includes(q) ||
           r.sourceUrl.toLowerCase().includes(q) ||
-          r.tags.some((tag) => tag.toLowerCase().includes(q))
+          r.tags?.some((tag) => tag.toLowerCase().includes(q))
         );
       }
       if (tagFilter) {
-        return r.tags.some((tag) => tag.toLowerCase().includes(tagFilter.toLowerCase()));
+        return r.tags?.some((tag) => tag.toLowerCase().includes(tagFilter.toLowerCase()));
       }
       return true;
     });
