@@ -75,6 +75,8 @@ function App() {
                 setDomainFilter={setDomainFilter}
                 addedThisWeek={addedThisWeek}
                 domainFilter={domainFilter}
+                tagFilter={tagFilter}
+                handleTagFilter={handleTagFilter}
                 showKeyAndOwner={showKeyAndOwner}
                 setShowKeyAndOwner={setShowKeyAndOwner}
                 handleDomainFilter={handleDomainFilter}
