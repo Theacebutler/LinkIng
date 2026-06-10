@@ -6,11 +6,13 @@ export interface Resource {
   sourceUrl: string;
   imageUrl?: string;
   createdAt: string;
+  tags?: string[];
 }
 
 export interface ResourceFormData {
   title: string;
   resourceUrl: string;
   sourceUrl: string;
+  tags?: string[];
   owner: string;
 }
