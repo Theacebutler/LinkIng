@@ -1,7 +1,6 @@
 import { useKeyAndOwner } from "../hooks/useKeyAndOwner";
 import type { Resource } from "../types/resource";
 import { Domains } from "./Domains";
-import { Tags } from "./Tags";
 import { GetUserKey } from "./GetUserKey";
 
 interface AsideProps {
@@ -10,12 +9,10 @@ interface AsideProps {
   resources: Resource[];
   addedThisWeek: number;
   domainFilter: string | null;
-  tagFilter: string | null;
   showKeyAndOwner: boolean;
   setDomainFilter: (domainFilter: string | null) => void;
   setShowKeyAndOwner: (showKeyAndOwner: boolean) => void;
   handleDomainFilter: (domainFilter: string | null) => void;
-  handleTagFilter: (domainFilter: string | null) => void;
 }
 export default function Aside({
   setIsPopupOpen: setIsOpen,
@@ -23,9 +20,7 @@ export default function Aside({
   resources,
   addedThisWeek,
   domainFilter,
-  tagFilter,
   handleDomainFilter,
-  handleTagFilter,
   setShowKeyAndOwner
 }: AsideProps) {
   const { setKey, setOwner } = useKeyAndOwner();
@@ -77,11 +72,6 @@ export default function Aside({
         resources={resources}
         activeDomain={domainFilter}
         onSelect={handleDomainFilter}
-      />
-      <Tags
-        resources={resources}
-        tagFilter={tagFilter}
-        onSelect={handleTagFilter}
       />
       <GetUserKey setIsOpen={setIsOpen} setShowKeyAndOwner={setShowKeyAndOwner} />
     </aside >

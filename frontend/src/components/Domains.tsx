@@ -59,17 +59,19 @@ export function Domains({ resources, activeDomain, onSelect }: DomainsProps) {
                   }`}
               >
                 <span
-                  className={`w-7 h-7 rounded-md flex items-center justify-center text-[10px] font-semibold shrink-0 ${active
-                    ? 'bg-primary text-bg'
-                    : 'bg-surface text-text-soft border border-border'
-                    }`}
+                  className={`w-7 h-7 rounded-md flex items-center justify-center text-[10px] font-semibold shrink-0 ${
+                    active
+                      ? 'bg-primary text-bg'
+                      : 'bg-surface text-text-soft border border-border'
+                  }`}
                 >
                   {getInitials(domain)}
                 </span>
                 <span className="flex-1 min-w-0 text-xs truncate">{domain}</span>
                 <span
-                  className={`text-[11px] font-medium tabular-nums ${active ? 'text-primary' : 'text-muted'
-                    }`}
+                  className={`text-[11px] font-medium tabular-nums ${
+                    active ? 'text-primary' : 'text-muted'
+                  }`}
                 >
                   {count}
                 </span>

@@ -8,7 +8,7 @@ import { useToast } from '../hooks/useToast';
 interface ResourceListProps {
   resources: Resource[];
   onDelete: (id: string) => Promise<boolean>;
-  onUpdate: (id: string, updatedData: { title: string; sourceUrl: string; tags?: string[] }) => Promise<boolean>;
+  onUpdate: (id: string, updatedData: { title: string; sourceUrl: string }) => Promise<boolean>;
   loading?: boolean;
   domainFilter: string | null;
   onClearDomainFilter: () => void;
@@ -81,12 +81,8 @@ export function ResourceList({ resources, onDelete, loading, onUpdate, domainFil
         return (
           r.title.toLowerCase().includes(q) ||
           r.resourceUrl.toLowerCase().includes(q) ||
-          r.sourceUrl.toLowerCase().includes(q) ||
-          r.tags.some((tag) => tag.toLowerCase().includes(q))
+          r.sourceUrl.toLowerCase().includes(q)
         );
-      }
-      if (tagFilter) {
-        return r.tags.some((tag) => tag.toLowerCase().includes(tagFilter.toLowerCase()));
       }
       return true;
     });
@@ -96,7 +92,7 @@ export function ResourceList({ resources, onDelete, loading, onUpdate, domainFil
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
     return list;
-  }, [resources, searchQuery, sort, domainFilter, tagFilter]);
+  }, [resources, searchQuery, sort, domainFilter]);
 
   if (loading) {
     return (
@@ -193,8 +189,8 @@ export function ResourceList({ resources, onDelete, loading, onUpdate, domainFil
                       null
                   }
                 </span>
-              }
-            </div>
+              </div>
+            )}
             <div className="relative">
               <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted pointer-events-none">
                 <SearchIcon />
@@ -250,7 +246,7 @@ export function ResourceList({ resources, onDelete, loading, onUpdate, domainFil
             ))}
           </div>
         )}
-      </section >
+      </section>
 
       <ConfirmDialog
         isOpen={deleteId !== null}

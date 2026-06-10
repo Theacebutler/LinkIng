@@ -38,13 +38,6 @@ const server = Bun.serve({
       }
     },
     "/api/users/get-key": {
-      OPTIONS: () => {
-        const res = Response.json({});
-        res.headers.set("Access-Control-Allow-Origin", config.FRONTEND_URL as string);
-        res.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS, DELETE, PATCH");
-        res.headers.set("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Origin, Authorization");
-        return res;
-      },
       GET: async (req): Promise<Response> => {
         return await getUserKey(req)
       },
