@@ -32,7 +32,7 @@ export function Tags({ resources, tagFilter, onSelect }: TagsProps) {
   }
 
   return (
-    <div className="card p-4 border border-border-strong border-opacity-10">
+    <div className="card p-4 border border-border-strong border-opacity-10 hover:border-primary-hover">
       return (
       <div className="card p-4">
         <div className="flex items-center justify-between mb-3 px-1">
