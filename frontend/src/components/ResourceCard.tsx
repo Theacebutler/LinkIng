@@ -182,9 +182,28 @@ export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate }: Res
                 {resource.title || fallbackTitle}
               </h3>
             )}
-            <p className="mt-0.5 text-[11px] text-muted truncate">
-              {hostname} · {formatDate(resource.createdAt)}
-            </p>
+            <div className="flex flex-row gap-2">
+              <p className="mt-0.5 text-[11px] text-shadow-muted truncate flex flex-row gap-1">
+                {hostname} · {formatDate(resource.createdAt)}
+              </p>
+              <div>
+                {resource.tags ? (
+                  <div className="flex items-center gap-1.5 text-[11px] text-text-soft">
+                    {
+                      resource.tags.map((tag, i) => (
+                        <button
+                          key={i}
+                          onClick={() => alert("Not implemented, this will filter the resources by tag")}
+                          className="text-shadow-muted hover:underline truncate min-w-0 text-left"
+                        >
+                          {tag.startsWith('#') ? tag : `#${tag}`}
+                        </button>
+                      ))
+                    }
+                  </div>
+                ) : null}
+              </div>
+            </div>
           </div>
           <div className="flex items-center gap-0.5 shrink-0">
             {isEditing ? (
