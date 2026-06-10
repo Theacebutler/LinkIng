@@ -19,7 +19,7 @@ function App() {
   const { resources, loading, addResource, updateResource, deleteResource } = useResources();
   const { toast, setToast } = useToast();
   const [domainFilter, setDomainFilter] = useState<string | null>(null);
-  const [tagFilter, setTagFilter] = useState<string | null>(null);
+  const [tagFilter, setTagFilter] = useState<string | null>(null)
   const [showKeyAndOwner, setShowKeyAndOwner] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
@@ -28,11 +28,10 @@ function App() {
     return await addResource(data);
   };
 
-  const handleTagFilter = (tag: string | null) => {
+  const handleTagFilter = (tagFilter: string | null) => {
     setIsPopupOpen(false);
-    setTagFilter(tag);
+    setTagFilter(tagFilter);
   };
-
   const handleDomainFilter = (domainFilter: string | null) => {
     setIsPopupOpen(false);
     setDomainFilter(domainFilter);
