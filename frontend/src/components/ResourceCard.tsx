@@ -255,7 +255,6 @@ ${tagFilter === tag ? 'bg-primary-soft text-black' : 'text-text-soft hover:bg-su
                 placeholder="#css #grid #guide"
               />
             </div>
-        ) : null}
             {isEditing ? (
               <>
                 <button
