@@ -94,6 +94,36 @@ describe("TEST: add resource with apple shortcuts", async () => {
     expect(data.owner).toBe(TEST_USER);
   });
 
+  test("TEST add resource via apple shortcuts with tags", async () => {
+    const mockRequest: Request = new Request(
+      "http://localhost:3000/api/resources/apple-shortcuts/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "User-Agent": "BackgroundShortcutRunner/3612.0.1.5 CFNetwork/3826.600.41.2.1 Darwin/24.6.0"
+      },
+      body: JSON.stringify({
+        resourceUrl: TEST_RESOURCE_URL,
+        title: TEST_TITLE,
+        sourceUrl: TEST_SOURCE_URL,
+        key: TEST_KEY,
+        tags: "test tag1 test tag2",
+        owner: TEST_USER,
+      })
+    })
+    const res = await apiAppleShortcutsPost(mockRequest)
+    const data = await res.json() as { id: number, resourceUrl: string, title: string, sourceUrl: string, owner: string, tags: string[] };
+    expect(res.ok).toBe(true);
+    expect(res.status).toBe(200);
+    // test the data.message output
+    expect(data.id).toBeDefined();
+    expect(data.tags).toBeDefined();
+    expect(data.resourceUrl).toBe(TEST_RESOURCE_URL);
+    expect(data.title).toBe(TEST_TITLE);
+    expect(data.sourceUrl).toBe(TEST_SOURCE_URL);
+    expect(data.owner).toBe(TEST_USER);
+  });
+
   test("TEST add resource with apple shortcuts with no user agent", async () => {
     const mockRequest: Request = new Request(
       "http://localhost:3000/api/resources/apple-shortcuts/", {

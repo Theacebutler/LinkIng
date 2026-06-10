@@ -11,7 +11,7 @@ const contact_methods = [
 export default function Footer() {
   return (
     <footer className="border-t border-border mt-12 py-6 px-4">
-      <div className="max-w-[1400px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted">
+      <div className="max-w-350 mx-auto flex flex-col sm:flex-row items-center  gap-3 text-xs text-muted">
         <span>Made with ❤️ and ☕️ by <a href="https://github.com/theacebutler" target="_blank" rel="noreferrer" className="text-primary hover:underline">Avi Butler</a></span>
         <div className="flex items-center gap-4">
           {contact_methods.map((method) => (

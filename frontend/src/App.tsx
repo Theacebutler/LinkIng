@@ -24,7 +24,7 @@ function App() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
 
-  const handleAddResource = async (data: { title: string; resourceUrl: string; sourceUrl: string; owner: string }) => {
+  const handleAddResource = async (data: { title: string; resourceUrl: string; sourceUrl: string; tags: string[] }) => {
     return await addResource(data);
   };
 
@@ -85,6 +85,8 @@ function App() {
                 showKeyAndOwner={showKeyAndOwner}
                 setShowKeyAndOwner={setShowKeyAndOwner}
                 handleDomainFilter={handleDomainFilter}
+                handleTagFilter={handleTagFilter}
+                tagFilter={tagFilter}
               />
               {showKeyAndOwner && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">

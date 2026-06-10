@@ -8,7 +8,7 @@ interface ResourceCardProps {
   resource: Resource;
   view: 'grid' | 'list';
   onDelete: (id: string) => void;
-  onUpdate: (id: string, updatedData: { title: string; sourceUrl: string }) => Promise<boolean>;
+  onUpdate: (id: string, updatedData: { title: string; sourceUrl: string, tags?: string[] }) => Promise<boolean>;
   onCopy: (text: string, type: 'resource' | 'source') => void;
   onTagSelect: (tag: string | null) => void;
   tagFilter: string | null;
@@ -48,8 +48,9 @@ export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate, onTag
   const [imageLoading, setImageLoading] = useState(false);
   const [imageLoadingError, setImageLoadingError] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [editTitle, setEditTitle] = useState(resource.title || '');
+  const [editTitle, setEditTitle] = useState(resource.title || fallbackTitle);
   const [editSourceUrl, setEditSourceUrl] = useState(resource.sourceUrl || '');
+  const [editTags, setEditTags] = useState<string[]>(resource.tags || []);
   const [titleError, setTitleError] = useState(false);
   const [sourceUrlError, setSourceUrlError] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -112,6 +113,7 @@ export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate, onTag
     const success = await onUpdate(resource.id, {
       title: editTitle.trim(),
       sourceUrl: editSourceUrl.trim(),
+      tags: editTags,
     });
     if (success) {
       setIsEditing(false);
@@ -123,6 +125,7 @@ export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate, onTag
   const handleCancel = () => {
     setEditTitle(resource.title || '');
     setEditSourceUrl(resource.sourceUrl || '');
+    setEditTags(resource.tags || []);
     setTitleError(false);
     setSourceUrlError(false);
     setIsEditing(false);
@@ -134,7 +137,7 @@ export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate, onTag
   };
 
   return (
-    <article className={`card card-hover overflow-hidden flex group ${view === 'list' ? 'flex-row' : 'flex-col'}`}>
+    <article className={`card card-hover border hover:border-primary-hover overflow-hidden flex group ${view === 'list' ? 'flex-row' : 'flex-col'}`}>
       <div
         className={
           view === 'list'
@@ -150,7 +153,7 @@ export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate, onTag
             <span className="opacity-60">No preview</span>
           </div>
         )}
-        <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
+        <div className="absolute inset-x-0 bottom-0 h-12 bg-linear-to-t from-black/40 to-transparent pointer-events-none" />
         {saved && (
           <div className="absolute top-2 right-2 px-2 py-0.5 rounded-md bg-success/90 text-bg text-[10px] font-semibold uppercase tracking-wide">
             Saved
@@ -307,6 +310,26 @@ ${tagFilter === tag ? 'bg-primary-soft text-black' : 'text-text-soft hover:bg-su
         {isEditing ? (
           <div>
             <label className="block text-[11px] font-medium text-text-soft mb-1">
+              Tags <span className="text-muted">(optional)</span>
+            </label>
+            <input
+              type="text"
+              value={editTags.join(' ')}
+              onChange={(e) => {
+                setEditTags(e.target.value.split(' '));
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleSave();
+                if (e.key === 'Escape') handleCancel();
+              }}
+              // className={`input text-xs ${tagsError ? 'input-error' : ''}`}
+              placeholder="#css #grid #guide"
+            />
+          </div>
+        ) : null}
+        {isEditing ? (
+          <div>
+            <label className="block text-[11px] font-medium text-text-soft mb-1">
               Source URL <span className="text-muted">(optional)</span>
             </label>
             <input
@@ -381,6 +404,6 @@ ${tagFilter === tag ? 'bg-primary-soft text-black' : 'text-text-soft hover:bg-su
           )}
         </div>
       </div>
-    </article>
+    </article >
   );
 }

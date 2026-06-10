@@ -82,6 +82,11 @@ export default function Aside({
         activeDomain={domainFilter}
         onSelect={handleDomainFilter}
       />
+      <Tags
+        resources={resources}
+        tagFilter={tagFilter}
+        onSelect={handleTagFilter}
+      />
       <GetUserKey setIsOpen={setIsOpen} setShowKeyAndOwner={setShowKeyAndOwner} />
     </aside >
   )

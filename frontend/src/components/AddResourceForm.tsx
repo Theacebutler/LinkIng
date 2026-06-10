@@ -1,5 +1,4 @@
 import { useState, type FormEvent } from 'react';
-import Cookies from 'js-cookie';
 import type { ResourceFormData } from '../types/resource';
 
 interface AddResourceFormProps {
@@ -66,8 +65,7 @@ export function AddResourceForm({ onSubmit }: AddResourceFormProps) {
     setIsSubmitting(false);
 
     if (ok) {
-      const name = Cookies.get('name') || '';
-      setFormData({ title: '', resourceUrl: '', sourceUrl: '', owner: name });
+      setFormData({ title: '', resourceUrl: '', sourceUrl: '', tags: [] });
       setSuccess(true);
       setExpanded(false);
       setTimeout(() => setSuccess(false), 1800);

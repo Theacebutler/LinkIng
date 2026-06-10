@@ -1,7 +1,7 @@
 export interface Resource {
   id: string;
   title: string;
-  owner: string;
+  // owner: string;
   resourceUrl: string;
   sourceUrl: string;
   imageUrl?: string;
@@ -12,6 +12,7 @@ export interface Resource {
 export interface ResourceFormData {
   title: string;
   resourceUrl: string;
+  tags: string[];
   sourceUrl: string;
   tags?: string[];
   owner: string;
