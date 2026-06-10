@@ -21,7 +21,7 @@ export function Tags({ resources, tagFilter, onSelect }: TagsProps) {
   if (tags.length === 0) return null;
 
   return (
-    <div className="card p-4 border border-border-strong border-opacity-10">
+    <div className="card p-4 border border-border-strong border-opacity-10 hover:border-primary-hover">
       <div className="flex items-center justify-between mb-3 px-1">
         <h3 className="text-sm font-semibold text-text">Quick access</h3>
         {tagFilter && (
