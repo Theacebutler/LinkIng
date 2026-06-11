@@ -28,6 +28,7 @@ async function handleNextScreenshot() {
   while (PROCESSING) {
     if (screenshotStack.length <= 0) {
       PROCESSING = false
+      handleFaildScreenshots()
       return
     }
     const curr = screenshotStack.shift()
