@@ -3,9 +3,10 @@ import { db } from "../db";
 import { config } from "../config";
 import { screenshotsTable } from "../db/schema";
 import formatMemoryUsage from "./formatMemoryUsage";
+import handleFaildScreenshots from "./screenshotsRetry";
 
-type ScreenshotJob = { timeAdded: number, url: string, resourceId: number, isDone: boolean, timesTried: number }
-const screenshotStack: ScreenshotJob[] = []
+export type ScreenshotJob = { timeAdded: number, url: string, resourceId: number, isDone: boolean, timesTried: number }
+export const screenshotStack: ScreenshotJob[] = []
 let PROCESSING: boolean = false
 let BROWSER: Browser | null = null
 
@@ -27,6 +28,7 @@ async function handleNextScreenshot() {
   while (PROCESSING) {
     if (screenshotStack.length <= 0) {
       PROCESSING = false
+      handleFaildScreenshots()
       return
     }
     const curr = screenshotStack.shift()
