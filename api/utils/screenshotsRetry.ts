@@ -1,4 +1,4 @@
-import { screenshotStack, type ScreenshotJob } from "./screenshot";
+import addToScreenshotStack from "./screenshot";
 import { db } from "../db";
 import { resourcesTable, screenshotsTable } from "../db/schema";
 import { eq } from "drizzle-orm";
@@ -31,12 +31,5 @@ export default async function handleFaildScreenshots() {
   if (!failed || !failed?.resources_table || failed?.screenshots_table) return
   const url = failed.resources_table?.resourceUrl
   if (!url) return
-  const newJob: ScreenshotJob = {
-    url,
-    resourceId: failed.screenshots_table.resourceId,
-    isDone: false,
-    timeAdded: Date.now(),
-    timesTried: 0
-  }
-  screenshotStack.push(newJob)
+  addToScreenshotStack(url, failed.screenshots_table.resourceId, 0)
 }
