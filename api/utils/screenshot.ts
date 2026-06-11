@@ -84,7 +84,7 @@ async function screenshot(url: string, resourceId: number): Promise<void> {
   await page.setViewport({ width: 1820, height: 720 })
   let image: string | null = null
   try {
-    const res = await page.goto(url, { waitUntil: 'domcontentloaded' })
+    const res = await page.goto(url, { waitUntil: 'networkidle0' })
     if (res?.ok()) {
       image = await page.screenshot({
         type: 'png',
