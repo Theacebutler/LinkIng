@@ -2,7 +2,7 @@ import puppeteer, { Browser } from "puppeteer";
 import { db } from "../db";
 import { config } from "../config";
 import { screenshotsTable } from "../db/schema";
-import formatMemoryUsage from "./formatMemoryUsage";
+import formatMemoryUsage, { highCPUload } from "./formatMemoryUsage";
 import handleFaildScreenshots from "./screenshotsRetry";
 
 export type ScreenshotJob = { timeAdded: number, url: string, resourceId: number, isDone: boolean, timesTried: number }
@@ -28,6 +28,7 @@ async function handleNextScreenshot() {
   while (PROCESSING) {
     if (screenshotStack.length <= 0) {
       PROCESSING = false
+      if (highCPUload()) return
       handleFaildScreenshots()
       return
     }
