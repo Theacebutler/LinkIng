@@ -269,6 +269,7 @@ ${tagFilter === tag ? 'bg-primary-soft text-black' : 'text-text-soft hover:bg-su
         </div>
 
         {isEditing ? (
+          // edit tags
           <div>
             <label className="block text-[11px] font-medium text-text-soft mb-1">
               Tags <span className="text-muted">(optional)</span>
@@ -277,7 +278,7 @@ ${tagFilter === tag ? 'bg-primary-soft text-black' : 'text-text-soft hover:bg-su
               type="text"
               value={editTags.join(' ')}
               onChange={(e) => {
-                setEditTags(e.target.value.split(' '));
+                setEditTags(() => e.target.value === "" ? [] : e.target.value.split(' '));
               }}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') handleSave();
