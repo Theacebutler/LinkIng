@@ -20,6 +20,7 @@ export const resourcesTable = sqliteTable("resources_table", {
   createdAt: text(),
   updatedAt: text(),
   tags: text('tags', { mode: 'json' }).$type<string[]>().default([]),
+  hasImage: integer().notNull().default(0),
 })
 
 // screenshots table
