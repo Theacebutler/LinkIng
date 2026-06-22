@@ -19,6 +19,7 @@
   "dependencies": {
     "@types/bcrypt": "^6.0.0",
     "bcrypt": "^6.0.0",
+    "cheerio": "^1.2.0",
     "dotnet": "^1.1.4",
     "drizzle-orm": "^0.45.1",
     "generic-pool": "^3.9.0",
