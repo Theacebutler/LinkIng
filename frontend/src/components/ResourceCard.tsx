@@ -62,7 +62,7 @@ export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate, onTag
     async function poll(attempt: number) {
       if (cancelled) return;
       setImageLoading(true);
-      const url = `${config.VITE_API_URL}/resources/screenshots/${resource.id}`;
+      const url = `${config.VITE_API_URL}/resources/screenshots/${resource.id}/image`;
       const data = await fetchWithAuth(url);
       if (cancelled) return;
       if (data.ok) {
