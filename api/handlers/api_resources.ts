@@ -1,11 +1,12 @@
 import { desc, eq, and } from "drizzle-orm";
 import { db } from "../db";
-import { resourcesTable } from "../db/schema";
-import type { Resource } from "../shared/types";
+import { resourcesTable, screenshotsTable } from "../db/schema";
+import type { Resource, Screenshot } from "../shared/types";
 import addToScreenshotQ from "../utils/screenshot";
 import { config } from "../config";
 import type { AuthenticatedRequest } from "../utils/token_gen";
 import { validateAppleShortcutsUser } from "../utils/validateCred";
+import getOGinfo from "../utils/getOGInfo";
 
 
 export async function apiResourcesGet(request: AuthenticatedRequest): Promise<Response> {
@@ -89,6 +90,7 @@ export async function apiResourcesPost(req: AuthenticatedRequest) {
   const body = await req.json() as Omit<Resource, 'id' | 'createdAt' | 'sourceImage'>;
   const name = req.user.sub
   const tags: string[] = []
+  // add tags to the resource
   if (body.tags) {
     body.tags.map((tag: string) => {
       if (tags.includes(tag)) return
@@ -99,19 +101,38 @@ export async function apiResourcesPost(req: AuthenticatedRequest) {
       }
     })
   }
+  if (!body.resourceUrl) {
+    return Response.json({ error: "resourceUrl is required" }, 400);
+  }
+  const { imageData, title } = await getOGinfo(body.resourceUrl)
+  if (!body.title && title) {
+    body.title = title
+  }
+  // add the resource to the DB
   const newResource: Resource = {
     ...body,
     createdAt: new Date().toISOString(),
     owner: name,
   };
-
   // save the screenshot to the DB
   const [id] = await db.insert(resourcesTable)
     .values(newResource)
     .returning();
   const insertId = id?.id
-  addToScreenshotQ(newResource.resourceUrl, insertId)
-  const out = { ...newResource, id: insertId };
+  // if we can get an image with open graph, add it to the DB, otherwise add it to the queue
+  if (imageData) {
+    const newImage: Screenshot = {
+      resourceId: insertId as number,
+      hasImage: 0,
+      image: imageData,
+      methodUsed: "openGraph"
+    }
+    await db.insert(screenshotsTable)
+      .values(newImage)
+  } else {
+    addToScreenshotQ(newResource.resourceUrl, insertId)
+  }
+  const out: Resource = { ...newResource, id: insertId };
   const res = Response.json(out);
   res.headers.set("Access-Control-Allow-Origin", config.FRONTEND_URL as string);
   return res;
@@ -120,15 +141,15 @@ export async function apiResourcesPost(req: AuthenticatedRequest) {
 export async function apiResourcesIdUpdate(request: AuthenticatedRequest): Promise<Response> {
   const body = await request.json() as Omit<Resource, 'createdAt' | 'sourceImage'>;
   const username = request.user?.sub;
-  
+
   if (!body.id) {
     return Response.json({ error: "id is required" }, 400);
   }
-  
+
   if (!username) {
     return Response.json({ error: "username is required" }, 400);
   }
-  
+
   await db.update(resourcesTable)
     .set({
       ...body,
@@ -144,15 +165,15 @@ export async function apiResourcesIdDelete(request: AuthenticatedRequest): Promi
   const json = await request.json() as { id: number }
   const id = json.id
   const username = request.user?.sub;
-  
+
   if (!id) {
     return Response.json({ error: "id is required" }, 400);
   }
-  
+
   if (!username) {
     return Response.json({ error: "username is required" }, 400);
   }
-  
+
   await db.delete(resourcesTable).where(and(eq(resourcesTable.id, id), eq(resourcesTable.owner, username)));
   const res = Response.json({ deleted: true });
   res.headers.set("Access-Control-Allow-Origin", config.FRONTEND_URL);

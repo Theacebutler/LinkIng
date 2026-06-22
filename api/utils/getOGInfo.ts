@@ -1,0 +1,33 @@
+import * as cheerio from 'cheerio';
+interface OGimage {
+  imageData?: string | void
+  title?: string
+  description?: string
+}
+
+export default async function getOGinfo(resourceUrl: string): Promise<OGimage> {
+  const res = await fetch(resourceUrl).then((d) => d.text())
+  const doc = cheerio.load(res)
+  const imageUrl = doc('meta[property="og:image"]').attr('content') || doc('meta[name="twitter:image"]').attr('content')
+  const title = doc('meta[property="og:title"]').attr('content') || doc('meta[name="twitter:title"]').attr('content')
+  // TODO: description is not being used yet
+  const description = doc('meta[property="og:description"]').attr('content') || doc('meta[name="twitter:description"]').attr('content')
+  if (imageUrl) {
+    const imageData = await fetch(imageUrl as string)
+      .then(async (res) => {
+        if (!res.ok) throw new Error("Image fetch failed")
+        const buff = await res.arrayBuffer()
+        return Buffer.from(buff).toString('base64')
+      })
+      .catch(console.error)
+    return {
+      imageData,
+      title,
+      description
+    }
+  }
+  return {
+    title,
+    description
+  }
+}

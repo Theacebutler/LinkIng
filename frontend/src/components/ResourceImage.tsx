@@ -20,7 +20,7 @@ export default function ResourceImage({ imageUrl, imageLoading }: ResourceImageP
       alt="Resource preview"
       width={1820}
       height={720}
-      className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.02]"
+      className="absolute inset-0 w-full h-fit object-cover transition-transform duration-300 ease-out group-hover:scale-[1.02]"
       loading="lazy"
       decoding="async"
       fetchPriority="low"

@@ -102,5 +102,6 @@ async function screenshot(url: string, resourceId: number): Promise<void> {
     resourceId,
     image,
     hasImage: image ? 1 : 0,
+    methodUsed: "puppeteer"
   })
 } 

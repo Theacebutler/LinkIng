@@ -11,7 +11,7 @@ export function apiResourceScreenshotOpts() {
   return res;
 }
 
-export async function apiResourceScreenshotGet(req: Bun.BunRequest<"/api/resources/screenshots/:id">) {
+export async function apiResourceScreenshotGetImage(req: Bun.BunRequest<"/api/resources/screenshots/:id/image">) {
   const id = Number(req.params.id)
   const image_record = await db.select()
     .from(screenshotsTable)
@@ -34,5 +34,26 @@ export async function apiResourceScreenshotGet(req: Bun.BunRequest<"/api/resourc
       },
     });
   }
+}
 
+export async function apiResourceScreenshotGet(req: Bun.BunRequest<"/api/resources/screenshots/:id">) {
+  const id = Number(req.params.id)
+  const image_record = await db.select()
+    .from(screenshotsTable)
+    .where(eq(screenshotsTable.resourceId, id));
+  const image = image_record[0]?.image
+  if (image) {
+    // return the height and width of the image
+    const res = Response.json({ width: image_record[0]?.width, height: image_record[0]?.height });
+    res.headers.set("Access-Control-Allow-Origin", config.FRONTEND_URL);
+    return res;
+  } else {
+    return new Response(JSON.stringify({ error: "Image not found" }), {
+      status: 404,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': config.FRONTEND_URL,
+      },
+    });
+  }
 }

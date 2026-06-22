@@ -1,5 +1,5 @@
 import { apiResourcesOpts, apiAppleShortcutsPost } from "./handlers/api_resources";
-import { apiResourceScreenshotGet } from "./handlers/api_resources_screenshots";
+import { apiResourceScreenshotGet, apiResourceScreenshotGetImage } from "./handlers/api_resources_screenshots";
 
 import { addResource, deleteResource, getResources, updateResource } from "./handlers/protected";
 import { config } from "./config";
@@ -76,6 +76,10 @@ const server = Bun.serve({
       POST: async (req): Promise<Response> => {
         return apiAppleShortcutsPost(req);
       }
+    },
+    "/api/resources/screenshots/:id/image": {
+      OPTIONS: () => apiResourcesOpts(),
+      GET: async (req) => apiResourceScreenshotGetImage(req),
     },
     "/api/resources/screenshots/:id": {
       OPTIONS: () => apiResourcesOpts(),
