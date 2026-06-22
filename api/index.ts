@@ -81,10 +81,6 @@ const server = Bun.serve({
       OPTIONS: () => apiResourcesOpts(),
       GET: async (req) => apiResourceScreenshotGetImage(req),
     },
-    "/api/resources/screenshots/:id": {
-      OPTIONS: () => apiResourcesOpts(),
-      GET: async (req) => apiResourceScreenshotGet(req),
-    },
   },
 });
 
