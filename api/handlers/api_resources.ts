@@ -124,7 +124,8 @@ export async function apiResourcesPost(req: AuthenticatedRequest) {
     const newImage: Screenshot = {
       resourceId: insertId as number,
       hasImage: 0,
-      image: imageData
+      image: imageData,
+      methodUsed: "openGraph"
     }
     await db.insert(screenshotsTable)
       .values(newImage)
