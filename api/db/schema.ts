@@ -29,4 +29,5 @@ export const screenshotsTable = sqliteTable("screenshots_table", {
   resourceId: integer("resource_id").notNull().references(() => resourcesTable.id),
   image: text(),
   hasImage: integer().default(0),
+  methodUsed: text({ enum: ["openGraph", "puppeteer"] }).default("openGraph")
 })
