@@ -2,6 +2,7 @@ import addToScreenshotStack from "./screenshot";
 import { db } from "../db";
 import { resourcesTable, screenshotsTable } from "../db/schema";
 import { eq } from "drizzle-orm";
+import getOGinfo from "./getOGInfo";
 
 interface FailedShap {
   screenshots_table: {
@@ -31,5 +32,23 @@ export default async function handleFaildScreenshots() {
   if (!failed || !failed?.resources_table || failed?.screenshots_table) return
   const url = failed.resources_table?.resourceUrl
   if (!url) return
+  const { imageData, width, height } = await getOGinfo(url)
+  if (imageData) {
+    try {
+      await db.update(screenshotsTable)
+        .set({
+          hasImage: 1,
+          image: imageData,
+          width,
+          height
+        })
+        .where(eq(screenshotsTable.id, failed.screenshots_table.id))
+        .execute()
+      return
+    } catch (e) {
+      addToScreenshotStack(url, failed.screenshots_table.resourceId, 0)
+      console.error(e)
+    }
+  }
   addToScreenshotStack(url, failed.screenshots_table.resourceId, 0)
 }
