@@ -10,11 +10,11 @@ jobs:
     steps:
      # ssh in to the server
       - name: SSH to the server
-        uses: appleboy/ssh-action@master
+        uses: appleboy/scp-action@master
         with:
-          host: ${{ secrets.HOST }}
+          host: "${{ secrets.HOST }}"
           username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.KEY }}
+          key: ${{ secrets.SSH_KEY }}
           script: |
             cd ~/linkIng/api
               docker exec -it linking-api-1 bash -c "bun utils/runScripts.ts 1"
