@@ -175,6 +175,7 @@ export async function apiResourcesIdDelete(request: AuthenticatedRequest): Promi
   }
 
   await db.delete(resourcesTable).where(and(eq(resourcesTable.id, id), eq(resourcesTable.owner, username)));
+  await db.delete(screenshotsTable).where(eq(screenshotsTable.resourceId, id));
   const res = Response.json({ deleted: true });
   res.headers.set("Access-Control-Allow-Origin", config.FRONTEND_URL);
   return res

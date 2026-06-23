@@ -37,7 +37,7 @@ export default async function handleFaildScreenshots() {
     try {
       await db.update(screenshotsTable)
         .set({
-          hasImage: 1,
+          hasImage: 0,
           image: imageData,
           width,
           height
