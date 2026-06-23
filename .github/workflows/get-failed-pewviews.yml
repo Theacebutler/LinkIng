@@ -1,0 +1,20 @@
+name: Get Failed Previews
+
+on:
+  workflow_dispatch:
+
+jobs:
+  setup-bun:
+    name: Setup Bun, install dependencies and run retry script
+    runs-on: ubuntu-latest
+    steps:
+     # ssh in to the server
+      - name: SSH to the server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          script: |
+            cd ~/linkIng/api
+              docker exec -it linking-api-1 bash -c "bun utils/runScripts.ts 1"
