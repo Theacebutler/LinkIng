@@ -10,7 +10,7 @@ jobs:
     steps:
      # ssh in to the server
       - name: SSH to the server
-        uses: appleboy/scp-action@v1
+        uses: appleboy/ssh-action@v1
         with:
           host: "${{ secrets.HOST }}"
           username: ${{ secrets.USERNAME }}
