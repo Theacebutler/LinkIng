@@ -20,7 +20,7 @@ export const resourcesTable = sqliteTable("resources_table", {
   createdAt: text(),
   updatedAt: text(),
   tags: text('tags', { mode: 'json' }).$type<string[]>().default([]),
-  hasImage: integer().notNull().default(0),
+  hasImage: integer().notNull().default(1),
 })
 
 // screenshots table
@@ -28,7 +28,7 @@ export const screenshotsTable = sqliteTable("screenshots_table", {
   id: integer().primaryKey({ autoIncrement: true }),
   resourceId: integer("resource_id").notNull().references(() => resourcesTable.id),
   image: text(),
-  hasImage: integer().default(0),
+  hasImage: integer().default(1),
   height: integer(),
   width: integer(),
   methodUsed: text({ enum: ["openGraph", "puppeteer"] }).default("openGraph")

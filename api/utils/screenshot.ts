@@ -101,7 +101,7 @@ async function screenshot(url: string, resourceId: number): Promise<void> {
   await db.insert(screenshotsTable).values({
     resourceId,
     image,
-    hasImage: image ? 1 : 0,
+    hasImage: image ? 0 : 1,
     methodUsed: "puppeteer"
   })
 } 
