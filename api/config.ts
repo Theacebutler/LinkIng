@@ -15,6 +15,13 @@ export const config = {
   GOOGLE_CLIENT_ID: Bun.env.GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET: Bun.env.GOOGLE_CLIENT_SECRET,
 }
+
+Object.entries(config).map((kv) => {
+  if (kv[1] === undefined) {
+    console.warn(`config.${kv[0]} is not set`)
+  }
+})
+
 if (!config.JWT_SECRET || config.JWT_SECRET.length < 32) {
   throw new Error("JWT_SECRET must be set and at least 32 characters");
 }
