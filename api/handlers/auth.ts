@@ -216,7 +216,6 @@ export async function getRedirectUrl(): Promise<Response> {
     state,
     scopes: ["openid", "profile"],
   })
-  // return Response.json({ url: url.toString() }, 200)
   return Response.redirect(url.toString() + "&prompt=select_account")
 }
 
@@ -224,7 +223,6 @@ export async function googleOAuthCallback(req: Request): Promise<Response> {
   const url = new URL(req.url)
   const code = url.searchParams.get("code")
   const state = url.searchParams.get("state")
-  console.log("code", code, "state", state)
   if (!code) {
     return Response.redirect(url.toString() + "&prompt=select_account")
   }
@@ -241,7 +239,7 @@ export async function googleOAuthCallback(req: Request): Promise<Response> {
   })
     .then(res => res.json())
     .catch(err => {
-      console.log("error", err)
+      console.log("error fetching user info", err)
       return { error: "Google OAuth callback failed", status: 500 }
     })
 
