@@ -3,7 +3,7 @@ import { apiResourceScreenshotGet, apiResourceScreenshotGetImage } from "./handl
 
 import { addResource, deleteResource, getResources, updateResource } from "./handlers/protected";
 import { config } from "./config";
-import { login, logout, refresh, register } from "./handlers/auth";
+import { googleOAuthCallback, getRedirectUrl as googleOAuthLogin, login, logout, refresh, register } from "./handlers/auth";
 import { getUserKey } from "./handlers/protected";
 
 const PORT = config.PORT
@@ -48,6 +48,19 @@ const server = Bun.serve({
       GET: async (req): Promise<Response> => {
         return await getUserKey(req)
       },
+    },
+
+    "/api/auth/google/login": {
+      GET: async (_req) => {
+        console.log("CALLED: /api/auth/google/login");
+        return await googleOAuthLogin()
+      }
+    },
+    "/api/auth/google/callback": {
+      GET: async (req) => {
+        console.log("CALLED: /api/auth/google/callback");
+        return googleOAuthCallback(req)
+      }
     },
 
     "/api/resources": {

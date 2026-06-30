@@ -3,6 +3,7 @@ import { config } from "../config";
 import { createAccessToken, createRefreshToken } from "../utils/jwt";
 import { db } from "../db";
 import { eq } from "drizzle-orm";
+import { generateState, OAuth2Client } from "oslo/oauth2"
 import { getStoredToken } from "../utils/tokenStore";
 import { json } from "../utils/jsonResponseUtil";
 import { revokeToken, revokeTokenFamily } from "../utils/tokenStore";
@@ -11,7 +12,7 @@ import { usersTable } from "../db/schema";
 import { validateCredentials } from "../utils/validateCred";
 import { verifyRefreshToken } from "../utils/jwt";
 import { withAuth, type AuthenticatedRequest } from "../utils/token_gen";
-import type { User } from "../shared/types";
+import type { GoogleUser, User } from "../shared/types";
 
 // this function should take in the register request and return a response with the userId
 export async function register(request: Request): Promise<Response> {
@@ -201,3 +202,48 @@ export async function login(request: Request): Promise<Response> {
   }
 }
 
+const state = generateState()
+const googleClient = new OAuth2Client(
+  config.GOOGLE_CLIENT_ID!,
+  "https://accounts.google.com/o/oauth2/v2/auth",
+  "https://oauth2.googleapis.com/token",
+  {
+    redirectURI: "http://localhost:3005/api/auth/google/callback",
+  }
+)
+export async function getRedirectUrl(): Promise<Response> {
+  const url = await googleClient.createAuthorizationURL({
+    state,
+    scopes: ["openid", "profile"],
+  })
+  // return Response.json({ url: url.toString() }, 200)
+  return Response.redirect(url.toString() + "&prompt=select_account")
+}
+
+export async function googleOAuthCallback(req: Request): Promise<Response> {
+  const url = new URL(req.url)
+  const code = url.searchParams.get("code")
+  const state = url.searchParams.get("state")
+  console.log("code", code, "state", state)
+  if (!code) {
+    return Response.redirect(url.toString() + "&prompt=select_account")
+  }
+  if (state !== state) {
+    return Response.redirect(url.toString() + "&prompt=select_account")
+  }
+  const token = await googleClient.validateAuthorizationCode(code, {
+    credentials: config.GOOGLE_CLIENT_SECRET,
+    authenticateWith: "request_body",
+  })
+
+  const res = fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
+    headers: { Authorization: `Bearer ${token.access_token}` },
+  })
+    .then(res => res.json())
+    .catch(err => {
+      console.log("error", err)
+      return { error: "Google OAuth callback failed", status: 500 }
+    })
+  const user = await res as GoogleUser
+  return Response.json({ message: "Google OAuth callback", user }, 200)
+}
