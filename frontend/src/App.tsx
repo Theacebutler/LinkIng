@@ -15,7 +15,7 @@ import { useResources } from './hooks/useResources';
 
 
 function App() {
-  const { isLogin } = useAuths();
+  const { isLogin, DEV_LOGOUT } = useAuths();
   const { resources, loading, addResource, updateResource, deleteResource } = useResources();
   const { toast, setToast } = useToast();
   const [domainFilter, setDomainFilter] = useState<string | null>(null);
@@ -46,6 +46,12 @@ function App() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header isPopupOpen={isPopupOpen} setIsPopupOpen={setIsPopupOpen} />
+      {/* button to logout and redirect to login page */}
+      <button
+        className="fixed top-0 right-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in"
+        onClick={() => { DEV_LOGOUT() }}>
+        DEV: Logout
+      </button>
       <div className="block md:hidden">
         <InDevAlert />
       </div>
