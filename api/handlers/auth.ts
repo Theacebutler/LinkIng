@@ -233,8 +233,7 @@ export async function googleOAuthCallback(req: Request): Promise<Response> {
     credentials: config.GOOGLE_CLIENT_SECRET,
     authenticateWith: "request_body",
   })
-
-  const res = fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
+  const res = await fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
     headers: { Authorization: `Bearer ${token.access_token}` },
   })
     .then(res => res.json())
