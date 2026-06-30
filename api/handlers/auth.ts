@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import { config } from "../config";
 import { createAccessToken, createRefreshToken } from "../utils/jwt";
 import { db } from "../db";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { generateState, OAuth2Client } from "oslo/oauth2"
 import { getStoredToken } from "../utils/tokenStore";
 import { json } from "../utils/jsonResponseUtil";
@@ -244,6 +244,50 @@ export async function googleOAuthCallback(req: Request): Promise<Response> {
       console.log("error", err)
       return { error: "Google OAuth callback failed", status: 500 }
     })
-  const user = await res as GoogleUser
-  return Response.json({ message: "Google OAuth callback", user }, 200)
+
+  // work with the user info from google
+  const { name, id } = res as GoogleUser
+  const [existingUser]: { username: string, id: number }[] = await db
+    .select({ username: usersTable.username, id: usersTable.id })
+    .from(usersTable)
+    .where(and(
+      eq(usersTable.username, name),
+      eq(usersTable.id, id),
+    ))
+    .limit(1)
+  if (!existingUser) {
+    // create new user from google user
+    const password = crypto.randomUUID()
+    const newUser: User = {
+      username: name,
+      password,
+      id,
+    }
+    db.insert(usersTable)
+      .values(newUser)
+  }
+  try {
+    // Generate token pair
+    const accessToken = await createAccessToken(name);
+    const { token: refreshToken, tokenID } = await createRefreshToken(
+      name
+    );
+
+    // Create family ID for token rotation tracking
+    const familyId = crypto.randomUUID();
+
+    // Store refresh token metadata
+    const deviceInfo = req.headers.get("User-Agent") || "Unknown"
+    storeRefreshToken(tokenID, id.toString() as string, familyId, deviceInfo);
+
+    return Response.json({
+      accessToken,
+      refreshToken,
+      tokenType: "Bearer",
+      expiresIn: 900, // 15 minutes in seconds
+    });
+  } catch (error) {
+    // TODO: handle error in createing access token
+    return Response.json({ error: "Google OAuth callback failed to create token pair", status: 500 })
+  }
 }
