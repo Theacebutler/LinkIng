@@ -244,13 +244,15 @@ export async function googleOAuthCallback(req: Request): Promise<Response> {
 
   // work with the user info from google
   const { name, id } = res as GoogleUser
-  const [existingUser]: { username: string, id: number }[] = await db
-    .select({ username: usersTable.username, id: usersTable.id })
+  const [existingUser]: { username: string }[] = await db
+    .select({ username: usersTable.username })
     .from(usersTable)
-    .where(and(
+    .where(
+      // and(
       eq(usersTable.username, name),
-      eq(usersTable.id, id),
-    ))
+      // eq(usersTable.id, Number(id)),
+      // )
+    )
     .limit(1)
   if (!existingUser) {
     // create new user from google user
@@ -258,7 +260,7 @@ export async function googleOAuthCallback(req: Request): Promise<Response> {
     const newUser: User = {
       username: name,
       password,
-      id,
+      // id: Number(id),
     }
     db.insert(usersTable)
       .values(newUser)

@@ -7,7 +7,7 @@ type User = InferInsertModel<typeof usersTable>;
 type Screenshot = InferInsertModel<typeof screenshotsTable>;
 
 type GoogleUser = {
-  id: number;
+  id: string;
   name: string;
   given_name: string;
   family_name: string;
