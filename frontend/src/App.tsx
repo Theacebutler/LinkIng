@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Header } from './components/Header';
 import { AddResourceForm } from './components/AddResourceForm';
 import { ResourceList } from './components/ResourceList';
@@ -12,10 +12,11 @@ import InDevAlert from './components/inDevAlert';
 import { useToast } from './hooks/useToast';
 import { useAuths } from './hooks/useAuths';
 import { useResources } from './hooks/useResources';
+import { handleGoogleCallback } from "./hooks/useRequests";
 
 
 function App() {
-  const { isLogin, DEV_LOGOUT } = useAuths();
+  const { isLogin, DEV_LOGOUT, setIsLogin } = useAuths();
   const { resources, loading, addResource, updateResource, deleteResource } = useResources();
   const { toast, setToast } = useToast();
   const [domainFilter, setDomainFilter] = useState<string | null>(null);
@@ -23,6 +24,12 @@ function App() {
   const [showKeyAndOwner, setShowKeyAndOwner] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
+  useEffect(() => {
+    handleGoogleCallback()
+      .then(ok => {
+        if (ok) setIsLogin(true)
+      })
+  })
 
   const handleAddResource = async (data: { title: string; resourceUrl: string; sourceUrl: string; tags: string[] }) => {
     return await addResource(data);

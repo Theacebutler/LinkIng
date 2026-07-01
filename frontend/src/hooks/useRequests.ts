@@ -79,6 +79,43 @@ export async function GoogleLogin() {
   window.location.href = redirectUrl
 }
 
+export async function handleGoogleCallback(): Promise<boolean> {
+  const params = new URLSearchParams(window.location.search)
+  const code = params.get('code')
+  const state = params.get('state')
+  if (!code || !state) return false
+
+  const res = await fetch(`${config.VITE_API_URL}/auth/google/callback?code=${code}&state=${state}`)
+  console.log("res", res)
+  if (!res.ok) {
+    console.error("Google OAuth callback failed", await res.text())
+    return false
+  }
+
+  const data = await res.json() as {
+    accessToken: string
+    refreshToken: string
+    tokenType: string
+    expiresIn: number
+  }
+  console.log("data", data)
+  Cookies.set('accessToken', data.accessToken, {
+    sameSite: "lax",
+    path: COOKIE_CONFIG.path,
+    expires: data.expiresIn,
+    secure: COOKIE_CONFIG.secure
+  })
+  Cookies.set('refreshToken', data.refreshToken, {
+    sameSite: "lax",
+    path: COOKIE_CONFIG.path,
+    secure: COOKIE_CONFIG.secure
+  })
+
+  window.history.replaceState({}, '', '/')
+  return true
+}
+
+
 export async function logout(username: string, password: string): Promise<undefined> {
   await fetch(`${config.VITE_API_URL}/users/logout`, {
     method: "POST",
