@@ -262,7 +262,7 @@ export async function googleOAuthCallback(req: Request): Promise<Response> {
       password,
       // id: Number(id),
     }
-    db.insert(usersTable)
+    await db.insert(usersTable)
       .values(newUser)
   }
   try {
