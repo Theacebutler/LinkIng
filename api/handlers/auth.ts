@@ -216,7 +216,7 @@ export async function getRedirectUrl(): Promise<Response> {
     state,
     scopes: ["openid", "profile"],
   })
-  return Response.redirect(url.toString() + "&prompt=select_account")
+  return Response.json({ redirectUrl: url.toString() })
 }
 
 export async function googleOAuthCallback(req: Request): Promise<Response> {
