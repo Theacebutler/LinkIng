@@ -72,6 +72,12 @@ export async function login(username: string, password: string) {
   }
 }
 
+export async function GoogleLogin() {
+  const res = await fetch(`${config.VITE_API_URL}/auth/google/login`)
+  if (!res.ok) throw new Error("Failed to get Google login URL")
+  const { redirectUrl } = await res.json() as { redirectUrl: string }
+  window.location.href = redirectUrl
+}
 
 export async function logout(username: string, password: string): Promise<undefined> {
   await fetch(`${config.VITE_API_URL}/users/logout`, {
