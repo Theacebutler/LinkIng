@@ -208,7 +208,7 @@ const googleClient = new OAuth2Client(
   "https://accounts.google.com/o/oauth2/v2/auth",
   "https://oauth2.googleapis.com/token",
   {
-    redirectURI: "http://localhost:3005/api/auth/google/callback",
+    redirectURI: "http://localhost:5173/"
   }
 )
 export async function getRedirectUrl(): Promise<Response> {
