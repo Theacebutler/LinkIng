@@ -248,10 +248,10 @@ export async function googleOAuthCallback(req: Request): Promise<Response> {
     .select({ username: usersTable.username })
     .from(usersTable)
     .where(
-      // and(
-      eq(usersTable.username, name),
-      // eq(usersTable.id, Number(id)),
-      // )
+      and(
+        eq(usersTable.username, name),
+        eq(usersTable.googleOauthId, id)
+      )
     )
     .limit(1)
   if (!existingUser) {
@@ -260,7 +260,7 @@ export async function googleOAuthCallback(req: Request): Promise<Response> {
     const newUser: User = {
       username: name,
       password,
-      // id: Number(id),
+      googleOauthId: id
     }
     await db.insert(usersTable)
       .values(newUser)
