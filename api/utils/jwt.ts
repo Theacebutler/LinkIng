@@ -35,9 +35,9 @@ export async function createAccessToken(username: string): Promise<string> {
 
   return token
 }
-export async function createRefreshToken(username: string): Promise<{ token: string, tokenID: string }> {
+export async function createRefreshToken(username: string): Promise<{ refreshToken: string, tokenID: string }> {
   const tokenID = ranbomTokenID();
-  const token = await new SignJWT({
+  const refreshToken = await new SignJWT({
     sub: username,
     type: "refresh",
     jti: tokenID,
@@ -49,7 +49,7 @@ export async function createRefreshToken(username: string): Promise<{ token: str
     .setExpirationTime(config.REFRESH_EXP)
     .sign(refresh_secret)
 
-  return { token, tokenID }
+  return { refreshToken, tokenID }
 }
 
 

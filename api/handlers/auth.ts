@@ -117,7 +117,7 @@ export async function refresh(request: Request): Promise<Response> {
     const newAccessToken = await createAccessToken(
       payload.username as string
     );
-    const { token: newRefreshToken, tokenID: newTokenId } =
+    const { refreshToken: newRefreshToken, tokenID: newTokenId } =
       await createRefreshToken(
         payload.username as string
       );
@@ -180,7 +180,7 @@ export async function login(request: Request): Promise<Response> {
 
     // Generate token pair
     const accessToken = await createAccessToken(user.username);
-    const { token: refreshToken, tokenID } = await createRefreshToken(
+    const { refreshToken, tokenID } = await createRefreshToken(
       user.username
     );
 
@@ -268,8 +268,7 @@ export async function googleOAuthCallback(req: Request): Promise<Response> {
   try {
     // Generate token pair
     const accessToken = await createAccessToken(name);
-    const { token: refreshToken, tokenID } = await createRefreshToken(
-      name
+    const { refreshToken, tokenID } = await createRefreshToken(name
     );
 
     // Create family ID for token rotation tracking
