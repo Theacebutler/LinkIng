@@ -61,12 +61,12 @@ export default function LoginOrReg() {
     }
   };
   const HandleGoogleLogin = async () => {
-    // setIsSubmitting(true)
+    setIsSubmitting(true)
     try {
       await GoogleLogin()
+      setIsSubmitting(false)
     } catch (err) {
       console.log(err);
-
       setErrors({ global: "Error logging in with Google" })
     }
   }
