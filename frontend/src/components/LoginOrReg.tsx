@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { register, GoogleLogin } from '../hooks/useRequests';
+import { register, GoogleLogin } from '../utils/authHelpers';
 import { useAuths } from '../hooks/useAuths';
 
 const Logo = () => (

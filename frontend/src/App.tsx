@@ -12,7 +12,7 @@ import InDevAlert from './components/inDevAlert';
 import { useToast } from './hooks/useToast';
 import { useAuths } from './hooks/useAuths';
 import { useResources } from './hooks/useResources';
-import { handleGoogleCallback } from "./hooks/useRequests";
+import { handleGoogleCallback } from "./utils/authHelpers";
 
 
 function App() {
