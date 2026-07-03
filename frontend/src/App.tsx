@@ -5,9 +5,9 @@ import { ResourceList } from './components/ResourceList';
 import LoginOrReg from './components/LoginOrReg';
 import Footer from './components/Footer';
 import { Toast } from './components/Toast';
+import Announcement from './components/Annououncement';
 import { KeyAndOwner } from './components/KeyAndOwner';
 import Aside from './components/Aside';
-import InDevAlert from './components/inDevAlert';
 
 import { useToast } from './hooks/useToast';
 import { useAuths } from './hooks/useAuths';
@@ -66,7 +66,7 @@ function App() {
         DEV: Logout
       </button>
       <div className="block md:hidden">
-        <InDevAlert />
+        <Announcement />
       </div>
       <main className="flex-1 md:px-12 lg:px-20">
         <div className="max-w-full mx-auto px-4 md:px-6 py-5 md:py-6">
