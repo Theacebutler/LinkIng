@@ -208,7 +208,7 @@ const googleClient = new OAuth2Client(
   "https://accounts.google.com/o/oauth2/v2/auth",
   "https://oauth2.googleapis.com/token",
   {
-    redirectURI: "http://localhost:5173/"
+    redirectURI: `${config.FRONTEND_URL}/`
   }
 )
 export async function getRedirectUrl(): Promise<Response> {
