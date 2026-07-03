@@ -98,7 +98,6 @@ export async function handleGoogleCallback(): Promise<boolean> {
     tokenType: string
     expiresIn: number
   }
-  console.log("data", data)
   Cookies.set('accessToken', data.accessToken, {
     sameSite: "lax",
     path: COOKIE_CONFIG.path,
@@ -110,8 +109,8 @@ export async function handleGoogleCallback(): Promise<boolean> {
     path: COOKIE_CONFIG.path,
     secure: COOKIE_CONFIG.secure
   })
-
-  window.history.replaceState({}, '', '/')
+  // FIX: this is a hack to refresh the resources
+  window.location.href = '/'
   return true
 }
 
