@@ -17,7 +17,7 @@ import { handleGoogleCallback } from "./hooks/useRequests";
 
 function App() {
   const { isLogin, DEV_LOGOUT, setIsLogin } = useAuths();
-  const { resources, loading, addResource, updateResource, deleteResource } = useResources();
+  const { refetch, resources, loading, addResource, updateResource, deleteResource } = useResources();
   const { toast, setToast } = useToast();
   const [domainFilter, setDomainFilter] = useState<string | null>(null);
   const [tagFilter, setTagFilter] = useState<string | null>(null)
@@ -26,8 +26,11 @@ function App() {
 
   useEffect(() => {
     handleGoogleCallback()
-      .then(ok => {
-        if (ok) setIsLogin(true)
+      .then(async ok => {
+        if (ok) {
+          refetch()
+          setIsLogin(true)
+        }
       })
       .catch(err => {
         console.error("Error in handleGoogleCallback", err)
