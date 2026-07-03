@@ -29,6 +29,9 @@ function App() {
       .then(ok => {
         if (ok) setIsLogin(true)
       })
+      .catch(err => {
+        console.error("Error in handleGoogleCallback", err)
+      })
   })
 
   const handleAddResource = async (data: { title: string; resourceUrl: string; sourceUrl: string; tags: string[] }) => {
