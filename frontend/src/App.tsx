@@ -1,28 +1,41 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Header } from './components/Header';
 import { AddResourceForm } from './components/AddResourceForm';
 import { ResourceList } from './components/ResourceList';
 import LoginOrReg from './components/LoginOrReg';
 import Footer from './components/Footer';
 import { Toast } from './components/Toast';
+import Announcement from './components/Annououncement';
 import { KeyAndOwner } from './components/KeyAndOwner';
 import Aside from './components/Aside';
-import InDevAlert from './components/inDevAlert';
 
 import { useToast } from './hooks/useToast';
 import { useAuths } from './hooks/useAuths';
 import { useResources } from './hooks/useResources';
+import { handleGoogleCallback } from "./utils/authHelpers";
 
 
 function App() {
-  const { isLogin } = useAuths();
-  const { resources, loading, addResource, updateResource, deleteResource } = useResources();
+  const { isLogin, DEV_LOGOUT, setIsLogin } = useAuths();
+  const { refetch, resources, loading, addResource, updateResource, deleteResource } = useResources();
   const { toast, setToast } = useToast();
   const [domainFilter, setDomainFilter] = useState<string | null>(null);
   const [tagFilter, setTagFilter] = useState<string | null>(null)
   const [showKeyAndOwner, setShowKeyAndOwner] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
+  useEffect(() => {
+    handleGoogleCallback()
+      .then(async ok => {
+        if (ok) {
+          await refetch()
+          setIsLogin(true)
+        }
+      })
+      .catch(err => {
+        console.error("Error in handleGoogleCallback", err)
+      })
+  })
 
   const handleAddResource = async (data: { title: string; resourceUrl: string; sourceUrl: string; tags: string[] }) => {
     return await addResource(data);
@@ -46,8 +59,14 @@ function App() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header isPopupOpen={isPopupOpen} setIsPopupOpen={setIsPopupOpen} />
+      {/* button to logout and redirect to login page */}
+      <button
+        className="fixed top-0 right-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in"
+        onClick={() => { DEV_LOGOUT() }}>
+        DEV: Logout
+      </button>
       <div className="block md:hidden">
-        <InDevAlert />
+        <Announcement />
       </div>
       <main className="flex-1 md:px-12 lg:px-20">
         <div className="max-w-full mx-auto px-4 md:px-6 py-5 md:py-6">
