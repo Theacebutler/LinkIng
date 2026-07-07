@@ -1,3 +1,5 @@
+import { configDotenv } from "dotenv";
+configDotenv({ path: [".env", "../.env"] });
 
 export const config = {
   PORT: process.env.PORT,
@@ -12,7 +14,16 @@ export const config = {
   JWT_AUDIENCE: "gatherlink_frontend",
   SALT_ROUNDS: 10,
   MAX_SCREENSHOT_TRIES: 3,
+  GOOGLE_CLIENT_ID: Bun.env.GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET: Bun.env.GOOGLE_CLIENT_SECRET,
 }
+
+Object.entries(config).map((kv) => {
+  if (kv[1] === undefined) {
+    console.warn(`config.${kv[0]} is not set`)
+  }
+})
+
 if (!config.JWT_SECRET || config.JWT_SECRET.length < 32) {
   throw new Error("JWT_SECRET must be set and at least 32 characters");
 }
