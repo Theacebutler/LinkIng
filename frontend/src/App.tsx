@@ -28,7 +28,7 @@ function App() {
     handleGoogleCallback()
       .then(async ok => {
         if (ok) {
-          refetch()
+          await refetch()
           setIsLogin(true)
         }
       })
