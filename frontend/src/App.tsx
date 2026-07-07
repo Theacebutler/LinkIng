@@ -16,7 +16,7 @@ import { handleGoogleCallback } from "./utils/authHelpers";
 
 
 function App() {
-  const { isLogin, setIsLogin } = useAuths();
+  const { isLogin, DEV_LOGOUT, setIsLogin } = useAuths();
   const { refetch, resources, loading, addResource, updateResource, deleteResource } = useResources();
   const { toast, setToast } = useToast();
   const [domainFilter, setDomainFilter] = useState<string | null>(null);
@@ -60,11 +60,11 @@ function App() {
     <div className="min-h-screen flex flex-col">
       <Header isPopupOpen={isPopupOpen} setIsPopupOpen={setIsPopupOpen} />
       {/* button to logout and redirect to login page */}
-      {/* <button */}
-      {/*   className="fixed top-0 right-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in" */}
-      {/*   onClick={() => { DEV_LOGOUT() }}> */}
-      {/*   DEV: Logout */}
-      {/* </button> */}
+      <button
+        className="fixed top-0 right-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in"
+        onClick={() => { DEV_LOGOUT() }}>
+        DEV: Logout
+      </button>
       <div className="block md:hidden">
         <Announcement />
       </div>
