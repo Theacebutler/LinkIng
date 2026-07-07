@@ -13,6 +13,7 @@ import { validateCredentials } from "../utils/validateCred";
 import { verifyRefreshToken } from "../utils/jwt";
 import { withAuth, type AuthenticatedRequest } from "../utils/token_gen";
 import type { GoogleUser, User } from "../shared/types";
+import { parseCookies } from "../utils/paresCockies";
 
 // this function should take in the register request and return a response with the userId
 export async function register(request: Request): Promise<Response> {
@@ -202,7 +203,6 @@ export async function login(request: Request): Promise<Response> {
   }
 }
 
-const state = generateState()
 const googleClient = new OAuth2Client(
   config.GOOGLE_CLIENT_ID!,
   "https://accounts.google.com/o/oauth2/v2/auth",
@@ -212,22 +212,27 @@ const googleClient = new OAuth2Client(
   }
 )
 export async function getRedirectUrl(): Promise<Response> {
+  const state = generateState()
   const url = await googleClient.createAuthorizationURL({
     state,
     scopes: ["openid", "profile"],
   })
-  return Response.json({ redirectUrl: url.toString() })
+  return Response.json({ redirectUrl: url.toString() }, { headers: { "Set-Cookie": `oauth_state=${state}; HttpOnly; SameSite=Lax; Path=/; Max-Age=300` } })
 }
 
 export async function googleOAuthCallback(req: Request): Promise<Response> {
   const url = new URL(req.url)
   const code = url.searchParams.get("code")
   const state = url.searchParams.get("state")
+  const cookieState = parseCookies("oauth_state", req)
   if (!code) {
-    return Response.redirect(url.toString() + "&prompt=select_account")
+    return Response.json({ error: "Google OAuth callback failed, code not found" }, { status: 400 })
   }
-  if (state !== state) {
-    return Response.redirect(url.toString() + "&prompt=select_account")
+  if (!state || !cookieState) {
+    return Response.json({ error: "Google OAuth callback failed, State cookie not found" }, { status: 400 })
+  }
+  if (state !== cookieState) {
+    return Response.json({ error: "Google OAuth callback failed, state mismatch" }, { status: 400 })
   }
   const token = await googleClient.validateAuthorizationCode(code, {
     credentials: config.GOOGLE_CLIENT_SECRET,
@@ -283,7 +288,8 @@ export async function googleOAuthCallback(req: Request): Promise<Response> {
       refreshToken,
       tokenType: "Bearer",
       expiresIn: 900, // 15 minutes in seconds
-    });
+      // Clear the state cookie after successful login
+    }, { headers: { "Set-Cookie": `oauth_state=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0` } });
   } catch (error) {
     // TODO: handle error in createing access token
     return Response.json({ error: "Google OAuth callback failed to create token pair", status: 500 })
