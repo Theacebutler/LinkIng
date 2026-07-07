@@ -84,6 +84,8 @@ jobs:
           LOWERCASE_GITHUB_REPOSITORY_OWNER: ${{ env.LOWERCASE_GITHUB_REPOSITORY_OWNER }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           REFRESH_SECRET: ${{ secrets.REFRESH_SECRET }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
         with:
           host: "${{ secrets.HOST }}"
           username: ${{ secrets.USERNAME }}
@@ -94,6 +96,8 @@ jobs:
             export LOWERCASE_GITHUB_REPOSITORY_OWNER=${{ env.LOWERCASE_GITHUB_REPOSITORY_OWNER }}
             export JWT_SECRET=${{ secrets.JWT_SECRET }}
             export REFRESH_SECRET=${{ secrets.REFRESH_SECRET }}
+            export GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
+            export GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
             docker compose  -f docker-compose.prod.yml pull
             docker compose  -f docker-compose.prod.yml up -d --remove-orphans
             docker image prune -f
