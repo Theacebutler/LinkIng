@@ -16,6 +16,8 @@ export const config = {
   JWT_AUDIENCE: "gatherlink_frontend",
   SALT_ROUNDS: 10,
   MAX_SCREENSHOT_TRIES: 3,
+  GOOGLE_CLIENT_ID: Bun.env.GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET: Bun.env.GOOGLE_CLIENT_SECRET,
 }
 
 Object.entries(config).map((kv) => {
