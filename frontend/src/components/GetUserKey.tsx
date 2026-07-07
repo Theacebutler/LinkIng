@@ -1,5 +1,5 @@
 import { useKeyAndOwner } from '../hooks/useKeyAndOwner';
-import { getUserKey } from '../utils/authHelpers';
+import { getUserKey } from '../hooks/useRequests';
 import { useToast } from '../hooks/useToast';
 
 interface GetUserKeyProps {

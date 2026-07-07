@@ -155,20 +155,6 @@
       "when": 1782175438968,
       "tag": "0021_neat_power_pack",
       "breakpoints": true
-    },
-    {
-      "idx": 22,
-      "version": "6",
-      "when": 1783024802979,
-      "tag": "0022_cold_puff_adder",
-      "breakpoints": true
-    },
-    {
-      "idx": 23,
-      "version": "6",
-      "when": 1783024901221,
-      "tag": "0023_thick_black_cat",
-      "breakpoints": true
     }
   ]
 }
