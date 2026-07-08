@@ -79,11 +79,16 @@ export async function GoogleLogin() {
   window.location.href = redirectUrl
 }
 
+let googleCallbackHandled = false
+
 export async function handleGoogleCallback(): Promise<boolean> {
+  if (googleCallbackHandled) return false
   const params = new URLSearchParams(window.location.search)
   const code = params.get('code')
   const state = params.get('state')
   if (!code || !state) return false
+  // Remove code/state from URL immediately so re-renders don't re-trigger
+  window.history.replaceState({}, document.title, window.location.pathname)
 
   const res = await fetch(`${config.VITE_API_URL}/auth/google/callback?code=${code}&state=${state}`)
   console.log("res", res)
@@ -109,6 +114,7 @@ export async function handleGoogleCallback(): Promise<boolean> {
     path: COOKIE_CONFIG.path,
     secure: COOKIE_CONFIG.secure
   })
+  googleCallbackHandled = true
   // FIX: this is a hack to refresh the resources
   window.location.href = '/'
   return true
