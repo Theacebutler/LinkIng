@@ -37,21 +37,21 @@ describe("JWT Token Operations", () => {
   });
 
   test("rejects refresh token as access token", async () => {
-    const { token } = await createRefreshToken(testUserId,);
+    const { refreshToken } = await createRefreshToken(testUserId,);
 
-    expect(verifyAccessToken(token)).rejects.toThrow();
+    expect(verifyAccessToken(refreshToken)).rejects.toThrow();
   });
 
   test("creates valid refresh token", async () => {
-    const { token, tokenID } = await createRefreshToken(testUserId);
+    const { refreshToken, tokenID } = await createRefreshToken(testUserId);
 
-    expect(token).toBeDefined();
+    expect(refreshToken).toBeDefined();
     expect(tokenID).toBeDefined();
   });
 
   test("verifies valid refresh token", async () => {
-    const { token } = await createRefreshToken(testUserId,);
-    const payload = await verifyRefreshToken(token);
+    const { refreshToken } = await createRefreshToken(testUserId,);
+    const payload = await verifyRefreshToken(refreshToken);
 
     expect(payload.sub).toBe(testUserId);
     expect(payload.type).toBe("refresh");
