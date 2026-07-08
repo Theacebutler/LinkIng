@@ -1,4 +1,4 @@
-import Announcment from "./Annououncement";
+import InDevAlert from "./inDevAlert";
 const DetailsIcon = () => (
   <svg
     viewBox="0 0 24 24"
@@ -49,7 +49,7 @@ export function Header({ isPopupOpen: isOpen, setIsPopupOpen: setIsOpen }: { isP
           <Wordmark />
         </div>
         <div className="hidden md:block flex-1 min-w-0">
-          <Announcment />
+          <InDevAlert />
         </div>
         <button
           onClick={() => setIsOpen(!isOpen)}

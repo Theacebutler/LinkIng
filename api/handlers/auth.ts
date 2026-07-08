@@ -2,8 +2,7 @@ import bcrypt from "bcrypt";
 import { config } from "../config";
 import { createAccessToken, createRefreshToken } from "../utils/jwt";
 import { db } from "../db";
-import { and, eq } from "drizzle-orm";
-import { generateState, OAuth2Client } from "oslo/oauth2"
+import { eq } from "drizzle-orm";
 import { getStoredToken } from "../utils/tokenStore";
 import { json } from "../utils/jsonResponseUtil";
 import { revokeToken, revokeTokenFamily } from "../utils/tokenStore";
@@ -12,8 +11,7 @@ import { usersTable } from "../db/schema";
 import { validateCredentials } from "../utils/validateCred";
 import { verifyRefreshToken } from "../utils/jwt";
 import { withAuth, type AuthenticatedRequest } from "../utils/token_gen";
-import type { GoogleUser, User } from "../shared/types";
-import { parseCookies } from "../utils/paresCockies";
+import type { User } from "../shared/types";
 
 // this function should take in the register request and return a response with the userId
 export async function register(request: Request): Promise<Response> {
@@ -118,7 +116,7 @@ export async function refresh(request: Request): Promise<Response> {
     const newAccessToken = await createAccessToken(
       payload.username as string
     );
-    const { refreshToken: newRefreshToken, tokenID: newTokenId } =
+    const { token: newRefreshToken, tokenID: newTokenId } =
       await createRefreshToken(
         payload.username as string
       );
@@ -181,7 +179,7 @@ export async function login(request: Request): Promise<Response> {
 
     // Generate token pair
     const accessToken = await createAccessToken(user.username);
-    const { refreshToken, tokenID } = await createRefreshToken(
+    const { token: refreshToken, tokenID } = await createRefreshToken(
       user.username
     );
 
@@ -203,95 +201,3 @@ export async function login(request: Request): Promise<Response> {
   }
 }
 
-const googleClient = new OAuth2Client(
-  config.GOOGLE_CLIENT_ID!,
-  "https://accounts.google.com/o/oauth2/v2/auth",
-  "https://oauth2.googleapis.com/token",
-  {
-    redirectURI: `${config.FRONTEND_URL}/`
-  }
-)
-export async function getRedirectUrl(): Promise<Response> {
-  const state = generateState()
-  const url = await googleClient.createAuthorizationURL({
-    state,
-    scopes: ["openid", "profile"],
-  })
-  return Response.json({ redirectUrl: url.toString() }, { headers: { "Set-Cookie": `oauth_state=${state}; HttpOnly; SameSite=Lax; Path=/; Max-Age=300` } })
-}
-
-export async function googleOAuthCallback(req: Request): Promise<Response> {
-  const url = new URL(req.url)
-  const code = url.searchParams.get("code")
-  const state = url.searchParams.get("state")
-  const cookieState = parseCookies("oauth_state", req)
-  if (!code) {
-    return Response.json({ error: "Google OAuth callback failed, code not found" }, { status: 400 })
-  }
-  if (!state || !cookieState) {
-    return Response.json({ error: "Google OAuth callback failed, State cookie not found" }, { status: 400 })
-  }
-  if (state !== cookieState) {
-    return Response.json({ error: "Google OAuth callback failed, state mismatch" }, { status: 400 })
-  }
-  const token = await googleClient.validateAuthorizationCode(code, {
-    credentials: config.GOOGLE_CLIENT_SECRET,
-    authenticateWith: "request_body",
-  })
-  const res = await fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
-    headers: { Authorization: `Bearer ${token.access_token}` },
-  })
-    .then(res => res.json())
-    .catch(err => {
-      console.log("error fetching user info", err)
-      return { error: "Google OAuth callback failed", status: 500 }
-    })
-
-  // work with the user info from google
-  const { name, id } = res as GoogleUser
-  const [existingUser]: { username: string }[] = await db
-    .select({ username: usersTable.username })
-    .from(usersTable)
-    .where(
-      and(
-        eq(usersTable.username, name),
-        eq(usersTable.googleOauthId, id)
-      )
-    )
-    .limit(1)
-  if (!existingUser) {
-    // create new user from google user
-    const password = crypto.randomUUID()
-    const newUser: User = {
-      username: name,
-      password,
-      googleOauthId: id
-    }
-    await db.insert(usersTable)
-      .values(newUser)
-  }
-  try {
-    // Generate token pair
-    const accessToken = await createAccessToken(name);
-    const { refreshToken, tokenID } = await createRefreshToken(name
-    );
-
-    // Create family ID for token rotation tracking
-    const familyId = crypto.randomUUID();
-
-    // Store refresh token metadata
-    const deviceInfo = req.headers.get("User-Agent") || "Unknown"
-    storeRefreshToken(tokenID, id.toString() as string, familyId, deviceInfo);
-
-    return Response.json({
-      accessToken,
-      refreshToken,
-      tokenType: "Bearer",
-      expiresIn: 900, // 15 minutes in seconds
-      // Clear the state cookie after successful login
-    }, { headers: { "Set-Cookie": `oauth_state=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0` } });
-  } catch (error) {
-    // TODO: handle error in createing access token
-    return Response.json({ error: "Google OAuth callback failed to create token pair", status: 500 })
-  }
-}
