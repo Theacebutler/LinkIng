@@ -16,8 +16,6 @@ export const config = {
   JWT_AUDIENCE: "gatherlink_frontend",
   SALT_ROUNDS: 10,
   MAX_SCREENSHOT_TRIES: 3,
-  GOOGLE_CLIENT_ID: Bun.env.GOOGLE_CLIENT_ID,
-  GOOGLE_CLIENT_SECRET: Bun.env.GOOGLE_CLIENT_SECRET,
 }
 
 Object.entries(config).map((kv) => {
@@ -41,4 +39,5 @@ if (!config.GOOGLE_CLIENT_SECRET) {
 if (!config.FRONTEND_URL) {
   // config.FRONTEND_URL = "http://localhost:5173"
   console.warn("FRONTEND_URL is not set, defaulting to http://localhost:5173")
+  throw new Error("FRONTEND_URL must be set");
 }
