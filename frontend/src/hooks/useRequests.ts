@@ -72,6 +72,54 @@ export async function login(username: string, password: string) {
   }
 }
 
+export async function GoogleLogin() {
+  const res = await fetch(`${config.VITE_API_URL}/auth/google/login`)
+  if (!res.ok) throw new Error("Failed to get Google login URL")
+  const { redirectUrl } = await res.json() as { redirectUrl: string }
+  window.location.href = redirectUrl
+}
+
+let googleCallbackHandled = false
+
+export async function handleGoogleCallback(): Promise<boolean> {
+  if (googleCallbackHandled) return false
+  const params = new URLSearchParams(window.location.search)
+  const code = params.get('code')
+  const state = params.get('state')
+  if (!code || !state) return false
+  // Remove code/state from URL immediately so re-renders don't re-trigger
+  window.history.replaceState({}, document.title, window.location.pathname)
+
+  const res = await fetch(`${config.VITE_API_URL}/auth/google/callback?code=${code}&state=${state}`)
+  console.log("res", res)
+  if (!res.ok) {
+    console.error("Google OAuth callback failed", await res.text())
+    return false
+  }
+
+  const data = await res.json() as {
+    accessToken: string
+    refreshToken: string
+    tokenType: string
+    expiresIn: number
+  }
+  Cookies.set('accessToken', data.accessToken, {
+    sameSite: "lax",
+    path: COOKIE_CONFIG.path,
+    expires: data.expiresIn,
+    secure: COOKIE_CONFIG.secure
+  })
+  Cookies.set('refreshToken', data.refreshToken, {
+    sameSite: "lax",
+    path: COOKIE_CONFIG.path,
+    secure: COOKIE_CONFIG.secure
+  })
+  googleCallbackHandled = true
+  // FIX: this is a hack to refresh the resources
+  window.location.href = '/'
+  return true
+}
+
 
 export async function logout(username: string, password: string): Promise<undefined> {
   await fetch(`${config.VITE_API_URL}/users/logout`, {

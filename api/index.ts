@@ -50,6 +50,24 @@ const server = Bun.serve({
       },
     },
 
+    "/api/auth/google/login": {
+      GET: async (_req) => {
+        console.log("CALLED: /api/auth/google/login");
+        return await googleOAuthLogin()
+      }
+    },
+    "/api/auth/google/callback": {
+      GET: async (req) => {
+        console.log("CALLED: /api/auth/google/callback");
+        try {
+          return await googleOAuthCallback(req)
+        } catch (error) {
+          console.error("Google OAuth callback error:", error)
+          return Response.json({ error: "Google OAuth callback failed" }, { status: 400 })
+        }
+      }
+    },
+
     "/api/resources": {
       GET: async (req) => {
         // the getResources function is assuming that the request is authenticated with a valid token
