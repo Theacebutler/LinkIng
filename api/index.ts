@@ -3,7 +3,7 @@ import { apiResourceScreenshotGet, apiResourceScreenshotGetImage } from "./handl
 
 import { addResource, deleteResource, getResources, updateResource } from "./handlers/protected";
 import { config } from "./config";
-import { login, logout, refresh, register } from "./handlers/auth";
+import { googleOAuthCallback, getRedirectUrl as googleOAuthLogin, login, logout, refresh, register } from "./handlers/auth";
 import { getUserKey } from "./handlers/protected";
 
 const PORT = config.PORT
@@ -13,13 +13,6 @@ const server = Bun.serve({
     "/api/users/register": {
       POST: async (req): Promise<Response> => {
         return await register(req)
-      },
-      OPTIONS: async (): Promise<Response> => {
-        const res = Response.json({}, { status: 204 });
-        res.headers.set("Access-Control-Allow-Origin", config.FRONTEND_URL as string);
-        res.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS, DELETE");
-        res.headers.set("Access-Control-Allow-Headers", "*");
-        return res;
       },
     },
     "/api/users/login": {
@@ -38,13 +31,6 @@ const server = Bun.serve({
       }
     },
     "/api/users/get-key": {
-      OPTIONS: () => {
-        const res = Response.json({});
-        res.headers.set("Access-Control-Allow-Origin", config.FRONTEND_URL as string);
-        res.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS, DELETE, PATCH");
-        res.headers.set("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Origin, Authorization");
-        return res;
-      },
       GET: async (req): Promise<Response> => {
         return await getUserKey(req)
       },
@@ -81,13 +67,6 @@ const server = Bun.serve({
       },
       DELETE: async (req) => {
         return deleteResource(req)
-      },
-      OPTIONS: () => {
-        const res = Response.json({});
-        res.headers.set("Access-Control-Allow-Origin", config.FRONTEND_URL as string);
-        res.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS, DELETE, PATCH");
-        res.headers.set("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Origin, Authorization");
-        return res;
       },
     },
     "/api/resources/apple-shortcuts": {
