@@ -45,7 +45,12 @@ const server = Bun.serve({
     "/api/auth/google/callback": {
       GET: async (req) => {
         console.log("CALLED: /api/auth/google/callback");
-        return googleOAuthCallback(req)
+        try {
+          return await googleOAuthCallback(req)
+        } catch (error) {
+          console.error("Google OAuth callback error:", error)
+          return Response.json({ error: "Google OAuth callback failed" }, { status: 400 })
+        }
       }
     },
 
