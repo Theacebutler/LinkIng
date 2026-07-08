@@ -68,6 +68,8 @@ export default function LoginOrReg() {
     } catch (err) {
       console.log(err);
       setErrors({ global: "Error logging in with Google" })
+    } finally {
+      setIsSubmitting(false)
     }
   }
   const handleChange = (field: 'username' | 'password', value: string) => {
