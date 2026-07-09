@@ -33,17 +33,7 @@ with the following body:
 }
 ```
 
-You get the `key` and `owner` from the [website](https://linking.acbutler.dev),
-or by cUrling the following endpoint:
-`https://linking.acbutler.dev/api/users/get-key/`
-with the following headers:
-
-```json
-{
-  "Content-Type": "application/json",
-  "Authorization": "Bearer <token>"
-}
-```
+You get the `key` and `owner` from the [website](https://linking.acbutler.dev).
 
 ### Fetching resources via API key
 
@@ -70,7 +60,6 @@ following endpoint:
 ```
 
 You get the `key` and `owner` from the [website](https://linking.acbutler.dev),
-or by hitting the `/api/users/get-key` endpoint.
 
 ## Contributing
 
