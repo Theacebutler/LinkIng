@@ -35,7 +35,7 @@ with the following body:
 
 You get the `key` and `owner` from the [website](https://linking.acbutler.dev),
 or by cUrling the following endpoint:
-`https://linkIng.acbutler.dev/api/users/get-key/`
+`https://linking.acbutler.dev/api/users/get-key/`
 with the following headers:
 
 ```json
@@ -44,6 +44,33 @@ with the following headers:
   "Authorization": "Bearer <token>"
 }
 ```
+
+### Fetching resources via API key
+
+To fetch all resources for a user using an API key, make a GET request to the
+following endpoint:
+
+`GET https://linking.acbutler.dev/api/resources/api-key?user=<owner>&key=<key>`
+
+```json
+// Response
+[
+  {
+    "id": 1,
+    "owner": "Bob",
+    "title": "Prevent Attacks and Redirect Users with OAuth 2.0 State Parameters - Auth0 Docs",
+    "resourceUrl": "https://auth0.com/docs/secure/attack-protection/state-parameters",
+    "sourceUrl": "",
+    "createdAt": "2026-07-07T15:44:09.931Z",
+    "updatedAt": null,
+    "tags": ["oauth"],
+    "hasImage": 1
+  }
+]
+```
+
+You get the `key` and `owner` from the [website](https://linking.acbutler.dev),
+or by hitting the `/api/users/get-key` endpoint.
 
 ## Contributing
 
