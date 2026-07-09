@@ -6,30 +6,30 @@ Build a small homepage at '/'. Move Login to '/login' and Dashboard to '/dashboa
 
 ## Files to modify
 
-| File | Change |
-|------|--------|
-| frontend/package.json | Add react-router-dom |
-| src/utils/authHelpers.ts | OAuth redirect from '/' to '/dashboard' (line ~122) |
-| src/App.tsx | Add BrowserRouter, Routes, Route; remove isLogin conditional |
+| File                     | Change                                                       |
+| ------------------------ | ------------------------------------------------------------ |
+| frontend/package.json    | Add react-router-dom                                         |
+| src/utils/authHelpers.ts | OAuth redirect from '/' to '/dashboard' (line ~122)          |
+| src/App.tsx              | Add BrowserRouter, Routes, Route; remove isLogin conditional |
 
 ## Files to create
 
-| File | Purpose |
-|------|---------|
-| src/pages/Landing.tsx | Hero page. Auto-redirect to dashboard if authenticated |
-| src/pages/LoginPage.tsx | Wraps LoginOrReg at /login |
-| src/pages/Dashboard.tsx | App interface, receives all App-level state as props |
+| File                    | Purpose                                                |
+| ----------------------- | ------------------------------------------------------ |
+| src/pages/Landing.tsx   | Hero page. Auto-redirect to dashboard if authenticated |
+| src/pages/LoginPage.tsx | Wraps LoginOrReg at /login                             |
+| src/pages/Dashboard.tsx | App interface, receives all App-level state as props   |
 
 ## Architecture
 
 - App.tsx remains the single state owner (all hooks and state stay there)
 - App.tsx wraps in BrowserRouter and Routes with three routes
 
-| Path | Not authenticated | Authenticated |
-|------|-------------------|---------------|
-| / | Landing page | Auto-redirect to /dashboard |
-| /login | Login form | Auto-redirect to /dashboard |
-| /dashboard | Auto-redirect to /login | Dashboard |
+| Path       | Not authenticated       | Authenticated               |
+| ---------- | ----------------------- | --------------------------- |
+| /          | Landing page            | Auto-redirect to /dashboard |
+| /login     | Login form              | Auto-redirect to /dashboard |
+| /dashboard | Auto-redirect to /login | Dashboard                   |
 
 ## Landing.tsx
 
