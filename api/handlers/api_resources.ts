@@ -96,6 +96,9 @@ export async function apiResourcesGetWithKey(req: Request): Promise<Response> {
   if (!user || !key) {
     return Response.json({ error: "user and key are required" }, 400);
   }
+  if (!await validateApiAccessUser(user, key)) {
+    return Response.json({ error: "Invalid user or key" }, 401);
+  }
   try {
     const resources = await db.select()
       .from(resourcesTable)
