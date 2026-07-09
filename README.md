@@ -57,12 +57,14 @@ following endpoint:
 [
   {
     "id": 1,
-    "resourceUrl": "https://example.com/some-resource",
-    "title": "Example resource",
-    "sourceUrl": "https://example.com/some-source",
-    "tags": ["#tag1", "#tag2"],
-    "createdAt": "2024-01-01T00:00:00.000Z",
-    "owner": "owner"
+    "owner": "Bob",
+    "title": "Prevent Attacks and Redirect Users with OAuth 2.0 State Parameters - Auth0 Docs",
+    "resourceUrl": "https://auth0.com/docs/secure/attack-protection/state-parameters",
+    "sourceUrl": "",
+    "createdAt": "2026-07-07T15:44:09.931Z",
+    "updatedAt": null,
+    "tags": ["oauth"],
+    "hasImage": 1
   }
 ]
 ```
