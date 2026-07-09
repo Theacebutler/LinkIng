@@ -8,7 +8,7 @@ export const usersTable = sqliteTable("users_table", {
   key: text().notNull().default(String(crypto.randomUUID())).notNull(),
   username: text().notNull().unique(),
   password: text().notNull(),
-  createdAt: text(),
+  createdAt: text().default(new Date().toISOString()),
 })
 
 // resources table
