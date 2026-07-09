@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import { db } from "../db";
 import { usersTable } from "../db/schema";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import type { User } from "../shared/types";
 import { config } from "../config";
 
@@ -27,17 +27,19 @@ export async function validateCredentials(
 }
 
 
-export async function validateAppleShortcutsUser(username: string, key: string): Promise<boolean> {
+export async function validateApiAccessUser(username: string, key: string): Promise<boolean> {
   const [userFromDB] = await db.select()
     .from(usersTable)
-    .where(eq(usersTable.username, username),)
+    .where(
+      and(
+        eq(usersTable.username, username),
+        eq(usersTable.key, key)
+      )
+    )
     .limit(1)
     .execute()
 
   if (!userFromDB) {
-    return false
-  }
-  if (userFromDB.key !== key) {
     return false
   }
   return true

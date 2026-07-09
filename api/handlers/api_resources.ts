@@ -5,7 +5,7 @@ import type { Resource, Screenshot } from "../shared/types";
 import addToScreenshotQ from "../utils/screenshot";
 import { config } from "../config";
 import type { AuthenticatedRequest } from "../utils/token_gen";
-import { validateAppleShortcutsUser } from "../utils/validateCred";
+import { validateApiAccessUser } from "../utils/validateCred";
 import getOGinfo from "../utils/getOGInfo";
 
 
@@ -53,7 +53,7 @@ export async function apiAppleShortcutsPost(req: Request): Promise<Response> {
     return Response.json({ error: "Invalid request body, missing resourceUrl, owner or key" }, { status: 400 });
   }
   // validate the user
-  if (!await validateAppleShortcutsUser(body.owner, body.key)) {
+  if (!await validateApiAccessUser(body.owner, body.key)) {
     return Response.json({ error: "Invalid user or key" }, { status: 400 });
   }
   const tags: string[] = [];
@@ -84,6 +84,34 @@ export async function apiAppleShortcutsPost(req: Request): Promise<Response> {
   const out = { ...newResource, id: insertId };
   const res = Response.json(out);
   return res;
+}
+
+// get all resources with an API key
+export async function apiResourcesGetWithKey(req: Request): Promise<Response> {
+  console.log("CALLED: /api/resources/api-key")
+
+  const url = new URL(req.url)
+  const user = url.searchParams.get("user")
+  const key = url.searchParams.get("key")
+  if (!user || !key) {
+    return Response.json({ error: "user and key are required" }, 400);
+  }
+  if (!await validateApiAccessUser(user, key)) {
+    return Response.json({ error: "Invalid user or key" }, 401);
+  }
+  try {
+    const resources = await db.select()
+      .from(resourcesTable)
+      .where((resource) => eq(resource.owner, user))
+      .orderBy(desc(resourcesTable.createdAt))
+      .execute();
+    console.log("resources", resources)
+    const res = Response.json(resources);
+    return res;
+  } catch (e) {
+    console.error(e)
+    return Response.json({ error: "Internal server error" }, 500);
+  }
 }
 
 export async function apiResourcesPost(req: AuthenticatedRequest) {
