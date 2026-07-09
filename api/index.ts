@@ -1,4 +1,4 @@
-import { apiResourcesOpts, apiAppleShortcutsPost } from "./handlers/api_resources";
+import { apiResourcesOpts, apiAppleShortcutsPost, apiResourcesGetWithKey } from "./handlers/api_resources";
 import { apiResourceScreenshotGet, apiResourceScreenshotGetImage } from "./handlers/api_resources_screenshots";
 
 import { addResource, deleteResource, getResources, updateResource } from "./handlers/protected";
@@ -68,6 +68,12 @@ const server = Bun.serve({
       DELETE: async (req) => {
         return deleteResource(req)
       },
+    },
+    "/api/resources/api-key/": {
+      GET: async (req): Promise<Response> => {
+        console.log("CALLED: /api/resources/api-key")
+        return apiResourcesGetWithKey(req)
+      }
     },
     "/api/resources/apple-shortcuts": {
       POST: async (req): Promise<Response> => {

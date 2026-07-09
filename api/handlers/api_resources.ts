@@ -86,6 +86,31 @@ export async function apiAppleShortcutsPost(req: Request): Promise<Response> {
   return res;
 }
 
+// get all resources with an API key
+export async function apiResourcesGetWithKey(req: Request): Promise<Response> {
+  console.log("CALLED: /api/resources/api-key")
+
+  const url = new URL(req.url)
+  const user = url.searchParams.get("user")
+  const key = url.searchParams.get("key")
+  if (!user || !key) {
+    return Response.json({ error: "user and key are required" }, 400);
+  }
+  try {
+    const resources = await db.select()
+      .from(resourcesTable)
+      .where((resource) => eq(resource.owner, user))
+      .orderBy(desc(resourcesTable.createdAt))
+      .execute();
+    console.log("resources", resources)
+    const res = Response.json(resources);
+    return res;
+  } catch (e) {
+    console.error(e)
+    return Response.json({ error: "Internal server error" }, 500);
+  }
+}
+
 export async function apiResourcesPost(req: AuthenticatedRequest) {
   const body = await req.json() as Omit<Resource, 'id' | 'createdAt' | 'sourceImage'>;
   const name = req.user.sub
