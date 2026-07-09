@@ -5,7 +5,7 @@ import type { Resource, Screenshot } from "../shared/types";
 import addToScreenshotQ from "../utils/screenshot";
 import { config } from "../config";
 import type { AuthenticatedRequest } from "../utils/token_gen";
-import { validateAppleShortcutsUser } from "../utils/validateCred";
+import { validateApiAccessUser } from "../utils/validateCred";
 import getOGinfo from "../utils/getOGInfo";
 
 
@@ -53,7 +53,7 @@ export async function apiAppleShortcutsPost(req: Request): Promise<Response> {
     return Response.json({ error: "Invalid request body, missing resourceUrl, owner or key" }, { status: 400 });
   }
   // validate the user
-  if (!await validateAppleShortcutsUser(body.owner, body.key)) {
+  if (!await validateApiAccessUser(body.owner, body.key)) {
     return Response.json({ error: "Invalid user or key" }, { status: 400 });
   }
   const tags: string[] = [];
