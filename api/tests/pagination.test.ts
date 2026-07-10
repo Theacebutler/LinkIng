@@ -128,6 +128,21 @@ describe("TEST: offset parameter", async () => {
     expect(data.length).toBe(N_RESOURCES)
   })
 
+  test("null offset", async () => {
+    const req = new Request(`http://localhost:3000/api/resources/?offset=${null}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      }
+    })
+    const res = await getResources(req)
+    const data = await res.json() as { offset: number; length: number; resources: any[] }
+
+    expect(data.offset).toBeGreaterThanOrEqual(N_RESOURCES)
+    expect(data.length).toBe(N_RESOURCES)
+  })
+
   test("offset 0 returns same as no offset", async () => {
     const req1 = new Request("http://localhost:3000/api/resources/", {
       method: "GET",
