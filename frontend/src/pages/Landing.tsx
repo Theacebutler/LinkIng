@@ -25,7 +25,7 @@ const steps = [
     desc: "Add resources from any website to your collection.",
   },
   {
-    icon: <i className="fa-regular fa-magnifying-glass text-primary text-xl" />,
+    icon: <i className="fa-solid fa-magnifying-glass text-primary text-xl" />,
     title: "Find it again",
     desc: "Search, filter by tags or domain, and locate anything instantly.",
   },
@@ -78,13 +78,6 @@ export default function Landing({ isLogin }: { isLogin: boolean }) {
         </div>
       </div>
 
-      <div className="w-full max-w-lg text-center pb-20 md:pb-28">
-        <h2 className="text-xl font-semibold text-text">Ready to start?</h2>
-        <p className="mt-1 text-sm text-text-soft">Save your first resource in seconds.</p>
-        <a href="/login" className="btn btn-primary mt-5 px-8 py-2.5 text-sm">
-          Get Started
-        </a>
-      </div>
     </div>
   );
 }
