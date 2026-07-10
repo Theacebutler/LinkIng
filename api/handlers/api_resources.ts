@@ -23,7 +23,6 @@ export async function apiResourcesGet(request: AuthenticatedRequest): Promise<Re
       .execute();
 
     const res = Response.json(resources);
-    res.headers.set("Access-Control-Allow-Origin", config.FRONTEND_URL as string);
     return res;
   } catch (e) {
     console.error(e)
@@ -33,7 +32,6 @@ export async function apiResourcesGet(request: AuthenticatedRequest): Promise<Re
 
 export async function apiResourcesOpts(): Promise<Response> {
   const res = Response.json({});
-  res.headers.set("Access-Control-Allow-Origin", config.FRONTEND_URL as string);
   res.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.headers.set("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Origin, Authorization");
   return res;
@@ -162,7 +160,6 @@ export async function apiResourcesPost(req: AuthenticatedRequest) {
   }
   const out: Resource = { ...newResource, id: insertId };
   const res = Response.json(out);
-  res.headers.set("Access-Control-Allow-Origin", config.FRONTEND_URL as string);
   return res;
 }
 
@@ -185,7 +182,6 @@ export async function apiResourcesIdUpdate(request: AuthenticatedRequest): Promi
     })
     .where(and(eq(resourcesTable.id, body.id), eq(resourcesTable.owner, username)));
   const res = Response.json({ updated: true });
-  res.headers.set("Access-Control-Allow-Origin", config.FRONTEND_URL);
   return res
 }
 
@@ -205,6 +201,5 @@ export async function apiResourcesIdDelete(request: AuthenticatedRequest): Promi
   await db.delete(resourcesTable).where(and(eq(resourcesTable.id, id), eq(resourcesTable.owner, username)));
   await db.delete(screenshotsTable).where(eq(screenshotsTable.resourceId, id));
   const res = Response.json({ deleted: true });
-  res.headers.set("Access-Control-Allow-Origin", config.FRONTEND_URL);
   return res
 }

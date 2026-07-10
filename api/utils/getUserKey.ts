@@ -18,7 +18,6 @@ export default async function getUserKeyFromDB(req: AuthenticatedRequest): Promi
       status: 404,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": config.FRONTEND_URL as string
       }
     })
   }
@@ -27,7 +26,6 @@ export default async function getUserKeyFromDB(req: AuthenticatedRequest): Promi
     status: 200,
     headers: {
       "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": config.FRONTEND_URL as string
     }
   })
 }
