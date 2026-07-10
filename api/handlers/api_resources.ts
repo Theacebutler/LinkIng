@@ -10,6 +10,8 @@ import getOGinfo from "../utils/getOGInfo";
 
 
 export async function apiResourcesGet(request: AuthenticatedRequest): Promise<Response> {
+  const url = new URL(request.url)
+  const offset: number = parseInt(url.searchParams.get("offset") || "0") > 0 ? parseInt(url.searchParams.get("offset") || "0") : 0
   const owner = request.user?.sub
   if (!owner) {
     return Response.json({ error: "owner is required" }, 400);
@@ -19,11 +21,23 @@ export async function apiResourcesGet(request: AuthenticatedRequest): Promise<Re
       .from(resourcesTable)
       .where((resource) => eq(resource.owner, owner))
       .orderBy(desc(resourcesTable.createdAt))
-      .limit(100)
+      .limit(config.MAX_N_RESULTS_PER_PAGE)
+      .offset(offset)
       .execute();
 
-    const res = Response.json(resources);
-    return res;
+    const totalLength = resources.length
+    const newOffset = offset + totalLength
+
+    // return the first 20, and shift the offset by previous offset + length of the returned resources
+    // the client with add the offset to the next request, and the server will return the next chunk,
+    // starting from the provided offset
+
+    return Response.json({
+      offset: newOffset,
+      length: totalLength,
+      max: config.MAX_N_RESULTS_PER_PAGE,
+      resources: resources.slice(0, config.MAX_N_RESULTS_PER_PAGE),
+    });
   } catch (e) {
     console.error(e)
     return Response.json({ error: "Internal server error" }, 500);
