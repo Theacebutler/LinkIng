@@ -65,9 +65,9 @@ export default function Landing({ isLogin }: { isLogin: boolean }) {
       </div>
 
       <div className="w-full max-w-2xl pb-16 md:pb-24">
-        <div className="flex flex-col md:flex-row gap-4 md:gap-6">
+        <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
           {steps.map((step, i) => (
-            <div key={i} className="card p-5 flex-1 flex flex-col items-center text-center gap-2 hover:scale-105">
+            <div key={i} className="card p-5 flex-1 flex flex-col items-center text-center gap-2 sm:hover:scale-105">
               <div className="w-10 h-10 rounded-full bg-surface flex items-center justify-center">
                 {step.icon}
               </div>
