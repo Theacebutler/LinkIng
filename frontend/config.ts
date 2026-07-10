@@ -6,6 +6,7 @@ export const config = {
   ACCESS_TOKEN_KEY_NAME: "accessToken",
   REFRESH_TOKEN_KEY_NAME: "refreshToken",
   MAX_IMAGE_POLLING_ATTEMPTS: 5,
+  LOCAL_STORAGE_KEY_NAME: "page_offets"
 };
 
 if (!import.meta.env.PORT) {
