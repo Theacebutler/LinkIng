@@ -1,4 +1,4 @@
-import { useClosePopups } from "../hooks/useClosePopups";
+import { useClosePopups } from "../hooks/useCloseAnnouncment";
 
 export default function Announecment() {
   const { isAnnouncementOpen, handleCloseAnnouncement } = useClosePopups();
