@@ -12,13 +12,14 @@ export function useResources() {
   const [error, setError] = useState<string | null>(null);
 
   const fetchResources = async () => {
-
     try {
       setLoading(true);
-      const response = await fetchWithAuth(`${VITE_API_URL}/resources`)
+      const offset = localStorage.getItem(config.LOCAL_STORAGE_KEY_NAME) || 0
+      const response = await fetchWithAuth(`${VITE_API_URL}/resources/?offset=${offset}`)
       if (!response.ok) throw new Error('Failed to fetch resources');
-      const data = await response.json() as Resource[];
-      setResources(data);
+      const data = await response.json() as { resources: Resource[], offset: number }
+      localStorage.setItem(config.LOCAL_STORAGE_KEY_NAME, data.offset.toString())
+      setResources((prev) => [...data.resources, ...prev]);
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
