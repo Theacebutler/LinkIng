@@ -87,6 +87,7 @@ function App() {
                   setIsPopupOpen={setIsPopupOpen}
                 />
               } />
+              <Route path="*" element={<Landing isLogin={isLogin} />} />
             </Routes>
           </div>
         </main>
