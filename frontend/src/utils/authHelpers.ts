@@ -119,7 +119,7 @@ export async function handleGoogleCallback(): Promise<boolean> {
   })
   googleCallbackHandled = true
   // FIX: this is a hack to refresh the resources
-  window.location.href = '/'
+  window.location.href = '/dashboard'
   return true
 }
 

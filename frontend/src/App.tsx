@@ -1,19 +1,17 @@
 import { useEffect, useMemo, useState } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Header } from './components/Header';
-import { AddResourceForm } from './components/AddResourceForm';
-import { ResourceList } from './components/ResourceList';
-import LoginOrReg from './components/LoginOrReg';
 import Footer from './components/Footer';
 import { Toast } from './components/Toast';
 import Announcement from './components/Annououncement';
-import { KeyAndOwner } from './components/KeyAndOwner';
-import Aside from './components/Aside';
+import Landing from './pages/Landing';
+import LoginPage from './pages/LoginPage';
+import Dashboard from './pages/Dashboard';
 
 import { useToast } from './hooks/useToast';
 import { useAuths } from './hooks/useAuths';
 import { useResources } from './hooks/useResources';
 import { handleGoogleCallback } from "./utils/authHelpers";
-
 
 function App() {
   const { isLogin, setIsLogin } = useAuths();
@@ -57,73 +55,50 @@ function App() {
   }, [resources]);
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header isPopupOpen={isPopupOpen} setIsPopupOpen={setIsPopupOpen} />
-      {/* button to logout and redirect to login page */}
-      {/* <button */}
-      {/*   className="fixed top-0 right-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in" */}
-      {/*   onClick={() => { DEV_LOGOUT() }}> */}
-      {/*   DEV: Logout */}
-      {/* </button> */}
-      <div className="block md:hidden">
-        <Announcement />
-      </div>
-      <main className="flex-1 md:px-12 lg:px-20">
-        <div className="max-w-full mx-auto px-4 md:px-6 py-5 md:py-6">
-          {isLogin ? (
-            <div className="grid grid-cols-1 xl:grid-cols-[1fr_300px] gap-5">
-              <div className="space-y-5">
-                <AddResourceForm onSubmit={handleAddResource} />
-                <ResourceList
+    <BrowserRouter>
+      <div className="min-h-screen flex flex-col">
+        <Header isPopupOpen={isPopupOpen} setIsPopupOpen={setIsPopupOpen} />
+        <div className="block md:hidden">
+          <Announcement />
+        </div>
+        <main className="flex-1 md:px-12 lg:px-20">
+          <div className="max-w-full mx-auto px-4 md:px-6 py-5 md:py-6">
+            <Routes>
+              <Route path="/" element={<Landing isLogin={isLogin} />} />
+              <Route path="/login" element={<LoginPage isLogin={isLogin} />} />
+              <Route path="/dashboard" element={
+                <Dashboard
+                  isLogin={isLogin}
                   resources={resources}
-                  onDelete={deleteResource}
-                  onUpdate={updateResource}
                   loading={loading}
                   domainFilter={domainFilter}
-                  onClearDomainFilter={() => setDomainFilter(null)}
                   tagFilter={tagFilter}
-                  handleTagFilter={handleTagFilter}
+                  showKeyAndOwner={showKeyAndOwner}
+                  isPopupOpen={isPopupOpen}
+                  addedThisWeek={addedThisWeek}
+                  onAddResource={handleAddResource}
+                  onDeleteResource={deleteResource}
+                  onUpdateResource={updateResource}
+                  onTagFilter={handleTagFilter}
+                  onDomainFilter={handleDomainFilter}
+                  onClearDomainFilter={() => setDomainFilter(null)}
                   onClearTagFilter={() => setTagFilter(null)}
+                  setShowKeyAndOwner={setShowKeyAndOwner}
+                  setIsPopupOpen={setIsPopupOpen}
                 />
-              </div>
-              {isPopupOpen && (
-                <div
-                  className="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 xl:hidden animate-fade-in"
-                  onClick={() => setIsPopupOpen(false)}
-                />
-              )}
-              <Aside
-                setIsPopupOpen={setIsPopupOpen}
-                isOpen={isPopupOpen}
-                resources={resources}
-                setDomainFilter={setDomainFilter}
-                addedThisWeek={addedThisWeek}
-                domainFilter={domainFilter}
-                tagFilter={tagFilter}
-                handleTagFilter={handleTagFilter}
-                showKeyAndOwner={showKeyAndOwner}
-                setShowKeyAndOwner={setShowKeyAndOwner}
-                handleDomainFilter={handleDomainFilter}
-              />
-              {showKeyAndOwner && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-                  <KeyAndOwner setShowKeyAndOwner={setShowKeyAndOwner} />
-                </div>
-              )}
-            </div>
-          ) : (
-            <LoginOrReg />
-          )}
-        </div>
-      </main >
-
-      <Footer />
-      <Toast
-        message={toast?.message || ''}
-        type={toast?.type || 'success'}
-        onClose={() => setToast(null)}
-      />
-    </div >
+              } />
+              <Route path="*" element={<Landing isLogin={isLogin} />} />
+            </Routes>
+          </div>
+        </main>
+        <Footer />
+        <Toast
+          message={toast?.message || ''}
+          type={toast?.type || 'success'}
+          onClose={() => setToast(null)}
+        />
+      </div>
+    </BrowserRouter>
   );
 }
 

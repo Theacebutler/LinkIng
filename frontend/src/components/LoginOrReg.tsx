@@ -90,7 +90,7 @@ export default function LoginOrReg() {
         </div>
 
         <div className="card p-6">
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate autoComplete='on'>
             <div>
               <label htmlFor="username" className="block text-xs font-medium text-text-soft mb-1.5">
                 Username
