@@ -58,6 +58,7 @@ export async function fetchWithAuth(url: string, method: string = 'GET', body?: 
     })
 
     if (response.status === 401) {
+      console.log("Purposefully failed auth to test refreshToken()");
       await refreshToken()
       return await fetchWithAuth(url, method, body)
     }
