@@ -1,3 +1,4 @@
+import { useAuths } from "../hooks/useAuths";
 import Announcment from "./Annououncement";
 const DetailsIcon = () => (
   <svg
@@ -42,6 +43,7 @@ const Wordmark = () => (
 );
 
 export function Header({ isPopupOpen: isOpen, setIsPopupOpen: setIsOpen }: { isPopupOpen: boolean; setIsPopupOpen: (isOpen: boolean) => void }) {
+  const { isLogin } = useAuths()
   return (
     <header className="sticky top-0 z-30 bg-bg/85 backdrop-blur-md ">
       <div className="max-w-350 mx-auto flex  justify-between items-center gap-3 px-4 md:px-6 py-3">
@@ -51,13 +53,16 @@ export function Header({ isPopupOpen: isOpen, setIsPopupOpen: setIsOpen }: { isP
         <div className="hidden md:block flex-1 min-w-0">
           <Announcment />
         </div>
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="xl:hidden inline-flex items-center justify-center w-9 h-9 rounded-lg text-text-soft hover:text-text hover:bg-surface transition-colors"
-          aria-label="Toggle details"
-        >
-          {isOpen ? <CloseIcon /> : <DetailsIcon />}
-        </button>
+        {
+          isLogin ?
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="xl:hidden inline-flex items-center justify-center w-9 h-9 rounded-lg text-text-soft hover:text-text hover:bg-surface transition-colors"
+              aria-label="Toggle details"
+            >
+              {isOpen ? <CloseIcon /> : <DetailsIcon />}
+            </button> : null
+        }
       </div>
     </header>
   );
