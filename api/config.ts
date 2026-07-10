@@ -16,6 +16,7 @@ export const config = {
   JWT_AUDIENCE: "gatherlink_frontend",
   SALT_ROUNDS: 10,
   MAX_SCREENSHOT_TRIES: 3,
+  MAX_N_RESULTS_PER_PAGE: 20,
 }
 
 Object.entries(config).map((kv) => {
