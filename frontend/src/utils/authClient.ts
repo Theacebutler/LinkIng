@@ -15,7 +15,7 @@ async function refreshToken(): Promise<void> {
   const token = Cookies.get('refreshToken')
   if (!token) throw new Error("No refresh token found")
 
-  const response = await fetch(`${config.VITE_API_URL}/auth/refresh`, {
+  const response = await fetch(`${config.VITE_API_URL}/users/refresh`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
