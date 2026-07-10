@@ -54,7 +54,7 @@ const server = Bun.serve({
       }
     },
 
-    "/api/resources": {
+    "/api/resources/": {
       GET: async (req) => {
         // the getResources function is assuming that the request is authenticated with a valid token
         return getResources(req)
