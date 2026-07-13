@@ -24,35 +24,45 @@ function getToken(type: ACCESS_TOKEN_KEY_NAME | REFRESH_TOKEN_KEY_NAME): string 
   return token
 }
 
+let refreshPromise: Promise<void> | null = null
 
-  const response = await fetch(`${config.VITE_API_URL}/users/refresh`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ refreshToken: token })
-  })
-
-  if (!response.ok) {
-    Cookies.remove('accessToken')
-    Cookies.remove('refreshToken')
-    window.location.reload()
-    return
+async function doRefreshToken(): Promise<void> {
+  if (refreshPromise) return refreshPromise
+  refreshPromise = (async () => {
+    const refreshToken = getToken("refreshToken")
+    console.info('GOT refreshToken', refreshToken)
+    if (!refreshToken) {
+      return
+    }
+    const response = await fetch(`${config.VITE_API_URL}/users/refresh`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ refreshToken })
+    })
+    console.info('GOT response', await response.clone().text())
+    if (!response.ok) {
+      console.error('cant fetch refresh token', await response.clone().text());
+      return
+    }
+    const data = await response.json() as { accessToken: string, refreshToken: string, expiresIn: number }
+    if (!data.accessToken || !data.refreshToken) {
+      console.error('Didnt get access or refresh token, data: ', data);
+      return
+    }
+    Cookies.remove(config.ACCESS_TOKEN_KEY_NAME)
+    Cookies.remove(config.REFRESH_TOKEN_KEY_NAME)
+    Cookies.set(config.ACCESS_TOKEN_KEY_NAME, data.accessToken, { sameSite: "lax", path: COOKIE_CONFIG.path, expires: data.expiresIn, secure: COOKIE_CONFIG.secure })
+    Cookies.set(config.REFRESH_TOKEN_KEY_NAME, data.refreshToken, { sameSite: "lax", path: COOKIE_CONFIG.path, secure: COOKIE_CONFIG.secure })
+  })()
+  try {
+    await refreshPromise
+  } finally {
+    refreshPromise = null
   }
-
-  const data = await response.json()
-  Cookies.set('accessToken', data.accessToken, {
-    sameSite: "lax",
-    path: COOKIE_CONFIG.path,
-    expires: data.expiresIn,
-    secure: COOKIE_CONFIG.secure
-  })
-  Cookies.set('refreshToken', data.refreshToken, {
-    sameSite: "lax",
-    path: COOKIE_CONFIG.path,
-    secure: COOKIE_CONFIG.secure
-  })
 }
+
 
 export async function fetchWithAuth(url: string, method: string = 'GET', body?: string): Promise<Response> {
   try {
@@ -68,13 +78,25 @@ export async function fetchWithAuth(url: string, method: string = 'GET', body?: 
     })
 
     if (response.status === 401) {
-      console.log("Purposefully failed auth to test refreshToken()");
-      await refreshToken()
-      return await fetchWithAuth(url, method, body)
+      console.log("refreshToken in action");
+      await doRefreshToken()
+
+      const accessToken = getToken("accessToken")
+      const headers: Record<string, string> = {
+        "Authorization": `Bearer ${accessToken}`
+      }
+      if (body) headers['Content-Type'] = 'application/json'
+      return await fetch(url, {
+        method,
+        headers,
+        body
+      })
     }
 
     return response
-  } catch {
-    return new Response(null, { status: 401 })
+  } catch (err) {
+    console.error("Error fetching with auth", err)
+    console.log('includes login?', window.location.href.includes('login'))
+    return new Response(null, { status: 200 })
   }
 }
