@@ -80,7 +80,7 @@ export async function register(request: Request): Promise<Response> {
     return json({ error: "Registration failed" }, 500);
   }
 }
-// POST /auth/refresh - Exchange refresh token for new token pair
+// POST /users/refresh - Exchange refresh token for new token pair
 export async function refresh(request: Request): Promise<Response> {
   try {
     const body = await request.json() as any;
