@@ -1,6 +1,7 @@
 import { config } from "../../config"
 import { COOKIE_CONFIG } from "../utils/cookies"
 import Cookies from "js-cookie"
+import { fetchWithAuth } from "./authClient"
 
 export async function register(username: string, password: string): Promise<void> {
   const data = await fetch(`${config.VITE_API_URL}/users/register`, {
@@ -112,7 +113,7 @@ export async function handleGoogleCallback(): Promise<boolean> {
     expires: data.expiresIn,
     secure: COOKIE_CONFIG.secure
   })
-  Cookies.set('refreshToken', data.refreshToken, {
+  Cookies.set(config.REFRESH_TOKEN_KEY_NAME, data.refreshToken, {
     sameSite: "lax",
     path: COOKIE_CONFIG.path,
     secure: COOKIE_CONFIG.secure
@@ -141,14 +142,7 @@ export async function logout(username: string, password: string): Promise<undefi
 export async function getUserKey(): Promise<{ key: string, owner: string }> {
   const accessToken = Cookies.get(config.ACCESS_TOKEN_KEY_NAME)
   if (!accessToken) throw new Error("No access token")
-  const res = await fetch(`${config.VITE_API_URL}/users/get-key`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${accessToken}`
-    }
-  })
-  if (!res.ok) throw new Error("Failed to get user key")
+  const res = await fetchWithAuth(`${config.VITE_API_URL}/users/get-key`)
   return await res.json() as { key: string, owner: string }
 }
 
