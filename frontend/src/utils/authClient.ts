@@ -3,9 +3,9 @@ import { COOKIE_CONFIG } from './cookies';
 import { config } from '../../config';
 
 export function getAccessToken(): string {
-  const token = Cookies.get('accessToken')
+  const token = Cookies.get(config.ACCESS_TOKEN_KEY_NAME)
   if (!token) {
-    Cookies.remove('accessToken')
+    Cookies.remove(config.ACCESS_TOKEN_KEY_NAME)
     throw new Error("No access token found")
   }
   return token
@@ -46,9 +46,9 @@ async function refreshToken(): Promise<void> {
 
 export async function fetchWithAuth(url: string, method: string = 'GET', body?: string): Promise<Response> {
   try {
-    const access_token = getAccessToken()
+    const accessToken = getAccessToken()
     const headers: Record<string, string> = {
-      "Authorization": `Bearer ${access_token}`
+      "Authorization": `Bearer ${accessToken}`
     }
     if (body) headers['Content-Type'] = 'application/json'
     const response = await fetch(url, {

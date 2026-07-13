@@ -49,13 +49,13 @@ export async function login(username: string, password: string) {
   }
   switch (res.status) {
     case 200:
-      Cookies.set('accessToken', data.accessToken, {
+      Cookies.set(config.ACCESS_TOKEN_KEY_NAME, data.accessToken, {
         sameSite: "lax",
         path: COOKIE_CONFIG.path,
         expires: data.expiresIn,
         secure: COOKIE_CONFIG.secure
       })
-      Cookies.set('refreshToken', data.refreshToken, {
+      Cookies.set(config.REFRESH_TOKEN_KEY_NAME, data.refreshToken, {
         sameSite: "lax",
         path: COOKIE_CONFIG.path,
         secure: COOKIE_CONFIG.secure
@@ -106,7 +106,7 @@ export async function handleGoogleCallback(): Promise<boolean> {
     tokenType: string
     expiresIn: number
   }
-  Cookies.set('accessToken', data.accessToken, {
+  Cookies.set(config.ACCESS_TOKEN_KEY_NAME, data.accessToken, {
     sameSite: "lax",
     path: COOKIE_CONFIG.path,
     expires: data.expiresIn,
@@ -139,7 +139,7 @@ export async function logout(username: string, password: string): Promise<undefi
 }
 
 export async function getUserKey(): Promise<{ key: string, owner: string }> {
-  const accessToken = Cookies.get('accessToken')
+  const accessToken = Cookies.get(config.ACCESS_TOKEN_KEY_NAME)
   if (!accessToken) throw new Error("No access token")
   const res = await fetch(`${config.VITE_API_URL}/users/get-key`, {
     method: "GET",
