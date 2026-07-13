@@ -116,11 +116,11 @@ export async function refresh(request: Request): Promise<Response> {
 
     // Generate new token pair
     const newAccessToken = await createAccessToken(
-      payload.username as string
+      payload.sub as string
     );
     const { refreshToken: newRefreshToken, tokenID: newTokenId } =
       await createRefreshToken(
-        payload.username as string
+        payload.sub as string
       );
 
     // Store new refresh token in same family
