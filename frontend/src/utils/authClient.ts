@@ -1,19 +1,29 @@
 import Cookies from 'js-cookie';
 import { COOKIE_CONFIG } from './cookies';
 import { config } from '../../config';
+import type { ACCESS_TOKEN_KEY_NAME, REFRESH_TOKEN_KEY_NAME } from '../types/global';
 
-export function getAccessToken(): string {
-  const token = Cookies.get(config.ACCESS_TOKEN_KEY_NAME)
+
+function getToken(type: ACCESS_TOKEN_KEY_NAME | REFRESH_TOKEN_KEY_NAME): string | undefined {
+  let token: string | undefined
+  switch (type) {
+    case "accessToken":
+      token = Cookies.get(config.ACCESS_TOKEN_KEY_NAME)
+      break;
+    case "refreshToken":
+      token = Cookies.get(config.REFRESH_TOKEN_KEY_NAME)
+      break;
+    default:
+      console.error('invalid token type requested from cookies');
+      token = undefined
+      break;
+  }
   if (!token) {
-    Cookies.remove(config.ACCESS_TOKEN_KEY_NAME)
-    throw new Error("No access token found")
+    console.error("No access token found")
   }
   return token
 }
 
-async function refreshToken(): Promise<void> {
-  const token = Cookies.get('refreshToken')
-  if (!token) throw new Error("No refresh token found")
 
   const response = await fetch(`${config.VITE_API_URL}/users/refresh`, {
     method: 'POST',
@@ -46,7 +56,7 @@ async function refreshToken(): Promise<void> {
 
 export async function fetchWithAuth(url: string, method: string = 'GET', body?: string): Promise<Response> {
   try {
-    const accessToken = getAccessToken()
+    const accessToken = getToken("accessToken")
     const headers: Record<string, string> = {
       "Authorization": `Bearer ${accessToken}`
     }

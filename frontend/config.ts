@@ -3,8 +3,8 @@ export const config = {
   VITE_API_URL: "/api",
   // VITE_API_URL: import.meta.env.VITE_API_URL as string || "api",
   ALLOWED_ORIGINS: "*",
-  ACCESS_TOKEN_KEY_NAME: "accessToken",
-  REFRESH_TOKEN_KEY_NAME: "refreshToken",
+  ACCESS_TOKEN_KEY_NAME: "accessToken" as const,
+  REFRESH_TOKEN_KEY_NAME: "refreshToken" as const,
   MAX_IMAGE_POLLING_ATTEMPTS: 5,
 };
 
