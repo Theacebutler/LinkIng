@@ -80,7 +80,7 @@ export async function register(request: Request): Promise<Response> {
     return json({ error: "Registration failed" }, 500);
   }
 }
-// POST /auth/refresh - Exchange refresh token for new token pair
+// POST /users/refresh - Exchange refresh token for new token pair
 export async function refresh(request: Request): Promise<Response> {
   try {
     const body = await request.json() as any;
@@ -116,11 +116,11 @@ export async function refresh(request: Request): Promise<Response> {
 
     // Generate new token pair
     const newAccessToken = await createAccessToken(
-      payload.username as string
+      payload.sub as string
     );
     const { refreshToken: newRefreshToken, tokenID: newTokenId } =
       await createRefreshToken(
-        payload.username as string
+        payload.sub as string
       );
 
     // Store new refresh token in same family
