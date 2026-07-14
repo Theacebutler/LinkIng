@@ -65,8 +65,7 @@ export default function LoginOrReg() {
     try {
       await GoogleLogin()
       setIsSubmitting(false)
-    } catch (err) {
-      console.log(err);
+    } catch {
       setErrors({ global: "Error logging in with Google" })
     } finally {
       setIsSubmitting(false)

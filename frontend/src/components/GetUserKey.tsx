@@ -18,9 +18,8 @@ export function GetUserKey({ setIsOpen, setShowKeyAndOwner }: GetUserKeyProps) {
         setOwner(data.owner);
         setShowKeyAndOwner(true);
       })
-      .catch((e) => {
+      .catch(() => {
         showToast('Failed to get your API key', 'error');
-        console.log("Error attempting to get API key", e);
       });
   }
 

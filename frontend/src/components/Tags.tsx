@@ -21,8 +21,8 @@ export function Tags({ resources, tagFilter, onSelect }: TagsProps) {
         }
       }
       return Array.from(map.entries()).sort((a, b) => b[1] - a[1]);
-    } catch (e) {
-      console.error(e);
+    } catch {
+      // console.error(e);
       return [];
     }
   }, [resources]);
