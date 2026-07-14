@@ -14,12 +14,8 @@ function getToken(type: ACCESS_TOKEN_KEY_NAME | REFRESH_TOKEN_KEY_NAME): string 
       token = Cookies.get(config.REFRESH_TOKEN_KEY_NAME)
       break;
     default:
-      console.error('invalid token type requested from cookies');
       token = undefined
       break;
-  }
-  if (!token) {
-    console.error("No access token found")
   }
   return token
 }
@@ -30,7 +26,6 @@ async function doRefreshToken(): Promise<void> {
   if (refreshPromise) return refreshPromise
   refreshPromise = (async () => {
     const refreshToken = getToken("refreshToken")
-    console.info('GOT refreshToken', refreshToken)
     if (!refreshToken) {
       return
     }
@@ -41,14 +36,11 @@ async function doRefreshToken(): Promise<void> {
       },
       body: JSON.stringify({ refreshToken })
     })
-    console.info('GOT response', await response.clone().text())
     if (!response.ok) {
-      console.error('cant fetch refresh token', await response.clone().text());
       return
     }
     const data = await response.json() as { accessToken: string, refreshToken: string, expiresIn: number }
     if (!data.accessToken || !data.refreshToken) {
-      console.error('Didnt get access or refresh token, data: ', data);
       return
     }
     Cookies.remove(config.ACCESS_TOKEN_KEY_NAME)
@@ -78,7 +70,6 @@ export async function fetchWithAuth(url: string, method: string = 'GET', body?: 
     })
 
     if (response.status === 401) {
-      console.log("refreshToken in action");
       await doRefreshToken()
 
       const accessToken = getToken("accessToken")
@@ -94,9 +85,7 @@ export async function fetchWithAuth(url: string, method: string = 'GET', body?: 
     }
 
     return response
-  } catch (err) {
-    console.error("Error fetching with auth", err)
-    console.log('includes login?', window.location.href.includes('login'))
+  } catch {
     return new Response(null, { status: 200 })
   }
 }
