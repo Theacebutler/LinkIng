@@ -69,18 +69,37 @@ export async function apiAppleShortcutsPost(req: Request): Promise<Response> {
   }
   const newResource: Resource = {
     resourceUrl: body.resourceUrl,
-    title: body.title || "Added via Apple Shortcuts",
+    title: body.title,
     sourceUrl: body.sourceUrl || "",
     tags,
     createdAt: new Date().toISOString(),
     owner: body.owner,
   };
   // save the screenshot to the DB
+  const { imageData, title } = await getOGinfo(body.resourceUrl)
+  if (!newResource.title && title) {
+    newResource.title = title
+  } else {
+    newResource.title = "Added via Apple Shortcuts"
+  }
+  // add the resource to the DB
   const [id] = await db.insert(resourcesTable)
     .values(newResource)
     .returning();
   const insertId = id?.id
-  addToScreenshotQ(newResource.resourceUrl, insertId)
+  // if we can get an image with open graph, add it to the DB, otherwise add it to the queue
+  if (imageData) {
+    const newImage: Screenshot = {
+      resourceId: insertId as number,
+      hasImage: 0,
+      image: imageData,
+      methodUsed: "openGraph"
+    }
+    await db.insert(screenshotsTable)
+      .values(newImage)
+  } else {
+    addToScreenshotQ(newResource.resourceUrl, insertId)
+  }
   const out = { ...newResource, id: insertId };
   const res = Response.json(out);
   return res;
