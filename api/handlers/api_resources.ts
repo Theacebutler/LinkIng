@@ -77,9 +77,9 @@ export async function apiAppleShortcutsPost(req: Request): Promise<Response> {
   };
   // save the screenshot to the DB
   const { imageData, title } = await getOGinfo(body.resourceUrl)
-  if (!newResource.title && title) {
+  if (!body.title && title) {
     newResource.title = title
-  } else {
+  } else if (!body.title && !title) {
     newResource.title = "Added via Apple Shortcuts"
   }
   // add the resource to the DB
