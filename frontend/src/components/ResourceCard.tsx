@@ -3,6 +3,7 @@ import type { Resource } from '../types/resource';
 import ResourceImage from './ResourceImage';
 import { config } from '../../config';
 import { fetchWithAuth } from '../utils/authClient';
+import { getImage } from '../utils/cache';
 
 interface ResourceCardProps {
   resource: Resource;
@@ -63,6 +64,14 @@ export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate, onTag
       if (cancelled) return;
       setImageLoading(true);
       const url = `${config.VITE_API_URL}/resources/screenshots/${resource.id}/image`;
+      const cachedImage = getImage(url)
+      if (cachedImage) {
+        setImageLoading(false)
+        setImageLoadingError(false)
+        setImageUrl(cachedImage)
+        cancelled = true
+        return
+      }
       const data = await fetchWithAuth(url);
       if (cancelled) return;
       if (data.ok) {
