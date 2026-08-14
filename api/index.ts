@@ -1,5 +1,5 @@
 import { apiResourcesOpts, apiAppleShortcutsPost, apiResourcesGetWithKey } from "./handlers/api_resources";
-import { apiResourceScreenshotGet, apiResourceScreenshotGetImage } from "./handlers/api_resources_screenshots";
+import { apiResourceScreenshotGetImage } from "./handlers/api_resources_screenshots";
 
 import { addResource, deleteResource, getResources, updateResource } from "./handlers/protected";
 import { config } from "./config";
