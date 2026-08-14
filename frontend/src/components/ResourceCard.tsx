@@ -3,7 +3,8 @@ import type { Resource } from '../types/resource';
 import ResourceImage from './ResourceImage';
 import { config } from '../../config';
 import { fetchWithAuth } from '../utils/authClient';
-import { getImage } from '../utils/cache';
+import { getImage, cacheImage } from '../utils/cache';
+import getBase64String from '../utils/getBase64string';
 
 interface ResourceCardProps {
   resource: Resource;
@@ -45,7 +46,7 @@ const formatDate = (dateString: string) => {
 export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate, onTagSelect, tagFilter }: ResourceCardProps) {
   const hostname = getHostname(resource.resourceUrl);
   const fallbackTitle = `Resource from ${hostname}`;
-  const [imageUrl, setImageUrl] = useState('');
+  const [imageData, setImageData] = useState<string | null>(null)
   const [imageLoading, setImageLoading] = useState(false);
   const [imageLoadingError, setImageLoadingError] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -66,18 +67,20 @@ export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate, onTag
       const url = `${config.VITE_API_URL}/resources/screenshots/${resource.id}/image`;
       const cachedImage = getImage(url)
       if (cachedImage) {
-        setImageLoading(false)
+        setImageData(cachedImage)
         setImageLoadingError(false)
-        setImageUrl(cachedImage)
-        cancelled = true
-        return
+        setImageLoading(false)
       }
       const data = await fetchWithAuth(url);
       if (cancelled) return;
       if (data.ok) {
-        setImageUrl(url);
-        setImageLoading(false);
-        setImageLoadingError(false);
+        const imageBase64 = await getBase64String(url)
+        // catch the image
+        if (imageBase64) {
+          cacheImage(url, imageBase64)
+          setImageLoading(false);
+          setImageLoadingError(false);
+        }
       } else if (attempt >= config.MAX_IMAGE_POLLING_ATTEMPTS) {
         setImageLoadingError(true);
         setImageLoading(false);
@@ -156,7 +159,7 @@ export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate, onTag
         onClick={openResource}
       >
         {!imageLoadingError ? (
-          <ResourceImage imageUrl={imageUrl} imageLoading={imageLoading} />
+          <ResourceImage imageData={imageData} imageLoading={imageLoading} />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center text-muted text-md font-bold">
             <span className="opacity-60">No preview</span>
