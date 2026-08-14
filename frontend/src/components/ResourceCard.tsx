@@ -61,26 +61,24 @@ export function ResourceCard({ resource, view, onDelete, onCopy, onUpdate, onTag
     let cancelled = false;
     let timeOutID: ReturnType<typeof setTimeout> | undefined;
 
+    const url = `${config.VITE_API_URL}/resources/screenshots/${resource.id}/image`;
+    const cachedImage = getImage(url)
+    if (cachedImage) {
+      setImageData(cachedImage)
+      setImageLoadingError(false)
+      setImageLoading(false)
+      cancelled = true
+    }
     async function poll(attempt: number) {
       if (cancelled) return;
       setImageLoading(true);
-      const url = `${config.VITE_API_URL}/resources/screenshots/${resource.id}/image`;
-      const cachedImage = getImage(url)
-      if (cachedImage) {
-        setImageData(cachedImage)
-        setImageLoadingError(false)
-        setImageLoading(false)
-      }
-      const data = await fetchWithAuth(url);
-      if (cancelled) return;
-      if (data.ok) {
-        const imageBase64 = await getBase64String(url)
+      const imageBase64 = await getBase64String(url)
+      if (imageBase64) {
         // catch the image
-        if (imageBase64) {
-          cacheImage(url, imageBase64)
-          setImageLoading(false);
-          setImageLoadingError(false);
-        }
+        cacheImage(url, imageBase64)
+        setImageData(imageBase64)
+        setImageLoading(false);
+        setImageLoadingError(false);
       } else if (attempt >= config.MAX_IMAGE_POLLING_ATTEMPTS) {
         setImageLoadingError(true);
         setImageLoading(false);
