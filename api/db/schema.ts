@@ -32,5 +32,5 @@ export const screenshotsTable = sqliteTable("screenshots_table", {
   hasImage: integer().default(1),
   height: integer(),
   width: integer(),
-  methodUsed: text({ enum: ["openGraph", "puppeteer"] }).default("openGraph")
+  methodUsed: text({ enum: ["openGraph", "puppeteer", "bun-web-view"] }).default("openGraph")
 })
