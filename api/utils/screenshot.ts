@@ -80,28 +80,28 @@ async function getBrowser() {
 
 
 async function screenshot(url: string, resourceId: number): Promise<void> {
-  const browser = await getBrowser()
-  const page = await browser.newPage()
-  await page.setViewport({ width: 1820, height: 720 })
-  let image: string | null = null
+  const view = new Bun.WebView({
+    backend: "chrome",
+    width: 1820,
+    height: 720,
+    url: url
+  });
+  let image: string
   try {
-    const res = await page.goto(url, { waitUntil: 'networkidle0' })
-    if (res?.ok()) {
-      image = await page.screenshot({
-        type: 'png',
-        encoding: 'base64',
-        fullPage: false
-      })
-    }
+    image = await view.screenshot({
+      encoding: "base64",
+      format: "png"
+
+    })
   } catch (e) {
     throw e
   } finally {
-    await page.close()
+    view.close()
   }
   await db.insert(screenshotsTable).values({
     resourceId,
-    image,
+    image: image,
     hasImage: image ? 0 : 1,
-    methodUsed: "puppeteer"
+    methodUsed: "bun-web-view"
   })
 } 
