@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import type { Resource } from '../types/resource';
 import ResourceImage from './ResourceImage';
 import { config } from '../../config';
-import { fetchWithAuth } from '../utils/authClient';
+// import { fetchWithAuth } from '../utils/authClient';
 import { getImage, cacheImage } from '../utils/cache';
 import getBase64String from '../utils/getBase64string';
 
