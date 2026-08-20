@@ -1,10 +1,10 @@
 import { apiResourcesOpts, apiAppleShortcutsPost, apiResourcesGetWithKey } from "./handlers/api_resources";
 import { apiResourceScreenshotGetImage } from "./handlers/api_resources_screenshots";
 
-import { addResource, deleteResource, getResources, updateResource } from "./handlers/protected";
+import { getUserKey, addResource, deleteResource, getResources, updateResource } from "./handlers/protected";
 import { config } from "./config";
 import { googleOAuthCallback, getRedirectUrl as googleOAuthLogin, login, logout, refresh, register } from "./handlers/auth";
-import { getUserKey } from "./handlers/protected";
+import getAllResources from "./utils/getAllResources";
 
 const PORT = config.PORT
 const server = Bun.serve({
