@@ -1,3 +1,4 @@
+import puppeteer, { Browser } from "puppeteer";
 import { db } from "../db";
 import { config } from "../config";
 import { screenshotsTable } from "../db/schema";
@@ -8,6 +9,7 @@ import { screenshotLogger } from "./logger";
 export type ScreenshotJob = { timeAdded: number, url: string, resourceId: number, isDone: boolean, timesTried: number }
 export const screenshotStack: ScreenshotJob[] = []
 let PROCESSING: boolean = false
+let BROWSER: Browser | null = null
 
 export default function addToScreenshotStack(url: string | null | undefined, resourceId: number | undefined, timesTried: number = 0) {
   if (!url || !resourceId) return
@@ -57,6 +59,24 @@ async function handleNextScreenshot() {
       })
     }
   }
+}
+async function getBrowser() {
+  if (!BROWSER || !BROWSER.connected) {
+    BROWSER = await puppeteer.launch({
+      headless: true,
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
+        // "--disable-gpu",
+        '--max-old-space-size=512', // Limits V8 memory in MB
+        '--memory-pressure-off', // Prevents browser from aggressively trying to swap
+        // "--single-process",    // reduces total processes
+        "--no-zygote",         // prevents extra process fork
+      ]
+    });
+  }
+  return BROWSER
 }
 
 
