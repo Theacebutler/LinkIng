@@ -1,4 +1,5 @@
 import * as cheerio from 'cheerio';
+import logger from './logger';
 interface OGimage {
   imageData?: string | void
   title?: string
@@ -23,7 +24,7 @@ export default async function getOGinfo(resourceUrl: string): Promise<OGimage> {
         const buff = await res.arrayBuffer()
         return Buffer.from(buff).toString('base64')
       })
-      .catch(console.error)
+      .catch(logger.error)
     return {
       imageData,
       height: Number(height) || 1820,

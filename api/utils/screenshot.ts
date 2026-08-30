@@ -3,6 +3,7 @@ import { config } from "../config";
 import { screenshotsTable } from "../db/schema";
 import formatMemoryUsage, { highCPUload } from "./formatMemoryUsage";
 import handleFaildScreenshots from "./screenshotsRetry";
+import logger from "./logger";
 
 export type ScreenshotJob = { timeAdded: number, url: string, resourceId: number, isDone: boolean, timesTried: number }
 export const screenshotStack: ScreenshotJob[] = []
@@ -33,12 +34,12 @@ async function handleNextScreenshot() {
     const curr = screenshotStack.shift()
     if (!curr) return
     if (curr.timesTried > config.MAX_SCREENSHOT_TRIES) {
-      console.error({
+      logger.error({
         message: "screenshot failed too many times",
         limit: config.MAX_SCREENSHOT_TRIES,
         resourceId: curr.resourceId,
         url: curr.url,
-        age: curr.timeAdded
+        age: new Date(curr.timeAdded)
       })
       return
     }
@@ -47,12 +48,12 @@ async function handleNextScreenshot() {
     } catch (e) {
       // re-add to stack if it fails
       addToScreenshotStack(curr.url, curr.resourceId, curr.timesTried + 1)
-      console.error({
+      logger.error({
         Error: e,
         Memory: formatMemoryUsage(),
         resourceId: curr.resourceId,
         url: curr.url,
-        age: curr.timeAdded
+        age: new Date(curr.timeAdded)
       })
     }
   }
@@ -74,6 +75,7 @@ async function screenshot(url: string, resourceId: number): Promise<void> {
       })
     }
   } catch (e) {
+    logger.error(e)
     throw e
   } finally {
     await page.close()
