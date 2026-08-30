@@ -4,7 +4,7 @@ import { apiResourceScreenshotGetImage } from "./handlers/api_resources_screensh
 import { getUserKey, addResource, deleteResource, getResources, updateResource } from "./handlers/protected";
 import { config } from "./config";
 import { googleOAuthCallback, getRedirectUrl as googleOAuthLogin, login, logout, refresh, register } from "./handlers/auth";
-import logger from "./utils/logger";
+import { networkLogger } from "./utils/logger";
 
 const PORT = config.PORT
 const server = Bun.serve({
@@ -47,7 +47,7 @@ const server = Bun.serve({
         try {
           return await googleOAuthCallback(req)
         } catch (error) {
-          logger.error({ "Google OAuth callback error:": error })
+          networkLogger.error({ "Google OAuth callback error:": error })
           return Response.json({ error: "Google OAuth callback failed" }, { status: 400 })
         }
       }
@@ -70,7 +70,6 @@ const server = Bun.serve({
     },
     "/api/resources/api-key/": {
       GET: async (req): Promise<Response> => {
-        // console.log("CALLED: /api/resources/api-key")
         return apiResourcesGetWithKey(req)
       }
     },
@@ -86,4 +85,4 @@ const server = Bun.serve({
   },
 });
 
-logger.info(`API running at ${server.protocol}://${server.hostname}:${server.port}`);
+networkLogger.info(`API running at ${server.protocol}://${server.hostname}:${server.port}`);
