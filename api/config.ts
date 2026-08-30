@@ -3,6 +3,8 @@ import logger from "./utils/logger";
 configDotenv({ path: [".env", "../.env"] });
 
 export const config = {
+  NODE_ENV: process.env.NODE_ENV,
+  IS_PROD: process.env.NODE_ENV === "production",
   PORT: process.env.PORT,
   JWT_SECRET: Bun.env.JWT_SECRET,
   REFRESH_SECRET: Bun.env.REFRESH_SECRET,

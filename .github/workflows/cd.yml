@@ -100,6 +100,7 @@ jobs:
             export GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
             export GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
             export FRONTEND_URL="https://linking.acbutler.dev"
+            export NODE_ENV=production
             docker compose  -f docker-compose.prod.yml pull
             docker compose  -f docker-compose.prod.yml up -d --remove-orphans
             docker image prune -f
