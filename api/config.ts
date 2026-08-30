@@ -2,12 +2,16 @@ import { configDotenv } from "dotenv";
 configDotenv({ path: [".env", "../.env"] });
 
 export const config = {
+  NODE_ENV: process.env.NODE_ENV,
+  IS_PROD: process.env.NODE_ENV === "production",
   PORT: process.env.PORT,
   JWT_SECRET: Bun.env.JWT_SECRET,
   REFRESH_SECRET: Bun.env.REFRESH_SECRET,
   GOOGLE_CLIENT_ID: Bun.env.GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET: Bun.env.GOOGLE_CLIENT_SECRET,
   FRONTEND_URL: process.env.FRONTEND_URL as string,
+  PINO_TOKEN: process.env.PINO_TOKEN as string,
+  PINO_ID: process.env.PINO_ID,
   DB_CONN: Bun.env.DB_CONN,
   TOKEN_EXP: "3h", // expires is 3 hours
   REFRESH_EXP: "12h", // expires is 12 hours

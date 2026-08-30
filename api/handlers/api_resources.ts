@@ -7,6 +7,7 @@ import { config } from "../config";
 import type { AuthenticatedRequest } from "../utils/token_gen";
 import { validateApiAccessUser } from "../utils/validateCred";
 import getOGinfo from "../utils/getOGInfo";
+import networkLogger from "../utils/logger";
 
 
 export async function apiResourcesGet(request: AuthenticatedRequest): Promise<Response> {
@@ -26,7 +27,7 @@ export async function apiResourcesGet(request: AuthenticatedRequest): Promise<Re
     res.headers.set("Access-Control-Allow-Origin", config.FRONTEND_URL as string);
     return res;
   } catch (e) {
-    console.error(e)
+    networkLogger.error(e)
     return Response.json({ error: "Internal server error" }, 500);
   }
 }
@@ -107,7 +108,7 @@ export async function apiAppleShortcutsPost(req: Request): Promise<Response> {
 
 // get all resources with an API key
 export async function apiResourcesGetWithKey(req: Request): Promise<Response> {
-  console.log("CALLED: /api/resources/api-key")
+  networkLogger.info("CALLED: /api/resources/api-key")
 
   const url = new URL(req.url)
   const user = url.searchParams.get("user")
@@ -124,11 +125,10 @@ export async function apiResourcesGetWithKey(req: Request): Promise<Response> {
       .where((resource) => eq(resource.owner, user))
       .orderBy(desc(resourcesTable.createdAt))
       .execute();
-    console.log("resources", resources)
     const res = Response.json(resources);
     return res;
   } catch (e) {
-    console.error(e)
+    networkLogger.error(e)
     return Response.json({ error: "Internal server error" }, 500);
   }
 }

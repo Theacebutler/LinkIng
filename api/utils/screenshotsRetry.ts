@@ -3,6 +3,7 @@ import { db } from "../db";
 import { resourcesTable, screenshotsTable } from "../db/schema";
 import { eq } from "drizzle-orm";
 import getOGinfo from "./getOGInfo";
+import screenshotLogger from "./logger";
 
 interface FailedShap {
   screenshots_table: {
@@ -46,8 +47,8 @@ export default async function handleFaildScreenshots() {
         .execute()
       return
     } catch (e) {
+      screenshotLogger.error(e)
       addToScreenshotStack(url, failed.screenshots_table.resourceId, 0)
-      console.error(e)
     }
   }
   addToScreenshotStack(url, failed.screenshots_table.resourceId, 0)

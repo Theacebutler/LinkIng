@@ -1,9 +1,9 @@
 interface ResourceImageProps {
-  imageUrl: string;
+  imageData: string | null;
   imageLoading: boolean;
 }
 
-export default function ResourceImage({ imageUrl, imageLoading }: ResourceImageProps) {
+export default function ResourceImage({ imageData, imageLoading }: ResourceImageProps) {
   if (imageLoading) {
     return (
       <div className="absolute inset-0 flex items-center justify-center">
@@ -16,7 +16,7 @@ export default function ResourceImage({ imageUrl, imageLoading }: ResourceImageP
   }
   return (
     <img
-      src={imageUrl}
+      src={`data:image/png;base64,${imageData}`}
       alt="Resource preview"
       width={1820}
       height={720}
