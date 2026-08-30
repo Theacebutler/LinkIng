@@ -1,13 +1,10 @@
 import pino from "pino";
 import { config } from "../config";
 
-// const PRODUCTION = process.env.NODE_ENV === "production";
-const PRODUCTION = false;
-
 // write to stdout in dev, and to a batterStack in production
 const transport = pino.transport({
   targets: [
-    PRODUCTION ? {
+    config.IS_PROD ? {
       target: '@logtail/pino',
       options: {
         sourceToken: config.PINO_TOKEN,
@@ -33,7 +30,7 @@ const transport = pino.transport({
         destination: './logs/api.log',
         mkdir: true,
         sync: true,
-        level: PRODUCTION ? 'info' : 'trace',
+        level: 'info',
         messageKey: 'message',
         ignore: 'pid,hostname',
         translateTime: true,
