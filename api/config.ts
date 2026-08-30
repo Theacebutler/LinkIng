@@ -1,5 +1,4 @@
 import { configDotenv } from "dotenv";
-import logger from "./utils/logger";
 configDotenv({ path: [".env", "../.env"] });
 
 export const config = {
@@ -25,7 +24,7 @@ export const config = {
 
 Object.entries(config).map((kv) => {
   if (kv[1] === undefined) {
-    logger.warn(`config.${kv[0]} is not set`)
+    console.warn(`config.${kv[0]} is not set`)
   }
 })
 
@@ -43,6 +42,6 @@ if (!config.GOOGLE_CLIENT_SECRET) {
 }
 if (!config.FRONTEND_URL) {
   // config.FRONTEND_URL = "http://localhost:5173"
-  logger.warn("FRONTEND_URL is not set, defaulting to http://localhost:5173")
+  console.warn("FRONTEND_URL is not set, defaulting to http://localhost:5173")
   throw new Error("FRONTEND_URL must be set");
 }
