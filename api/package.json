@@ -17,6 +17,7 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
+    "@logtail/pino": "^0.5.8",
     "@types/bcrypt": "^6.0.0",
     "bcrypt": "^6.0.0",
     "cheerio": "^1.2.0",
