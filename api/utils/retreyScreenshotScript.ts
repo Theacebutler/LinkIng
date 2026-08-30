@@ -2,6 +2,7 @@ import { db } from "../db";
 import { eq, isNull } from "drizzle-orm";
 import { screenshotsTable, resourcesTable } from "../db/schema";
 import handleFaildScreenshots from "./screenshotsRetry";
+import logger from "./logger";
 
 async function getFailedCount() {
   try {
@@ -12,18 +13,18 @@ async function getFailedCount() {
       .execute()
     return failed?.length || 0
   } catch (e) {
-    console.error(e)
+    logger.error(e)
     process.exit(1)
   }
 }
 
 const failedCount = await getFailedCount()
-console.log("failedCount: ", failedCount)
+logger.info({ failedCount: failedCount })
 async function getFailed() {
   try {
     await handleFaildScreenshots()
   } catch (e) {
-    console.error(e)
+    logger.error(e)
     process.exit(1)
   }
 }

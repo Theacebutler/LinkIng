@@ -14,6 +14,7 @@ import { verifyRefreshToken } from "../utils/jwt";
 import { withAuth, type AuthenticatedRequest } from "../utils/token_gen";
 import type { GoogleUser, User } from "../shared/types";
 import { parseCookies } from "../utils/paresCockies";
+import logger from "../utils/logger";
 
 // this function should take in the register request and return a response with the userId
 export async function register(request: Request): Promise<Response> {
@@ -65,6 +66,7 @@ export async function register(request: Request): Promise<Response> {
         .returning();
       id = out[0]?.id;
     } catch (err) {
+      logger.error(err)
       return json({ error: "Registration failed" }, 500);
     }
 
@@ -74,6 +76,7 @@ export async function register(request: Request): Promise<Response> {
     }, 201);
 
   } catch (error) {
+    logger.error(error)
     if (error instanceof Error && error.message === "User already exists") {
       return json({ error: "Username already registered" }, 409);
     }
@@ -157,6 +160,7 @@ export const logout = withAuth(
       return json({ message: "Logged out successfully" });
     } catch (error) {
       // Even if token validation fails, consider logout successful
+      logger.error(error)
       return json({ message: "Logged out" });
     }
   }
@@ -199,6 +203,7 @@ export async function login(request: Request): Promise<Response> {
       expiresIn: 900, // 15 minutes in seconds
     });
   } catch (error) {
+    logger.error(error)
     return json({ error: "Login failed" }, 500);
   }
 }
@@ -243,7 +248,7 @@ export async function googleOAuthCallback(req: Request): Promise<Response> {
   })
     .then(res => res.json())
     .catch(err => {
-      console.log("error fetching user info", err)
+      logger.error("error fetching user info", err)
       return { error: "Google OAuth callback failed", status: 500 }
     })
 
@@ -292,6 +297,7 @@ export async function googleOAuthCallback(req: Request): Promise<Response> {
     }, { headers: { "Set-Cookie": `oauth_state=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0` } });
   } catch (error) {
     // TODO: handle error in createing access token
+    logger.error({ mesage: "Google OAuth callback failed to create token pair", error })
     return Response.json({ error: "Google OAuth callback failed to create token pair", status: 500 })
   }
 }
