@@ -76,7 +76,6 @@ export async function apiAppleShortcutsPost(req: Request): Promise<Response> {
     createdAt: new Date().toISOString(),
     owner: body.owner,
   };
-  // save the screenshot to the DB
   const { imageData, title } = await getOGinfo(body.resourceUrl)
   if (!body.title && title) {
     newResource.title = title
@@ -88,6 +87,7 @@ export async function apiAppleShortcutsPost(req: Request): Promise<Response> {
     .values(newResource)
     .returning();
   const insertId = id?.id
+  networkLogger.info({ action: 'add resource', id: insertId })
   // if we can get an image with open graph, add it to the DB, otherwise add it to the queue
   if (imageData) {
     const newImage: Screenshot = {
@@ -98,6 +98,7 @@ export async function apiAppleShortcutsPost(req: Request): Promise<Response> {
     }
     await db.insert(screenshotsTable)
       .values(newImage)
+    screenshotLogger.info({ action: 'add screenshot', id: insertId, screenshotMethod: "openGraph" })
   } else {
     addToScreenshotQ(newResource.resourceUrl, insertId)
   }
