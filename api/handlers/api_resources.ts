@@ -7,7 +7,7 @@ import { config } from "../config";
 import type { AuthenticatedRequest } from "../utils/token_gen";
 import { validateApiAccessUser } from "../utils/validateCred";
 import getOGinfo from "../utils/getOGInfo";
-import networkLogger, { screenshotLogger } from "../utils/logger";
+import { networkLogger, screenshotLogger } from "../utils/logger";
 
 
 export async function apiResourcesGet(request: AuthenticatedRequest): Promise<Response> {

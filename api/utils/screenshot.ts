@@ -1,4 +1,3 @@
-import puppeteer, { Browser } from "puppeteer";
 import { db } from "../db";
 import { config } from "../config";
 import { screenshotsTable } from "../db/schema";
@@ -9,7 +8,6 @@ import { screenshotLogger } from "./logger";
 export type ScreenshotJob = { timeAdded: number, url: string, resourceId: number, isDone: boolean, timesTried: number }
 export const screenshotStack: ScreenshotJob[] = []
 let PROCESSING: boolean = false
-let BROWSER: Browser | null = null
 
 export default function addToScreenshotStack(url: string | null | undefined, resourceId: number | undefined, timesTried: number = 0) {
   if (!url || !resourceId) return
@@ -87,19 +85,19 @@ async function getBrowser() {
 
 
 async function screenshot(url: string, resourceId: number): Promise<void> {
-  const browser = await getBrowser()
-  const page = await browser.newPage()
-  await page.setViewport({ width: 1820, height: 720 })
-  let image: string | null = null
+  const view = new Bun.WebView({
+    backend: "chrome",
+    width: 1820,
+    height: 720,
+    url: url
+  });
+  let image: string
   try {
-    const res = await page.goto(url, { waitUntil: 'networkidle0' })
-    if (res?.ok()) {
-      image = await page.screenshot({
-        type: 'png',
-        encoding: 'base64',
-        fullPage: false
-      })
-    }
+    image = await view.screenshot({
+      encoding: "base64",
+      format: "png"
+
+    })
   } catch (e) {
     screenshotLogger.trace({
       action: 'screenshot failed',
@@ -110,7 +108,7 @@ async function screenshot(url: string, resourceId: number): Promise<void> {
     })
     throw e
   } finally {
-    await page.close()
+    view.close()
   }
   try {
     await db.insert(screenshotsTable).values({
