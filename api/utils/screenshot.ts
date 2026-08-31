@@ -19,44 +19,68 @@ export default function addToScreenshotStack(url: string | null | undefined, res
     timesTried: timesTried
   }
   screenshotStack.push(newJob)
+  screenshotLogger.trace({ action: 'add screenshot to queue', id: resourceId, screenshotMethod: "puppeteer", queueLength: screenshotStack.length })
   if (!PROCESSING) handleNextScreenshot()
 }
 
 async function handleNextScreenshot() {
+  // handle the next screenshot in the queue
   PROCESSING = true
   while (PROCESSING) {
     if (screenshotStack.length <= 0) {
       PROCESSING = false
-      if (highCPUload()) return
+      // if the CPU is high, don't handle screenshots and exit, else we are able to handle failed screenshots
+      if (highCPUload()) {
+        screenshotLogger.trace({ action: 'high cpu load, exiting' })
+        return
+      }
+      screenshotLogger.trace({ action: 'no screenshots in queue, retrying failed screenshots' })
       handleFaildScreenshots()
       return
     }
     const curr = screenshotStack.shift()
-    if (!curr) return
+    if (!curr) return // if the stack is empty, exit
     if (curr.timesTried > config.MAX_SCREENSHOT_TRIES) {
-      screenshotLogger.error({
+      screenshotLogger.trace({
         message: "screenshot failed too many times",
         limit: config.MAX_SCREENSHOT_TRIES,
         resourceId: curr.resourceId,
-        url: curr.url,
         age: new Date(curr.timeAdded)
       })
-      return
+      continue
     }
     try {
       await screenshot(curr.url, curr.resourceId)
     } catch (e) {
       // re-add to stack if it fails
       addToScreenshotStack(curr.url, curr.resourceId, curr.timesTried + 1)
-      screenshotLogger.error({
+      screenshotLogger.trace({
         Error: e,
         Memory: formatMemoryUsage(),
         resourceId: curr.resourceId,
-        url: curr.url,
         age: new Date(curr.timeAdded)
       })
     }
   }
+}
+async function getBrowser() {
+  if (!BROWSER || !BROWSER.connected) {
+    BROWSER = await puppeteer.launch({
+      headless: true,
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
+        // "--disable-gpu",
+        '--max-old-space-size=512', // Limits V8 memory in MB
+        '--memory-pressure-off', // Prevents browser from aggressively trying to swap
+        // "--single-process",    // reduces total processes
+        "--no-zygote",         // prevents extra process fork
+      ]
+    });
+    screenshotLogger.info({ action: 'created new browser', pid: BROWSER.process()?.pid || 'no pid', memory: formatMemoryUsage() })
+  }
+  return BROWSER
 }
 
 
@@ -75,15 +99,32 @@ async function screenshot(url: string, resourceId: number): Promise<void> {
 
     })
   } catch (e) {
-    screenshotLogger.error(e)
+    screenshotLogger.trace({
+      action: 'screenshot failed',
+      resourceId: resourceId,
+      age: new Date(Date.now()),
+      Error: e,
+      Memory: formatMemoryUsage(),
+    })
     throw e
   } finally {
     view.close()
   }
-  await db.insert(screenshotsTable).values({
-    resourceId,
-    image: image,
-    hasImage: image ? 0 : 1,
-    methodUsed: "bun-web-view"
-  })
+  try {
+    await db.insert(screenshotsTable).values({
+      resourceId,
+      image,
+      hasImage: image ? 0 : 1,
+      methodUsed: "puppeteer"
+    })
+  } catch (err) {
+    screenshotLogger.trace({
+      action: 'screenshot failed',
+      resourceId: resourceId,
+      age: new Date(Date.now()),
+      Error: err,
+      Memory: formatMemoryUsage(),
+    })
+    throw err
+  }
 } 

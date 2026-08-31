@@ -3,7 +3,7 @@ import { db } from "../db";
 import { resourcesTable, screenshotsTable } from "../db/schema";
 import { eq } from "drizzle-orm";
 import getOGinfo from "./getOGInfo";
-import screenshotLogger from "./logger";
+import { screenshotLogger } from "./logger";
 
 interface FailedShap {
   screenshots_table: {
@@ -30,9 +30,15 @@ export default async function handleFaildScreenshots() {
     .where(eq(screenshotsTable.hasImage, 0))
     .limit(1)
     .execute()
-  if (!failed || !failed?.resources_table || failed?.screenshots_table) return
+  if (!failed || !failed?.resources_table || failed?.screenshots_table) {
+    screenshotLogger.trace({ action: 'no failed screenshots to retry' })
+    return
+  }
   const url = failed.resources_table?.resourceUrl
-  if (!url) return
+  if (!url) {
+    screenshotLogger.trace({ action: 'no url to retry', resourceId: failed.screenshots_table.resourceId })
+    return
+  }
   const { imageData, width, height } = await getOGinfo(url)
   if (imageData) {
     try {
@@ -45,9 +51,14 @@ export default async function handleFaildScreenshots() {
         })
         .where(eq(screenshotsTable.id, failed.screenshots_table.id))
         .execute()
+      screenshotLogger.info({ action: 'updateded failed screenshot: added image', resourceId: failed.screenshots_table.resourceId })
       return
     } catch (e) {
-      screenshotLogger.error(e)
+      screenshotLogger.error({
+        action: 'failed to update failed screenshot: added image',
+        resourceId: failed.screenshots_table.resourceId,
+        Error: e,
+      })
       addToScreenshotStack(url, failed.screenshots_table.resourceId, 0)
     }
   }
