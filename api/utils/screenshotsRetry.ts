@@ -3,7 +3,7 @@ import { db } from "../db";
 import { resourcesTable, screenshotsTable } from "../db/schema";
 import { eq } from "drizzle-orm";
 import getOGinfo from "./getOGInfo";
-import screenshotLogger from "./logger";
+import { screenshotLogger } from "./logger";
 
 interface FailedShap {
   screenshots_table: {
