@@ -26,12 +26,17 @@ export default function addToScreenshotStack(url: string | null | undefined, res
 }
 
 async function handleNextScreenshot() {
+  // handle the next screenshot in the queue
   PROCESSING = true
   while (PROCESSING) {
     if (screenshotStack.length <= 0) {
       PROCESSING = false
-      if (highCPUload()) return
-      screenshotLogger.trace({ action: 'handle failed screenshots', queueLength: screenshotStack.length })
+      // if the CPU is high, don't handle screenshots and exit, else we are able to handle failed screenshots
+      if (highCPUload()) {
+        screenshotLogger.trace({ action: 'high cpu load, exiting' })
+        return
+      }
+      screenshotLogger.trace({ action: 'handleing failed screenshots', queueLength: screenshotStack.length })
       handleFaildScreenshots()
       return
     }
