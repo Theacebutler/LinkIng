@@ -7,7 +7,7 @@ import { config } from "../config";
 import type { AuthenticatedRequest } from "../utils/token_gen";
 import { validateApiAccessUser } from "../utils/validateCred";
 import getOGinfo from "../utils/getOGInfo";
-import networkLogger from "../utils/logger";
+import networkLogger, { screenshotLogger } from "../utils/logger";
 
 
 export async function apiResourcesGet(request: AuthenticatedRequest): Promise<Response> {
@@ -166,6 +166,7 @@ export async function apiResourcesPost(req: AuthenticatedRequest) {
     .values(newResource)
     .returning();
   const insertId = id?.id
+  networkLogger.info({ action: 'add resource', id: insertId })
   // if we can get an image with open graph, add it to the DB, otherwise add it to the queue
   if (imageData) {
     const newImage: Screenshot = {
@@ -176,6 +177,7 @@ export async function apiResourcesPost(req: AuthenticatedRequest) {
     }
     await db.insert(screenshotsTable)
       .values(newImage)
+    screenshotLogger.info({ action: 'add screenshot', id: insertId, screenshotMethod: "openGraph" })
   } else {
     addToScreenshotQ(newResource.resourceUrl, insertId)
   }

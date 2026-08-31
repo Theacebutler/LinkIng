@@ -21,6 +21,7 @@ export default function addToScreenshotStack(url: string | null | undefined, res
     timesTried: timesTried
   }
   screenshotStack.push(newJob)
+  screenshotLogger.trace({ action: 'add screenshot to queue', id: resourceId, screenshotMethod: "puppeteer", queueLength: screenshotStack.length })
   if (!PROCESSING) handleNextScreenshot()
 }
 
@@ -30,17 +31,17 @@ async function handleNextScreenshot() {
     if (screenshotStack.length <= 0) {
       PROCESSING = false
       if (highCPUload()) return
+      screenshotLogger.trace({ action: 'handle failed screenshots', queueLength: screenshotStack.length })
       handleFaildScreenshots()
       return
     }
     const curr = screenshotStack.shift()
     if (!curr) return
     if (curr.timesTried > config.MAX_SCREENSHOT_TRIES) {
-      screenshotLogger.error({
+      screenshotLogger.trace({
         message: "screenshot failed too many times",
         limit: config.MAX_SCREENSHOT_TRIES,
         resourceId: curr.resourceId,
-        url: curr.url,
         age: new Date(curr.timeAdded)
       })
       return
@@ -50,11 +51,10 @@ async function handleNextScreenshot() {
     } catch (e) {
       // re-add to stack if it fails
       addToScreenshotStack(curr.url, curr.resourceId, curr.timesTried + 1)
-      screenshotLogger.error({
+      screenshotLogger.trace({
         Error: e,
         Memory: formatMemoryUsage(),
         resourceId: curr.resourceId,
-        url: curr.url,
         age: new Date(curr.timeAdded)
       })
     }
@@ -76,6 +76,7 @@ async function getBrowser() {
       ]
     });
   }
+  screenshotLogger.info({ action: 'createed new browser', pid: BROWSER.process()?.pid || 'no pid', memory: formatMemoryUsage() })
   return BROWSER
 }
 
@@ -95,7 +96,13 @@ async function screenshot(url: string, resourceId: number): Promise<void> {
       })
     }
   } catch (e) {
-    screenshotLogger.error(e)
+    screenshotLogger.trace({
+      action: 'screenshot failed',
+      resourceId: resourceId,
+      age: new Date(Date.now()),
+      Error: e,
+      Memory: formatMemoryUsage(),
+    })
     throw e
   } finally {
     await page.close()
@@ -108,6 +115,12 @@ async function screenshot(url: string, resourceId: number): Promise<void> {
       methodUsed: "puppeteer"
     })
   } catch (err) {
+    screenshotLogger.trace({
+      action: 'screenshot failed',
+      resourceId: resourceId,
+      age: new Date(Date.now()),
+      Error: err,
+      Memory: formatMemoryUsage(),
     })
     throw err
   }
