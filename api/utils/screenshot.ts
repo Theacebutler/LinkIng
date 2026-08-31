@@ -100,10 +100,15 @@ async function screenshot(url: string, resourceId: number): Promise<void> {
   } finally {
     await page.close()
   }
-  await db.insert(screenshotsTable).values({
-    resourceId,
-    image,
-    hasImage: image ? 0 : 1,
-    methodUsed: "puppeteer"
-  })
+  try {
+    await db.insert(screenshotsTable).values({
+      resourceId,
+      image,
+      hasImage: image ? 0 : 1,
+      methodUsed: "puppeteer"
+    })
+  } catch (err) {
+    })
+    throw err
+  }
 } 
