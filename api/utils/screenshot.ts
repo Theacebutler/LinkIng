@@ -36,7 +36,7 @@ async function handleNextScreenshot() {
         screenshotLogger.trace({ action: 'high cpu load, exiting' })
         return
       }
-      screenshotLogger.trace({ action: 'handleing failed screenshots', queueLength: screenshotStack.length })
+      screenshotLogger.trace({ action: 'no screenshots in queue, retrying failed screenshots' })
       handleFaildScreenshots()
       return
     }
@@ -80,8 +80,8 @@ async function getBrowser() {
         "--no-zygote",         // prevents extra process fork
       ]
     });
+    screenshotLogger.info({ action: 'created new browser', pid: BROWSER.process()?.pid || 'no pid', memory: formatMemoryUsage() })
   }
-  screenshotLogger.info({ action: 'createed new browser', pid: BROWSER.process()?.pid || 'no pid', memory: formatMemoryUsage() })
   return BROWSER
 }
 
