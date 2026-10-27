@@ -99,6 +99,7 @@ jobs:
             export REFRESH_SECRET=${{ secrets.REFRESH_SECRET }}
             export GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
             export GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
+            export PINO_TOKEN=${{ secrets.PINO_TOKEN }}
             export FRONTEND_URL="https://linking.acbutler.dev"
             export NODE_ENV=production
             docker compose  -f docker-compose.prod.yml pull

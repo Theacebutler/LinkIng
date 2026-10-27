@@ -1,5 +1,6 @@
 import * as cheerio from 'cheerio';
 import screenshotLogger from './logger';
+
 interface OGimage {
   imageData?: string | void
   title?: string
@@ -25,6 +26,9 @@ export default async function getOGinfo(resourceUrl: string): Promise<OGimage> {
         return Buffer.from(buff).toString('base64')
       })
       .catch(screenshotLogger.error)
+      .finally(
+        () => screenshotLogger.info({ action: 'fetched image with og:image', resourceId: resourceUrl })
+      )
     return {
       imageData,
       height: Number(height) || 1820,
