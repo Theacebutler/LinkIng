@@ -1,5 +1,6 @@
 import { apiResourcesOpts, apiAppleShortcutsPost, apiResourcesGetWithKey } from "./handlers/api_resources";
 import { apiResourceScreenshotGetImage } from "./handlers/api_resources_screenshots";
+import { getNumUsers } from "./handlers/admin_stats"
 
 import { getUserKey, addResource, deleteResource, getResources, updateResource } from "./handlers/protected";
 import { config } from "./config";
@@ -10,6 +11,11 @@ const PORT = config.PORT
 const server = Bun.serve({
   port: PORT,
   routes: {
+    "/api/admin": {
+      GET: async () => {
+        return await getNumUsers();
+      }
+    },
     "/api/users/register": {
       POST: async (req): Promise<Response> => {
         return await register(req)
