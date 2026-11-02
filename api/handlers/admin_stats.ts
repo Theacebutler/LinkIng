@@ -1,30 +1,34 @@
 import { usersTable, resourcesTable, screenshotsTable } from "../db/schema";
 import { db } from "../db";
 import { count, eq } from "drizzle-orm";
-
+import { screenshotStack } from "../utils/screenshot"
 
 export async function getNumUsers() {
-  // SELECT users.id, COUNT(screenshots.id), COUNT(resourcesTable.id)
-  // FROM usersTable
-  // JOIN resourcesTable ON usersTable.id = resourcesTable.owner
-  // GROUP BY usersTable.id
 
   const usersN = await db.select()
     .from(usersTable)
-  const screenshotsN = db.select().from(screenshotsTable);
-  const resourcesN = db.select().from(resourcesTable);
-
-  const data = await db.select()
+  const screenshotsN = await db.select().from(screenshotsTable);
+  const resourcesN = await db.select().from(resourcesTable);
+  const data = await db.select({
+    user_id: usersTable.id,
+    user_created: usersTable.createdAt,
+    resources_count: count(resourcesTable.id),
+  })
     .from(usersTable)
-    .fullJoin(resourcesTable, eq(resourcesTable.owner, usersTable.username))
+    .leftJoin(resourcesTable, eq(resourcesTable.owner, usersTable.username))
     .groupBy(usersTable.id)
 
-  console.log(data);
+  const screenshot_data = await db.select({ method: screenshotsTable.methodUsed })
+    .from(screenshotsTable)
+    .groupBy(screenshotsTable.methodUsed)
 
+  const screenshotStackLenght = screenshotStack.length
   return new Response(JSON.stringify({
-    users: usersN.length,
-    screenshots: (await screenshotsN).length,
-    resources: (await resourcesN).length,
-    data
+    users_count: usersN.length,
+    screenshots_count: screenshotsN.length,
+    resources_count: resourcesN.length,
+    screenshotStackLenght,
+    mothods: screenshot_data,
+    data,
   }))
 }
